@@ -1,2 +1,27 @@
 \section{Ejercicio 1}
 
+En este ejercicio se pide la selección de un subconjunto de números de manera tal que su suma sea la más cercana a un número P dado.
+Dicha suma debe ser menor o igual a P.
+
+Podemos notar que es una variación del problema clásico conocido como \textbf{Subset Sum} y por lo tanto probaremos que se puede resolver con la misma complejidad.
+
+El algoritmo consiste en dividir la entrada en dos subgrupos de tamaño $\lceil n/2 \rceil$ y $\lfloor n/2 \rfloor$.
+Para el primer subgrupo calcular todas las posibles sumas para todos los subconjuntos posibles ($2^{n/2}$) y guardas las que sean menores a P en un conjunto que permita la consulta de la existencia de un elemento o bien que nos devuelva el primero más chico al buscado.
+
+Para el segundo subgrupo, nuevamente calcular todas las posibles sumas para todos los subconjuntos posibles y en caso de ser menor estricto a P, buscar en la estructura anterior el primer número que sea menor o igual a (P - la suma acumulada). Ese número que nos devuelva sumado a la suma que nos dio el subconjunto calculado son una posible respuesta. 
+
+Con el almacenamiento de una variable global que posea el máximo número alcanzado hasta el momento, ante cada consulta anterior me quedo siempre con el máximo hasta el momento y el nuevo valor encontrado. 
+
+Basta con reportar esta variable global que es la respuesta al problema que estabamos buscando.
+
+\subsection{Cómo cumplir con las complejidades pedidas}
+
+Para lograr la complejidad de O($n * 2 ^{n/2}$) basta con que la primer y la segunda parte del algoritmo tarden dicha complejidad.
+La primera parte itera sobre $2 ^{n/2}$ subconjuntos y en cada uno de ellos calcula n/2 sumas. A su vez inserta en un conjunto (que lo implementaremos con un set de C++) el resultado de la suma. Esta última operación tarda O(log M) donde M es la cantidad de elementos del conjunto. Como en nuestro conjunto tendremos almacenados hasta $2 ^{n/2}$ elementos su logaritmo es n/2 y entonces por cada iteración del ciclo se realizan en promedio n operaciones.
+Con esto concluimos que la primer parte del algoritmo tiene complejidad  O($n * 2 ^{n/2}$).
+
+Para la segunda parte del algoritmo nuevamente tenemos $2 ^{n/2}$ iteraciones para las cuales haremos la misma cantidad de sumas que antes (n/2) y se deberá hacer una búsqueda sobre el conjunto. Para eso usamos la operación que nos provee el conjunto implementado sobre set llamada lower_bound que en tiempo logarítmico devuelve el primer elemento $\geq$ al target buscado. Para los casos en que el elemento que devuelve es mayor o bien no existe ningun elemento hay que mover el iterador hacia atrás lo cual también es logarítmico sobre la cantidad de elementos y como bien habíamos dicho en el párrafo anterior la cantidad total era de $2 ^{n/2}$ elementos y entonces su logaritmo es n/2. Nuevamente tardamos O($n * 2 ^{n/2}$).
+
+El algoritmo termina con la ejecución de esos dos ciclos y la devolución de la respuesta en O(1) por lo que la complejidad total se resume en O($n * 2 ^{n/2}$).
+
+Para testear el algoritmo se probaron todas instancias aleatorias para cada uno de los n posibles.
