@@ -3,7 +3,7 @@ GCC=g++
 CFLAGS= -O0 -Wall -Wextra -ggdb -std=c++14
 VALGRIND=valgrind --leak-check=full
 
-DEPEND = makefile $(OUT_DIR)
+DEPEND = makefile
 
 EJERCICIOS = ej1 ej2 ej3 ej4
 
@@ -16,7 +16,7 @@ ENTREGABLE=entregable.tar.gz
 
 .PHONY: all $(EJERCICIOS) clean
 
-all: $(EJERCICIOS)
+all: $(OUT_DIR) $(EJERCICIOS)
 
 tar: $(ENTREGABLE)
 

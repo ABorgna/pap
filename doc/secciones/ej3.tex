@@ -1,4 +1,13 @@
 \section{Ejercicio 3}
 
-\subsection{}
+El ejercicio consiste en encontrar un subarray que maximice la suma de sus elementos. Esto es lo que se conoce como \textbf{Maximum Subarray Problem}.
+
+El algoritmo recorre los prefijos del array calculando la suma máxima dentro del subarray y la suma máxima entre los sufijos del que estamos viendo.
+
+Para el caso base, el prefijo vacío, ambos valores son 0.
+
+Para el caso $n+1$ el sufijo máximo es el prefijo máximo del caso $n$ mas el elemento $n+1$, o el array vacío. \\
+Si el array máximo contiene al elemento $n$ será el sufijo calculado, sino será el array máximo del caso $n$.
+
+El código por lo tanto simplemente mantiene dos variables con la suma del subarray y del sufijo máximos y mientras lee los $n$ elementos de la entrada calcula los máximos descriptos en \bigo(1), resultando en una complejidad total de \bigo(1).
 

@@ -12,16 +12,16 @@ Para el segundo subgrupo, nuevamente calcular todas las posibles sumas para todo
 
 Con el almacenamiento de una variable global que posea el máximo número alcanzado hasta el momento, ante cada consulta anterior me quedo siempre con el máximo hasta el momento y el nuevo valor encontrado. 
 
-Basta con reportar esta variable global que es la respuesta al problema que estabamos buscando.
+Basta con reportar esta variable global que es la respuesta al problema que estábamos buscando.
 
 \subsection{Cómo cumplir con las complejidades pedidas}
 
-Para lograr la complejidad de O($n * 2 ^{n/2}$) basta con que la primer y la segunda parte del algoritmo tarden dicha complejidad.
-La primera parte itera sobre $2 ^{n/2}$ subconjuntos y en cada uno de ellos calcula n/2 sumas. A su vez inserta en un conjunto (que lo implementaremos con un set de C++) el resultado de la suma. Esta última operación tarda O(log M) donde M es la cantidad de elementos del conjunto. Como en nuestro conjunto tendremos almacenados hasta $2 ^{n/2}$ elementos su logaritmo es n/2 y entonces por cada iteración del ciclo se realizan en promedio n operaciones.
-Con esto concluimos que la primer parte del algoritmo tiene complejidad  O($n * 2 ^{n/2}$).
+Para lograr la complejidad de \bigo($n * 2 ^{n/2}$) basta con que la primer y la segunda parte del algoritmo tarden dicha complejidad.
+La primera parte itera sobre $2 ^{n/2}$ subconjuntos y en cada uno de ellos calcula n/2 sumas. A su vez inserta en un conjunto (que lo implementaremos con un set de C++) el resultado de la suma. Esta última operación tarda \bigo(log M) donde M es la cantidad de elementos del conjunto. Como en nuestro conjunto tendremos almacenados hasta $2 ^{n/2}$ elementos su logaritmo es n/2 y entonces por cada iteración del ciclo se realizan en promedio n operaciones.
+Con esto concluimos que la primer parte del algoritmo tiene complejidad  \bigo($n * 2 ^{n/2}$).
 
-Para la segunda parte del algoritmo nuevamente tenemos $2 ^{n/2}$ iteraciones para las cuales haremos la misma cantidad de sumas que antes (n/2) y se deberá hacer una búsqueda sobre el conjunto. Para eso usamos la operación que nos provee el conjunto implementado sobre set llamada lower_bound que en tiempo logarítmico devuelve el primer elemento $\geq$ al target buscado. Para los casos en que el elemento que devuelve es mayor o bien no existe ningun elemento hay que mover el iterador hacia atrás lo cual también es logarítmico sobre la cantidad de elementos y como bien habíamos dicho en el párrafo anterior la cantidad total era de $2 ^{n/2}$ elementos y entonces su logaritmo es n/2. Nuevamente tardamos O($n * 2 ^{n/2}$).
+Para la segunda parte del algoritmo nuevamente tenemos $2 ^{n/2}$ iteraciones para las cuales haremos la misma cantidad de sumas que antes (n/2) y se deberá hacer una búsqueda sobre el conjunto. Para eso usamos la operación que nos provee el conjunto implementado sobre set llamada lower_bound que en tiempo logarítmico devuelve el primer elemento $\geq$ al target buscado. Para los casos en que el elemento que devuelve es mayor o bien no existe ningún elemento hay que mover el iterador hacia atrás lo cual también es logarítmico sobre la cantidad de elementos y como bien habíamos dicho en el párrafo anterior la cantidad total era de $2 ^{n/2}$ elementos y entonces su logaritmo es n/2. Nuevamente tardamos \bigo($n * 2 ^{n/2}$).
 
-El algoritmo termina con la ejecución de esos dos ciclos y la devolución de la respuesta en O(1) por lo que la complejidad total se resume en O($n * 2 ^{n/2}$).
+El algoritmo termina con la ejecución de esos dos ciclos y la devolución de la respuesta en \bigo(1) por lo que la complejidad total se resume en \bigo($n * 2 ^{n/2}$).
 
 Para testear el algoritmo se probaron todas instancias aleatorias para cada uno de los n posibles.
