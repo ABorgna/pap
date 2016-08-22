@@ -10,7 +10,7 @@
 using namespace std;
 const int maxn = 40;
 int N, A, B;
-long long P[maxn], Q[maxn], T, resp;
+long long P[maxn], Q[maxn], T, resp;//P = elementos del primer subconjunto, Q = elementos del segundo, T = target buscado, resp = Respuesta final
 
 int main() {
     cin >> T >> N;
@@ -19,38 +19,32 @@ int main() {
     forn(i, A) cin >> P[i];
     forn(i, B) cin >> Q[i];
     set<long long> resultados;
-    forn(i, 1 << A) {
+    forn(i, 1 << A) { //Armo todos los subconjuntos del primer subgrupo
         long long suma = 0;
-        forn(j, A) {
+        forn(j, A) { // Calculo la suma de los presentes
             if ((1 << j & i) == (1 << j))
                 suma += P[j];
         }
-        if (suma <= T)
+        if (suma <= T) // si no me pasé del target lo agrego al conjunto
             resultados.insert(suma);
     }
-    forn(i, 1 << B) {
+    forn(i, 1 << B) { //Armo todos los subconjuntos del segundo subgrupo
         long long busco = 0;
-        forn(j, B) {
+        forn(j, B) { // Calculo la suma de los presentes
             if ((1 << j & i) == (1 << j))
                 busco += Q[j];
         }
 
-        if (busco > T)
+        if (busco > T)// si me pasé del target pruebo con otro
             continue;
-        auto it = resultados.lower_bound(T - busco);
-        if (it == resultados.end())
-            it--;
-        if (it == resultados.begin())
+        auto it = resultados.upper_bound(T - busco); //busco el primero que sea mayor
+        if (it == resultados.begin()) //Si es el primero entonces no tengo ninguno con el cual sumar
             resp = max(resp, busco);
         else {
-            if (*it > T - busco)
-                it--;
-            if (it == resultados.begin())
-                resp = max(resp, busco);
-            else
-                resp = max(resp, *it + busco);
+			it--; //retrocedo al primero que sea <= a lo que busco.
+            resp = max(resp, *it + busco); //Uso el que buscaba y lo que tenia acumulado del subconjunto que calculé recién.
         }
     }
-    cout << resp << endl;
+    cout << resp << endl; //Devuelvo la respuesta
     return 0;
 }
