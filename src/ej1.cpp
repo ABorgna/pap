@@ -38,12 +38,9 @@ int main() {
         if (busco > T)// si me pasé del target pruebo con otro
             continue;
         auto it = resultados.upper_bound(T - busco); //busco el primero que sea mayor
-        if (it == resultados.begin()) //Si es el primero entonces no tengo ninguno con el cual sumar
-            resp = max(resp, busco);
-        else {
-			it--; //retrocedo al primero que sea <= a lo que busco.
-            resp = max(resp, *it + busco); //Uso el que buscaba y lo que tenia acumulado del subconjunto que calculé recién.
-        }
+        it--; //retrocedo al primero que sea <= a lo que busco.
+        resp = max(resp, *it + busco); //Uso el que buscaba y lo que tenia acumulado del subconjunto que calculé recién.
+
     }
     cout << resp << endl; //Devuelvo la respuesta
     return 0;
