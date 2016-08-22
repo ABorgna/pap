@@ -24,7 +24,7 @@ bool haySubsecuencia(int start, int end, vector<Matriz>& matrices, Matriz& m, in
     prefix[i] = prefix[i - 1] * matrices[mid + i - 1];
   }
 
-  if (prefix[l] == m){    res = true;
+  if (prefix[l] == m){
     res = true;
   }
   
