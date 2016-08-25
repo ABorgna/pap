@@ -1,3 +1,31 @@
 \section{Ejercicio 4}
 
-\subsection{}
+\subsection{Enunciado}
+El enunciado nos pide, dada una arreglo de tamaño N de matrices de 3x3 , un a matriz de 3x3 M y un numero L, decidir
+si existe un subarreglo de largo L que al multiplicarlo nos de M.
+Ademas todas las matrices del problema tienen sus elementos en Z100007
+
+\subsection{Formalizando}
+Reformulando, dado un arreglo a1...an de con elementos en Z3x3 100007, queremos ver si existen indices
+i, j tal que j - i == L y ai x ai+1 x .... x a j-1 == M
+
+\subsection{Algunas propiededades}
+Lo primero que debemos recordar para resolver este problema es que, la multiplicacion de matrices es asociativa.
+Como en muchos problemas en la computación, vamos a querer resolver ''subproblemas'' 
+que nos ayuden a resolver el problema original. Así, nos será útil saber que si encontramos dos subarreglos tales que:
+ai x ai+1 ... x ak = T1 y ak+1 x ... x aj = T2 y T1 * T2 = M, donde i y j 
+respetan lo mencionado en el punto anterior..
+encontramos lo que buscabamos.
+\newline
+Para ser más breves, denotemos como subarreglo \textbf{ganador} a un subarreglo que cumple las condiciones que buscamos.
+Con la idea en mente de buscar subproblemas para resolver el problema original, dividamos el arreglo en dos.
+Notamos que si al arreglo original lo dividimos, entonces se pueden dar los siguientes casos:
+\begin{itemize}
+\item Hay un subarreglo ganador totalmente contenido en la primer mitad.
+\item Hay un subarreglo ganador totalmente contenido en la segunda mitad.
+\item Hay un subarreglo ganador que esta parcialmente contenido en cada una de las mitades.
+\item No hay subarreglo ganador, asi que la respuesta seria ''NO''.
+\end{itemize}
+Facilmente podemos ver que si resolvemos el tercer caso, es decir, cuando un subarreglo 
+ganador esta parcialmente contenido en cada mitad, podriamos dar un algoritmo 
+que utilice la técnica de ''Divide And Conquer'' para resolver el problema. 
