@@ -97,25 +97,25 @@ algoritmo.
   
   \State res $\gets$ false
   \State mid $\gets$ (start + end) / 2
-  \State prefix[l+1] $\gets$ \{...\}
-  \State prefix[0] $\gets$ $I$\textsubscript{3x3}
+  \State prefijo[l+1] $\gets$ \{...\}
+  \State prefijo[0] $\gets$ $I$\textsubscript{3x3}
   
   \State 
   
   \State i $\gets$ 0
   \While{i $\leq$ l \textbf{and} mid + i - 1 $\textless$ end}
-    \State prefix[i] $\gets$ prefix[i - 1] * matrices[mid + i - 1];
+    \State prefijo[i] $\gets$ prefijo[i - 1] * matrices[mid + i - 1];
     \State i++
   \EndWhile
   
   \State
-  \State suffix $\gets$ $I$\textsubscript{3x3}
+  \State sufijo $\gets$ $I$\textsubscript{3x3}
   \State
   
   \State i $\gets$ 1
   \While {$i$ $\leq$ l \textbf{and} mid - i $\geq$ start}
-    \State suffix $\gets$ suffix * matrices[mid - i]
-    \If {suffix * prefix[l - i] = m}
+    \State sufijo $\gets$ sufijo * matrices[mid - i]
+    \If {sufijo * prefijo[l - i] = m}
       \State res $\gets$ true
     \EndIf
     \State i++
