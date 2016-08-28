@@ -3,17 +3,28 @@
 \subsection{Enunciado}
 El enunciado nos pide, dada una arreglo de tamaño N de matrices de 3x3 , un a matriz de 3x3 M y un numero L, decidir
 si existe un subarreglo de largo L que al multiplicarlo nos de M.
-Ademas todas las matrices del problema tienen sus elementos en Z100007
+Ademas todas las matrices del problema tienen sus elementos en $\mathbb{Z}$\textsubscript{100007}
 
 \subsection{Formalizando}
-Reformulando, dado un arreglo a1...an de con elementos en Z3x3 100007, queremos ver si existen indices
-i, j tal que j - i == L y ai x ai+1 x .... x a j-1 == M
+Reformulando, dado un arreglo $A_1...A_n$ de con elementos en  $\mathbb{Z}^{3x3}_{100007}$, queremos ver si existen indices
+i, j tal que:
+\newline
+j - i = L, y 
+\newline
+$A_i$ x $A\textsubscript{i+1}$ x ... x $A\textsubscript{j-1}$ = M  
 
 \subsection{Algunas propiededades}
 Lo primero que debemos recordar para resolver este problema es que, la multiplicacion de matrices es asociativa.
 Como en muchos problemas en la computación, vamos a querer resolver ''subproblemas''
 que nos ayuden a resolver el problema original. Así, nos será útil saber que si encontramos dos subarreglos tales que:
-ai x ai+1 ... x ak = T1 y ak+1 x ... x aj = T2 y T1 * T2 = M, donde i y j
+\newline
+$A_i$ x $A_{i+1}$ x ... x $A_k$ = $T1$, y
+\newline
+$A_{k+1}$ x ... x $A_j$ = $T2$, y 
+\newline
+$T1 * T2 = M$
+\newline
+donde i y j
 respetan lo mencionado en el punto anterior..
 encontramos lo que buscabamos.
 \newline
@@ -27,7 +38,11 @@ Notamos que si al arreglo original lo dividimos, entonces se pueden dar los sigu
 \item No hay subarreglo ganador, asi que la respuesta seria ''NO''.
 \end{itemize}
 
-\includegraphics{img/subarrays-casos.jpg}
+\begin{figure}
+  \centering
+    \includegraphics[scale=3]{img/subarrays-casos.jpg}
+  \caption {Casos posibles de un array ganador. Tomado prestado de Cormen et al.\cite{cormen_algo}}
+\end{figure}
 
 Facilmente podemos ver que si resolvemos el tercer caso, es decir, cuando un subarreglo
 ganador esta parcialmente contenido en cada mitad, podriamos dar un algoritmo
@@ -42,7 +57,13 @@ Para el algoritmo que vamos a realizar, hay que tener en cuenta que si utilizamo
 sufijo de tamaño i, solo debemos probar con un prefijo de tamaño L - i, pues es el unico prefijo
 que nos puede dar el tamaño L en la concatenación.
 
-\includegraphics{img/subarrays-crossmid.jpg}
+
+
+\begin{figure}
+  \centering
+    \includegraphics[scale=3]{img/subarrays-crossmid.jpg}
+  \caption {Caso 3. Tomado prestado de Cormen et al.\cite{cormen_algo}}
+\end{figure}
 
 En una pasada lineal, podemos precomputar todos los prefijos (el resultado de su multiplicacion),
 y los guardamos en un arreglo prefijo[i], que almacena el resultado del prefijo de tamaño i.
@@ -51,7 +72,9 @@ En otra pasada lineal, vamos computando el resultado de multiplicar todo un sufi
 el tamaño del sufijo cada iteracion. Asi, si tenemos el sufijo de tamaño i, chequeamos si
 la multiplicacion con el prefijo de tamaño L - i nos da M, es decir:
 \newline
-$sufijo * prefijo[L - i] = M$
+\newline
+sufijo * prefijo[L - i] = M
+\newline
 \newline
 Chequeando con todos los sufijos de tamaño menor a L, resolvemos la etapa de ''Conquista'' de nuestro
 algoritmo.
@@ -118,7 +141,19 @@ Dado el algoritmo recursivo que propusimos antes, su ecuación de recurrencia es
    \end{cases}
  \]
  Donde $f(n) \in \Theta(n)$, ya que resolvemos el mismo problema para dos instancias de la mitad de tamaño, y combinamos
-en $\Theta(n)$. Entonces, usando el Teorema Maestro[1] sabemos que
+en $\Theta(n)$. Entonces, usando el Teorema Maestro\cite{cormen_algo} sabemos que
 $T(n) \in \Theta(n\log{}n)$ que era la complejidad pedida.
 
 \subsection{Referencias}
+
+\begin{thebibliography}{9}
+
+\bibitem{cormen_algo}
+  Cormen, Thomas H. and Stein, Clifford and Rivest, Ronald L. and Leiserson, Charles E.,
+  \emph{Introduction to Algorithms},
+  McGraw-Hill Higher Education
+  2nd edition,
+  2001.
+
+\end{thebibliography}
+
