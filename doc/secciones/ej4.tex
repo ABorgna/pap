@@ -1,12 +1,12 @@
 \section{Ejercicio 4}
 
 \subsection{Enunciado}
-El enunciado nos pide, dada una arreglo de tamaño N de matrices de 3x3 , un a matriz de 3x3 M y un numero L, decidir
+El enunciado nos pide, dado un arreglo de tamaño N de matrices de 3x3, una matriz de 3x3 M y un número L, decidir
 si existe un subarreglo de largo L que al multiplicarlo nos de M.
-Ademas todas las matrices del problema tienen sus elementos en $\mathbb{Z}$\textsubscript{100007}
+Además todas las matrices del problema tienen sus elementos en $\mathbb{Z}$\textsubscript{100007}
 
 \subsection{Formalizando}
-Reformulando, dado un arreglo $A_1...A_n$ de con elementos en  $\mathbb{Z}^{3x3}_{100007}$, queremos ver si existen indices
+Reformulando, dado un arreglo $A_1...A_n$ con elementos en  $\mathbb{Z}^{3x3}_{100007}$, queremos ver si existen índices
 i, j tal que:
 \newline
 j - i = L, y 
@@ -14,18 +14,18 @@ j - i = L, y
 $A_i$ x $A\textsubscript{i+1}$ x ... x $A\textsubscript{j-1}$ = M  
 
 \subsection{Algunas propiededades}
-Lo primero que debemos recordar para resolver este problema es que, la multiplicacion de matrices es asociativa.
+Lo primero que debemos recordar para resolver este problema es que, la multiplicación de matrices es asociativa.
 Como en muchos problemas en la computación, vamos a querer resolver ''subproblemas''
 que nos ayuden a resolver el problema original. Así, nos será útil saber que si encontramos dos subarreglos tales que:
 \newline
-$A_i$ x $A_{i+1}$ x ... x $A_k$ = $T1$, y
+$A_i$ x $A_{i+1}$ x ... x $A_k$ = $T1$,
 \newline
 $A_{k+1}$ x ... x $A_j$ = $T2$, y 
 \newline
 $T1 * T2 = M$
 \newline
 donde i y j
-respetan lo mencionado en el punto anterior..
+respetan lo mencionado en el punto anterior, 
 encontramos lo que buscabamos.
 \newline
 Para ser más breves, denotemos como subarreglo \textbf{ganador} a un subarreglo que cumple las condiciones que buscamos.
@@ -35,7 +35,7 @@ Notamos que si al arreglo original lo dividimos, entonces se pueden dar los sigu
 \item Hay un subarreglo ganador totalmente contenido en la primer mitad.
 \item Hay un subarreglo ganador totalmente contenido en la segunda mitad.
 \item Hay un subarreglo ganador que esta parcialmente contenido en cada una de las mitades.
-\item No hay subarreglo ganador, asi que la respuesta seria ''NO''.
+\item No hay subarreglo ganador, así que la respuesta es ''NO''.
 \end{itemize}
 
 \begin{figure}
@@ -44,13 +44,13 @@ Notamos que si al arreglo original lo dividimos, entonces se pueden dar los sigu
   \caption {Casos posibles de un array ganador. Tomado prestado de Cormen et al.\cite{cormen_algo}}
 \end{figure}
 
-Facilmente podemos ver que si resolvemos el tercer caso, es decir, cuando un subarreglo
-ganador esta parcialmente contenido en cada mitad, podriamos dar un algoritmo
+Fácilmente podemos ver que si resolvemos el tercer caso, es decir, cuando un subarreglo
+ganador está parcialmente contenido en cada mitad, podríamos dar un algoritmo
 que utilice la técnica de ''Divide And Conquer'' para resolver el problema.
 
 \subsection{Prefijos y sufijos}
 Si dividimos un arreglo en dos mitades, y queremos buscar si existe un subarreglo ganador
-parcialmente contenido en cada mitad, entonces tendremos que buscar si algun subarreglo
+parcialmente contenido en cada mitad, entonces tendremos que buscar si algún subarreglo
 sufijo de la primer mitad, al concatenarse con un subarreglo prefijo de la segunda mitad,
 resulta ganador.
 Para el algoritmo que vamos a realizar, hay que tener en cuenta que si utilizamos un
@@ -65,11 +65,11 @@ que nos puede dar el tamaño L en la concatenación.
   \caption {Caso 3. Tomado prestado de Cormen et al.\cite{cormen_algo}}
 \end{figure}
 
-En una pasada lineal, podemos precomputar todos los prefijos (el resultado de su multiplicacion),
+En una pasada lineal, podemos precomputar todos los prefijos (el resultado de su multiplicación),
 y los guardamos en un arreglo prefijo[i], que almacena el resultado del prefijo de tamaño i.
 \newline
 En otra pasada lineal, vamos computando el resultado de multiplicar todo un sufijo, aumentando
-el tamaño del sufijo cada iteracion. Asi, si tenemos el sufijo de tamaño i, chequeamos si
+el tamaño del sufijo cada iteración. Así, si tenemos el sufijo de tamaño i, chequeamos si
 la multiplicacion con el prefijo de tamaño L - i nos da M, es decir:
 \newline
 \newline
@@ -140,11 +140,10 @@ Dado el algoritmo recursivo que propusimos antes, su ecuación de recurrencia es
       2 T(\frac{n}{2}) + f(n) & n \geq l \\ 
    \end{cases}
  \]
- Donde $f(n) \in \Theta(n)$, ya que resolvemos el mismo problema para dos instancias de la mitad de tamaño, y combinamos
+
+Donde $f(n) \in \Theta(n)$, ya que resolvemos el mismo problema para dos instancias de la mitad de tamaño, y combinamos
 en $\Theta(n)$. Entonces, usando el Teorema Maestro\cite{cormen_algo} sabemos que
 $T(n) \in \Theta(n\log{}n)$ que era la complejidad pedida.
-
-\subsection{Referencias}
 
 \begin{thebibliography}{9}
 
