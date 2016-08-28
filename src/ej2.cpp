@@ -34,7 +34,7 @@ int ponerEnFiestas(int mask, int* cacheMaximaDiversion, int* cacheDiversion, int
 	if(cacheMaximaDiversion[mask] != -INF) return cacheMaximaDiversion[mask]; //ya calculado, cómo poner a un subconjunto de amigas en fiestas de forma óptima es independiente de cómo agrupé las demás anteriormente
 	if(mask == 0) return 0; // ya puse a todas en fiestas
 	
-	int best = -INF;
+	int best = calcularDiversion(mask, cacheDiversion, diversion);
 
 	for (int i = mask; i != 0;i = mask & (i - 1)){
 		best = max(best, ponerEnFiestas(mask ^ i, cacheMaximaDiversion, cacheDiversion, diversion) + calcularDiversion(i, cacheDiversion, diversion));

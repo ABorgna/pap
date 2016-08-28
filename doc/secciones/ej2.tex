@@ -17,10 +17,12 @@ Notación: \#amigas = cantidad de bits 1 de la máscara de bits. \newline
 \subsection{Algoritmo}
 
 
-La idea para la resolución de este problema será básicamente probar todo. Es decir, probar todas las formas de agrupar las amigas en fiestas, calcular la suma de diversiones de ese conjunto de fiestas y quedarnos con el máximo. Para hacer esto vamos a utilizar una función recursiva que toma una máscara de bits de parámetro representando el conjunto de amigas que falta meter en fiestas como vimos previamente. Lo que queremos entonces es recorrer esta máscara y probar de meter entre 1 y \#amigas que haya en la máscara de amigas en una misma fiesta y sumarle a la diversión que teníamos la diversión de meter a esas amigas en una fiesta + la diversión de meter las amigas restantes. \newline
+La idea para la resolución de este problema será básicamente probar todo. Es decir, probar todas las formas de agrupar las amigas en fiestas, calcular la suma de diversiones de ese conjunto de fiestas y quedarnos con el máximo. Para hacer esto vamos a utilizar una función recursiva que toma una máscara de bits de parámetro representando el conjunto de amigas que falta meter en fiestas como vimos previamente. Lo que queremos entonces es recorrer esta máscara y probar de meter entre 1 y \#amigas que haya en la máscara de amigas en una misma fiesta y sumarle a la diversión que teníamos la diversión de meter a esas amigas en una fiesta + la diversión de meter las amigas restantes. Notar que siempre hago la recursión con instancias más chicas ya que siempre pongo al menos 1 amiga en 1 fiesta. \newline
 
 
 Cuando la máscara llegue a todos los bits 0 significa que ya metí a todas las amigas en fiestas, con lo cual es mi caso base en el que devuelvo 0, la diversión de una fiesta vacía. Para cada subconjunto de amigas restantes nos guardamos la diversión óptima de meter a esas amigas en fiestas, ya que cómo meter las que quedan de forma óptima es independiente de cómo metí al resto de las amigas en fiestas anteriormente. Con esto nos evitaremos recalcular las mismas instancias. Es como si tuviera un nuevo problema en la cual en vez de n amigas sólo tengo \#amigas y quiero resolver el mismo problema pero para ese conjunto de amigas.
+
+También puede verse como que dada la solución óptima de fiestas para todas las amigas, si sacara alguna fiesta entonces la solución de maximizar la diversión entre las amigas que no fueron a esa fiesta sería la misma solución que antes sin esa fiesta. Es decir, los subconjuntos de fiestas de la solución óptima son óptimos para las amigas que participan en esas fiestas. Esto se debe a que dentro de una fiesta, como las amigas de esa fiesta no están en ningún otra fiesta, la fiesta no afecta a las demás. Sólo importa la cantidad de fiestas y distribución de amigas entre ellas y no el orden en que se hacen.
 
 
 \subsection{Complejidad}
@@ -43,9 +45,9 @@ Con lo cual lo que nos queda ver es cómo iterar sólo sobre los subconjuntos de
 
 Este for comienza en la máscara y va recorriendo de mayor a menor, sobre las máscaras que representan los subconjuntos de mask, hasta llegar al conjunto vacío el cual no itera. \newline
 
-Para el cálculo de la dirversión de poner a un subconjunto de amigas en una misma fiesta, también se utiliza memorización. Como hay $2^{n}$ instancias y calculamos esta diversión en $O(n^{2})$, nos queda $O(2^{n}*n^{2} \subseteq 3^{n})$, con lo cual cumplimos con la complejidad requerida.
+Para el cálculo de la dirversión de poner a un subconjunto de amigas en una misma fiesta, también se utiliza memorización. Como hay $2^{n}$ instancias y calculamos esta diversión en $O(n^{2})$, nos queda $O(2^{n}*n^{2})$ $\subseteq O(3^{n})$ que es lo pedido, con lo cual cumplimos con la complejidad requerida.
 
-\section{Pseudocódigo}
+\subsection{Pseudocódigo}
 
 \begin{algorithmic}
 
@@ -60,7 +62,7 @@ Para el cálculo de la dirversión de poner a un subconjunto de amigas en una mi
     	\State \Return{0}
   	\EndIf	
 
-  \State maximaDiversion = - Infinito
+  \State maximaDiversion = calcularDiversion(máscara) \Comment{por ahora lo mejor es poner a todas en 1 sóla fiesta}
 
   \For{cada subconjunto de máscara}
   	\State restantes = máscara - subconjunto \Comment{voy a poner a las amigas del subconjunto en una misma fiesta asi que las saco de máscara} 
@@ -91,11 +93,11 @@ Para el cálculo de la dirversión de poner a un subconjunto de amigas en una mi
 
   	\For{cada amiga x del conjunto máscara}
   		\For{cada amiga y del conjunto máscara}
-  			\State diversion += diversion[x][y]
+  			\State diversion += diversion entre x e y
   		\EndFor
   	\EndFor
 
-  	\State diversion /= 2 \Comment{sumé todo 2 veces: [x][y] y [y][x]}
+  	\State diversion /= 2 \Comment{sumé todo 2 veces: x,y e y,x}
 
   	\State guardar diversion como ya calculado para la máscara
 
