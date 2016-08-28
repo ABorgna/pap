@@ -17,25 +17,25 @@ bool haySubsecuencia(int start, int end, vector<Matriz>& matrices, Matriz& m, in
   
   int mid = (start + end) / 2;
   
-  vector<Matriz> prefix(l+1);
-  prefix[0] = id();
+  vector<Matriz> prefijo(l+1);
+  prefijo[0] = id();
   
   int i = 1;
   while(i <= l and mid + i - 1 < end){
-    prefix[i] = prefix[i - 1] * matrices[mid + i - 1];
+    prefijo[i] = prefijo[i - 1] * matrices[mid + i - 1];
     i++;
   }
 
-  if (prefix[l] == m){
+  if (prefijo[l] == m){
     res = true;
   }
   
-  Matriz suffix = id();
+  Matriz sufijo = id();
   
   i = 1;
   while(i <= l and mid - i >= start){
-    suffix *= matrices[mid - i];
-    if (suffix * prefix[l-i] == m){
+    sufijo *= matrices[mid - i];
+    if (sufijo * prefijo[l-i] == m){
       res = true;
     }
     i++;
