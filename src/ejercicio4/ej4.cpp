@@ -20,8 +20,10 @@ bool haySubsecuencia(int start, int end, vector<Matriz>& matrices, Matriz& m, in
   vector<Matriz> prefix(l+1);
   prefix[0] = id();
   
-  for(int i = 1; i <= l and mid + i - 1 < end; i++){
+  int i = 1;
+  while(i <= l and mid + i - 1 < end){
     prefix[i] = prefix[i - 1] * matrices[mid + i - 1];
+    i++;
   }
 
   if (prefix[l] == m){
@@ -30,11 +32,13 @@ bool haySubsecuencia(int start, int end, vector<Matriz>& matrices, Matriz& m, in
   
   Matriz suffix = id();
   
-  for(int i = 1; i <= l and mid - i >= start; i++){
+  i = 1;
+  while(i <= l and mid - i >= start){
     suffix *= matrices[mid - i];
     if (suffix * prefix[l-i] == m){
       res = true;
     }
+    i++;
   }
 
   
