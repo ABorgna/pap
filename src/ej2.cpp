@@ -10,22 +10,16 @@ int calcularDiversion(int mask, int* cacheDiversion, int** diversion){
 	
 	if(cacheDiversion[mask] != -INF) return cacheDiversion[mask]; // ya calculado	
 
-	int fun = 0, 
-		pos1 = 0;
+	int fun = 0;
 
-	while(mask != 0){
-		if(mask & 1){
-			int pos2 = pos1 + 1;
-			for(int mask2 = mask >> 1; mask2 != 0; mask2 >>= 1){
-				if(mask2 & 1){
-					fun += diversion[pos1][pos2];
-				}
-				pos2++;
+	for(int x = 0;x < ceil(log2(mask));x++){ // por cada bit de la máscara
+		for(int y = x+1;y < ceil(log2(mask));y++){
+			if(mask & (1 << x) and mask & (1 << y)){ // si los dos estaban en uno
+				fun += diversion[x][y];
 			}
 		}
-		mask >>= 1;
-		pos1++;
 	}	
+
 
 	cacheDiversion[mask] = fun;
 
