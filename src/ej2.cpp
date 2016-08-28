@@ -13,7 +13,7 @@ int calcularDiversion(int mask, int* cacheDiversion, int** diversion){
 	int fun = 0, 
 		pos1 = 0;
 
-	for(;mask != 0;mask >>= 1){
+	while(mask != 0){
 		if(mask & 1){
 			int pos2 = pos1 + 1;
 			for(int mask2 = mask >> 1; mask2 != 0; mask2 >>= 1){
@@ -23,10 +23,13 @@ int calcularDiversion(int mask, int* cacheDiversion, int** diversion){
 				pos2++;
 			}
 		}
+		mask >>= 1;
 		pos1++;
 	}	
 
-	return cacheDiversion[mask] = fun;
+	cacheDiversion[mask] = fun;
+
+	return fun;
 }
 
 //en la mascara, cada bit representa si falta o no poner a la i-esima amiga en alguna fiesta 
