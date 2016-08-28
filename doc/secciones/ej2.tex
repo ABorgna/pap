@@ -1,7 +1,106 @@
 \section{Ejercicio 2}
 
 
-\begin{lstlisting} [caption={asd},label=gate-struct]
-    codigo
-\end{lstlisting}
+En este problema nos dicen que Lisa quiere hacer de 1 a n fiestas de cumpleaños tal que cada una de sus amigas esté exactamente presente en una de ellas. Como nos dan una matriz indicando por cada par de amigas la diversión que se produce en una fiesta si están en la misma fiesta, el objetivo del problema es indicar la máxima diversión que se puede lograr agrupando a las amigas en fiestas de forma óptima para que la suma de diversión sea máxima. \newline
 
+
+Notar que dos amigas pueden sumar diversión negativa a la fiesta si están juntas y la diversión total que queremos maximizar es la suma de diversión de todas las fiestas que decida hacer Lisa. Lisa además está presente en todas ellas y no afecta la diversión de la fiesta.
+
+\subsection{Modelando el problema}
+
+Para este problema, vamos a trabajar con conjunto de amigas. En particular, representaremos en el conjunto las amigas que faltan meter en fiestas. Para esto, utilizaremos una máscara de bits indicando con el i-ésimo bit si falta (1) o no (0) meter a la i-ésima amiga en una fiesta. Dada las restricciones de que son n amigas y queremos meter todas en alguna fiesta pero no en más de una, esto nos servirá para modelar lo que queremos. \newline
+
+Las cosas que asumiremos son sólamente las restricciones del problema: las diversiones son enteros, se quiere meter a todas las amigas en exactamente una fiesta y la diversión de la amiga x con la amiga y es la misma que la amiga y con la amiga x. Además por detalles de implementación se espera que la respuesta entre en un entero de 32 bits y que la cantidad de amigas entre en memoria (se usará $2^{cantidad de amigas}$ memoria).
+
+Notación: \#amigas = cantidad de bits 1 de la máscara de bits. \newline
+
+\subsection{Algoritmo}
+
+
+La idea para la resolución de este problema será básicamente probar todo. Es decir, probar todas las formas de agrupar las amigas en fiestas, calcular la suma de diversiones de ese conjunto de fiestas y quedarnos con el máximo. Para hacer esto vamos a utilizar una función recursiva que toma una máscara de bits de parámetro representando el conjunto de amigas que falta meter en fiestas como vimos previamente. Lo que queremos entonces es recorrer esta máscara y probar de meter entre 1 y \#amigas que haya en la máscara de amigas en una misma fiesta y sumarle a la diversión que teníamos la diversión de meter a esas amigas en una fiesta + la diversión de meter las amigas restantes. \newline
+
+
+Cuando la máscara llegue a todos los bits 0 significa que ya metí a todas las amigas en fiestas, con lo cual es mi caso base en el que devuelvo 0, la diversión de una fiesta vacía. Para cada subconjunto de amigas restantes nos guardamos la diversión óptima de meter a esas amigas en fiestas, ya que cómo meter las que quedan de forma óptima es independiente de cómo metí al resto de las amigas en fiestas anteriormente. Con esto nos evitaremos recalcular las mismas instancias. Es como si tuviera un nuevo problema en la cual en vez de n amigas sólo tengo \#amigas y quiero resolver el mismo problema pero para ese conjunto de amigas.
+
+
+\subsection{Complejidad}
+
+Dado un conjunto, la cantidad de subconjuntos es $2^{n}$. La cantidad de subconjuntos de K elementos de un conjunto de N elementos es $\binom{N}{K}$ ya que puede pensarse como la cantidad de formas de elegir a K elementos que irán en el subconjunto. Esto equivale a \[ \dfrac{N!}{K! * (N - K)!} \] \newline
+
+
+La complejidad de la recursión iterando siempre por los subconjuntos daría entonces \newline $\dfrac{N!}{K_{0}! * (N - K_{0})!} * \dfrac{(N - K_{0})!}{K_{1}! * (N - K_{0} - K_{1})!} ... * \dfrac{(N - K_{0} - K_{1} - ... K_{M-1})!}{K_{M}! * (N - K_{0} - K_{1} - ... K_{M})!} $ tal que $K_{i} >= 1 \forall{0 <= i <= M}$ y $\sum_{i=0}^{M} K_{i} = N$  \newline
+
+
+Pero no estamos teniendo en cuenta que por ejemplo tomar el primer elemento y luego el segundo es lo mismo que tomar el segundo y luego el primero o tomar los 2 primeros. Esto es porque como ya dijimos, no nos importa desde donde venimos, sólo nos importa el subconjunto actual y lo que calculamos es la forma óptima sobre ese subconjunto. Con hacer la memorización, en realidad sólo calculamos cada subconjunto 1 sola vez. \newline
+
+
+Es decir que recorrer los subconjuntos de la máscara lo vamos a hacer sólo una vez por cada uno de los $2^{n}$ subconjuntos. Si para recorrer los subconjuntos de una máscara hiciéramos un for de $i = 1$ a $2^{n}$ y nos fijamos si efectivamente es un subconjunto ($i \& mask == i$), esto nos daría $2^{n} * 2^{n} = 4^{n}$. Pero la complejidad requerida era $3^{n}$, con lo cual nos estaría faltando alguna optimización. \newline
+
+
+Sin cambiar de algoritmo (probar todo), lo que se podría mejorar es que en vez de que el for siempre vaya de 1 a $2^{n}$ y fijarnos si efectivamente es un subconjunto de la máscara, iterar directamente sobre los subconjuntos de la máscara. Como habíamos dicho que la cantidad de subconjuntos de K elementos de un conjunto de N elementos es $\binom{N}{K}$ y la cantidad de subconjuntos de un conjunto de N elementos es $2^{n}$, nos quedaría la complejidad de $O(\sum_{i=0}^{N} \binom{N}{K} 2^{i} )$. Como vimos en clase, esto da $O(3^{n})$ (sale por binomio de Newton). \newline
+
+Con lo cual lo que nos queda ver es cómo iterar sólo sobre los subconjuntos de un conjunto representado por una máscara de bits. Como vimos en clase, la magia de esto es  \newline for(int i=mask; i != 0; i = mask\&(i-1))  \newline
+
+Este for comienza en la máscara y va recorriendo de mayor a menor, sobre las máscaras que representan los subconjuntos de mask, hasta llegar al conjunto vacío el cual no itera. \newline
+
+Para el cálculo de la dirversión de poner a un subconjunto de amigas en una misma fiesta, también se utiliza memorización. Como hay $2^{n}$ instancias y calculamos esta diversión en $O(n^{2})$, nos queda $O(2^{n}*n^{2} \subseteq 3^{n})$, con lo cual cumplimos con la complejidad requerida.
+
+\section{Pseudocódigo}
+
+\begin{algorithmic}
+
+
+\Function{ponerEnFiestas}{máscara}
+
+	\If {ya lo calculé}
+    	\State \Return{calculado}
+  	\EndIf		
+
+	\If {no quedan amigas restantes en la máscara}
+    	\State \Return{0}
+  	\EndIf	
+
+  \State maximaDiversion = - Infinito
+
+  \For{cada subconjunto de máscara}
+  	\State restantes = máscara - subconjunto \Comment{voy a poner a las amigas del subconjunto en una misma fiesta asi que las saco de máscara} 
+  	\State maximaDiversion = maximo(maximaDiversion, ponerEnFiestas(restantes) + calcularDiversion(subconjunto))
+  \EndFor
+
+  \State guardar maximaDiversion como ya calculado para la máscara
+
+ \State \Return{devolver maximaDiversion}
+
+\EndFunction
+
+\end{algorithmic}
+
+\vspace{5mm}
+
+
+\begin{algorithmic}
+
+
+\Function{calcularDiversion}{máscara}
+
+	\If {ya lo calculé}
+    	\State \Return{calculado}
+  	\EndIf		
+
+  	\State diversion = 0
+
+  	\For{cada amiga x del conjunto máscara}
+  		\For{cada amiga y del conjunto máscara}
+  			\State diversion += diversion[x][y]
+  		\EndFor
+  	\EndFor
+
+  	\State diversion /= 2 \Comment{sumé todo 2 veces: [x][y] y [y][x]}
+
+  	\State guardar diversion como ya calculado para la máscara
+
+ 	\State \Return{devolver diversion}
+
+\EndFunction
+
+\end{algorithmic}
