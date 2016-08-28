@@ -69,7 +69,41 @@ algoritmo.
   \If{$j - i == 1$}
     \State \Return {matrices[i] == M}
   \EndIf
-
+    
+  \State 
+  
+  \State res $\gets$ false
+  \State mid $\gets$ (start + end) / 2
+  \State prefix[l+1] $\gets$ \{...\}
+  \State prefix[0] $\gets$ $I$\textsubscript{3x3}
+  
+  \State 
+  
+  \State i $\gets$ 0
+  \While{i $\leq$ l \textbf{and} mid + i - 1 $\textless$ end}
+    \State prefix[i] $\gets$ prefix[i - 1] * matrices[mid + i - 1];
+    \State i++
+  \EndWhile
+  
+  \State
+  \State suffix $\gets$ $I$\textsubscript{3x3}
+  \State
+  
+  \State i $\gets$ 1
+  \While {$i$ $\leq$ l \textbf{and} mid - i $\geq$ start}
+    \State suffix $\gets$ suffix * matrices[mid - i]
+    \If {suffix * prefix[l - i] = m}
+      \State res $\gets$ true
+    \EndIf
+    \State i++
+  \EndWhile
+  
+  \State
+  
+  \State res $\gets$ res \textbf{or} haySubsecuencia(start, mid, matrices, m, l)
+  \State res $\gets$ res \textbf{or} haySubsecuencia(mid, end, matrices, m, l);
+  
+  
 \EndFunction
 
 \end{algorithmic}
@@ -78,12 +112,13 @@ algoritmo.
 \subsection{Complejidad}
 Dado el algoritmo recursivo que propusimos antes, su ecuación de recurrencia es:
 \newline
-$T(n) = 2 * T(n/2 ) + \Theta(n)$
-\newline
-Ya que resolvemos el mismo problema para dos instancias de la mitad de tamaño, y combinamos
+ \[ T(n) =  \begin{cases} 
+      \mathcal{O}(1) & n < l \\
+      2 T(\frac{n}{2}) + f(n) & n \geq l \\ 
+   \end{cases}
+ \]
+ Donde $f(n) \in \Theta(n)$, ya que resolvemos el mismo problema para dos instancias de la mitad de tamaño, y combinamos
 en $\Theta(n)$. Entonces, usando el Teorema Maestro[1] sabemos que
-$T(n) \in \mathcal{O}(n\log{}n)$ que era la complejidad pedida.
-\textbf{TODO: Le pongo theta n log n o O n log n, chequear Teo maestro}
-
+$T(n) \in \Theta(n\log{}n)$ que era la complejidad pedida.
 
 \subsection{Referencias}
