@@ -13,7 +13,7 @@ j - i = L, y
 \newline
 $A_i$ x $A\textsubscript{i+1}$ x ... x $A\textsubscript{j-1}$ = M  
 
-\subsection{Algunas propiededades}
+\subsection{Algunas propiedades}
 Lo primero que debemos recordar para resolver este problema es que, la multiplicación de matrices es asociativa.
 Como en muchos problemas en la computación, vamos a querer resolver ''subproblemas''
 que nos ayuden a resolver el problema original. Así, nos será útil saber que si encontramos dos subarreglos tales que:
@@ -26,7 +26,7 @@ $T1 * T2 = M$
 \newline
 donde i y j
 respetan lo mencionado en el punto anterior, 
-encontramos lo que buscabamos.
+encontramos lo que buscábamos.
 \newline
 Para ser más breves, denotemos como subarreglo \textbf{ganador} a un subarreglo que cumple las condiciones que buscamos.
 Con la idea en mente de buscar subproblemas para resolver el problema original, dividamos el arreglo en dos.
@@ -54,7 +54,7 @@ parcialmente contenido en cada mitad, entonces tendremos que buscar si algún su
 sufijo de la primer mitad, al concatenarse con un subarreglo prefijo de la segunda mitad,
 resulta ganador.
 Para el algoritmo que vamos a realizar, hay que tener en cuenta que si utilizamos un
-sufijo de tamaño i, solo debemos probar con un prefijo de tamaño L - i, pues es el unico prefijo
+sufijo de tamaño i, solo debemos probar con un prefijo de tamaño L - i, pues es el único prefijo
 que nos puede dar el tamaño L en la concatenación.
 
 
@@ -70,7 +70,7 @@ y los guardamos en un arreglo prefijo[i], que almacena el resultado del prefijo 
 \newline
 En otra pasada lineal, vamos computando el resultado de multiplicar todo un sufijo, aumentando
 el tamaño del sufijo cada iteración. Así, si tenemos el sufijo de tamaño i, chequeamos si
-la multiplicacion con el prefijo de tamaño L - i nos da M, es decir:
+la multiplicación con el prefijo de tamaño L - i nos da M, es decir:
 \newline
 \newline
 sufijo * prefijo[L - i] = M

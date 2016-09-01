@@ -10,7 +10,7 @@ Notar que dos amigas pueden sumar diversión negativa a la fiesta si están junt
 
 Para este problema, vamos a trabajar con conjunto de amigas. En particular, representaremos en el conjunto las amigas que faltan meter en fiestas. Para esto, utilizaremos una máscara de bits indicando con el i-ésimo bit si falta (1) o no (0) meter a la i-ésima amiga en una fiesta. Dada las restricciones de que son n amigas y queremos meter todas en alguna fiesta pero no en más de una, esto nos servirá para modelar lo que queremos. \newline
 
-Las cosas que asumiremos son sólamente las restricciones del problema: las diversiones son enteros, se quiere meter a todas las amigas en exactamente una fiesta y la diversión de la amiga x con la amiga y es la misma que la amiga y con la amiga x. Además por detalles de implementación se espera que la respuesta entre en un entero de 32 bits y que la cantidad de amigas entre en memoria (se usará $2^{cantidad de amigas}$ memoria).
+Las cosas que asumiremos son solamente las restricciones del problema: las diversiones son enteros, se quiere meter a todas las amigas en exactamente una fiesta y la diversión de la amiga x con la amiga y es la misma que la amiga y con la amiga x. Además por detalles de implementación se espera que la respuesta entre en un entero de 32 bits y que la cantidad de amigas entre en memoria (se usará $2^{cantidad de amigas}$ memoria).
 
 Notación: \#amigas = cantidad de bits 1 de la máscara de bits. \newline
 
@@ -45,7 +45,7 @@ Con lo cual lo que nos queda ver es cómo iterar sólo sobre los subconjuntos de
 
 Este for comienza en la máscara y va recorriendo de mayor a menor, sobre las máscaras que representan los subconjuntos de mask, hasta llegar al conjunto vacío el cual no itera. \newline
 
-Para el cálculo de la dirversión de poner a un subconjunto de amigas en una misma fiesta, también se utiliza memorización. Como hay $2^{n}$ instancias y calculamos esta diversión en $O(n^{2})$, nos queda $O(2^{n}*n^{2})$ $\subseteq O(3^{n})$ que es lo pedido, con lo cual cumplimos con la complejidad requerida.
+Para el cálculo de la diversión de poner a un subconjunto de amigas en una misma fiesta, también se utiliza memorización. Como hay $2^{n}$ instancias y calculamos esta diversión en $O(n^{2})$, nos queda $O(2^{n}*n^{2})$ $\subseteq O(3^{n})$ que es lo pedido, con lo cual cumplimos con la complejidad requerida.
 
 \subsection{Pseudocódigo}
 
