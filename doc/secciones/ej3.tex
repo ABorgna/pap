@@ -1,13 +1,47 @@
 \section{Ejercicio 3}
 
-El ejercicio consiste en encontrar un subarray que maximice la suma de sus elementos. Esto es lo que se conoce como \textbf{Maximum Subarray Problem}.
+El ejercicio consiste en encontrar la máxima suma de elementos contiguos de un array.
+Esto es equivalente a encontrar un subarray que maximice la suma de sus elementos,
+lo que se conoce como \textbf{Maximum Subarray Problem}.
 
-El algoritmo recorre los prefijos del array calculando la suma máxima dentro del subarray y la suma máxima entre los sufijos del que estamos viendo.
 
-Para el caso base, el prefijo vacío, ambos valores son 0.
+Formalmente, dado un array $A = (a_0 \ldots a_{n-1})$ queremos encontrar el máximo de
+$$
+\sum_{s=i}^{j-1} a_s \;\;\;\; \text{con} \; 0 \leq i \leq j \leq n
+$$
 
-Para el caso $n+1$ el sufijo máximo es el prefijo máximo del caso $n$ mas el elemento $n+1$, o el array vacío. \\
-Si el array máximo contiene al elemento $n$ será el sufijo calculado, sino será el array máximo del caso $n$.
 
-El código por lo tanto simplemente mantiene dos variables con la suma del subarray y del sufijo máximos y mientras lee los $n$ elementos de la entrada calcula los máximos descriptos en \bigo(1), resultando en una complejidad total de \bigo(1).
+\subsection{Algoritmo}
+
+La idea es recorrer los prefijos $A_k = (a_0 \ldots a_{k-1})$ en orden de $k$ creciente
+y para cada uno calcular el máximo de la suma dentro del array, $res_k$,
+y la suma máxima entre los subarrays que terminen en el elemento $k$ o el subarray vacío, $border_k$.
+
+Para el caso $k=0$, el array vacío, ambos valores son 0.
+
+Para el caso $k+1$, $res_{k+1}$ es el el máximo entre $res_k$ o el resultado
+de sumarle $a_k$ a $border_k$, el máximo anterior usando hasta el último elemento.
+$border_{k+1}$ será el máximo entre 0 (pues siempre podemos usar el array vacío) o $border_k + a_k$.
+
+Como $A = A_n$, nuestro resultado final será $res_n$.
+
+\subsection{Pseudocódigo}
+
+\begin{algorithmic}
+
+\Function{sumaMaxima}{$array$}
+    \State $res \gets 0$
+    \State $border \gets 0$
+    \For{$x$ in $array$}
+        \State $border \gets max(0, border+x)$
+        \State $res \gets max(res, border)$
+    \EndFor
+    \State \Return{$res$}
+\EndFunction
+
+\end{algorithmic}
+
+\subsection{Complejidad}
+
+El recorre una vez el array calculando los máximos descriptos en \bigo(1), resultando en una complejidad total de \bigo($n$).
 
