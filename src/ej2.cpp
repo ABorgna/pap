@@ -68,6 +68,12 @@ int main () {
 
 	ponerEnFiestas((1 << amigas) - 1, cacheMaximaDiversion, cacheDiversion, diversion);
 
+	for(int i = 0; i < amigas; i++){
+		free(diversion[i]);
+	}
+
+	free(diversion);	
+
 	cout << cacheMaximaDiversion[(1 << amigas) - 1] << endl;
 
 	return 0;
