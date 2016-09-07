@@ -67,8 +67,8 @@
     \let\ifsetuperror\iffalse
     \ifx\Materia\relax\se\errhelp={Te olvidaste de proveer una \materia{}.}\fi
     \ifx\Titulo\relax\se\errhelp={Te olvidaste de proveer un \titulo{}.}\fi
-    \edef\mlist{\the\intlist}\ifx\mlist\empty\se%
-    \errhelp={Tenes que proveer al menos un \integrante{nombre}{lu}{email}.}\fi
+    %\edef\mlist{\the\intlist}\ifx\mlist\empty\se%
+    %\errhelp={Tenes que proveer al menos un \integrante{nombre}{lu}{email}.}\fi
     \expandafter\ifsetuperror}
 
 
@@ -90,7 +90,7 @@
     {\Large \Subtitulo}
     \par\vspace{\stretch{3}}
     \ifx\Grupo\relax\else\textbf{\Grupo}\par\bigskip\fi
-    \tablaints
+    %\tablaints
     \end{center}
     \vspace*{\stretch{3}}
     \newpage}
@@ -113,11 +113,11 @@
     {\noindent\large\Fecha \hspace*\fill \Materia} \\
     \ifx\Submateria\relax\else{\noindent \hspace*\fill \Submateria}\fi%
 
-    \medskip%
-    \begin{center}
-        \ifx\Grupo\relax\else\textbf{\Grupo}\par\bigskip\fi
-        \tablaints
-    \end{center}%
+    %\medskip%
+    %\begin{center}
+        %\ifx\Grupo\relax\else\textbf{\Grupo}\par\bigskip\fi
+        %\tablaints
+    %\end{center}%
     \vfill%
 %
     \begin{minipage}[t]{\textwidth}

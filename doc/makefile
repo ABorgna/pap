@@ -3,11 +3,14 @@ targets = informe.pdf
 includes = secciones/ej1.tex secciones/ej2.tex secciones/ej3.tex secciones/ej4.tex
 libs =
 
-all: $(targets)
+all: groupNumber $(targets)
 
 $(targets) : %.pdf : %.tex $(libs) $(includes)
 	pdflatex $*
 	pdflatex $*
+
+groupNumber:
+	make -C .. groupNumber
 
 clean:
 	@rm $(targets) 2>/dev/null || true

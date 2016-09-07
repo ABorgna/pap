@@ -3,19 +3,28 @@ GCC=g++
 CFLAGS= -O0 -Wall -Wextra -ggdb -std=c++11
 VALGRIND=valgrind --leak-check=full
 
-DEPEND = makefile
+# Variables para la entrega
+GROUP = 12
+SEED = 64861003733618093
+
 
 EJERCICIOS = ej1 ej2 ej3 ejercicio4/ej4
 
 SOURCES = $(EJERCICIOS:%=src/%.cpp)
 BINARIOS = $(EJERCICIOS:%=$(OUT_DIR)/%)
 
+GENERATOR = groupNumberGenerator
+GENERATOR_BIN = $(GENERATOR:%=$(OUT_DIR)/%)
+GENERATOR_SRC = $(GENERATOR:%=tools/%.cpp)
+
+GROUP_NUMBER_OUT = doc/groupNumber
+
 OUT_DIR = build
 EJ4_OUT_DIR = build/ejercicio4
 
 ENTREGABLE=entregable.tar.gz
 
-.PHONY: all $(EJERCICIOS) clean
+.PHONY: all $(EJERCICIOS) clean groupNumber informe
 
 all: $(OUT_DIR) $(EJ4_OUT_DIR) $(EJERCICIOS)
 
@@ -26,7 +35,10 @@ $(ENTREGABLE): informe
 
 $(EJERCICIOS) : % : build/%
 
-$(BINARIOS): $(OUT_DIR)/% : src/%.cpp $(DEPEND)
+$(BINARIOS): $(OUT_DIR)/% : src/%.cpp
+	$(GCC) $(CFLAGS) $< -o $@
+
+$(GENERATOR_BIN): $(GENERATOR_SRC)
 	$(GCC) $(CFLAGS) $< -o $@
 
 %.o: %.cpp %.h
@@ -35,7 +47,12 @@ $(BINARIOS): $(OUT_DIR)/% : src/%.cpp $(DEPEND)
 $(OUT_DIR) $(EJ4_OUT_DIR):
 	mkdir -p $@
 
-informe:
+$(GROUP_NUMBER_OUT): $(GENERATOR_BIN)
+	echo $(GROUP) $(SEED) | $^ >/dev/null 2>$@
+
+groupNumber: $(GROUP_NUMBER_OUT)
+
+informe: $(GROUP_NUMBER_OUT)
 	make -C doc/
 
 help:
