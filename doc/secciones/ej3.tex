@@ -19,9 +19,11 @@ y la suma máxima entre los subarrays que terminen en el elemento $k$ o el subar
 
 Para el caso $k=0$, el array vacío, ambos valores son 0.
 
-Para el caso $k+1$, $res_{k+1}$ es el el máximo entre $res_k$ o el resultado
-de sumarle $a_k$ a $border_k$, el máximo anterior usando hasta el último elemento.
-$border_{k+1}$ será el máximo entre 0 (pues siempre podemos usar el array vacío) o $border_k + a_k$.
+Para el caso $k+1$, podemos suponer que $res_k$ y $border_k$ tienen los máximos buscados.
+
+$res_{k+1}$ puede usar o no el elemento $a_k$. Si no lo usa, $res_{k+1}$ es la suma máxima dentro del array $A_k$, esto es, $res_{k+1} = res_k$. Si lo usa, $res_{k+1}$ es $a_k$ sumado a la mejor suma posible entre los subarrays sufijos de $A_k$, que ya tenemos calculado como $border_k$. El valor de $res_{k+1}$ será por lo tanto el máximo entre $res_k$ y $a_k + border_k$.
+
+Por otro lado, $border_{k+1}$ puede también usar o no $a_k$. Si no lo usa será $0$, la suma del array vacío. Si lo usa tomará como valor la suma de $a_k$ y la mejor suma posible entre los subarrays sufijos de $A_k$, que nuevamente es $border_k$. Finalmente, $border_{k+1}$ será el máximo entre $0$ y $a_k + border_k$.
 
 Como $A = A_n$, nuestro resultado final será $res_n$.
 
@@ -40,6 +42,8 @@ Como $A = A_n$, nuestro resultado final será $res_n$.
 \EndFunction
 
 \end{algorithmic}
+
+\subsection{Correctitud}
 
 \subsection{Complejidad}
 
