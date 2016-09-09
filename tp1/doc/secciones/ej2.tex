@@ -29,10 +29,15 @@ También puede verse como que dada la solución óptima de fiestas para todas la
 
 Dado un conjunto, la cantidad de subconjuntos es $2^{n}$. La cantidad de subconjuntos de K elementos de un conjunto de N elementos es $\binom{N}{K}$ ya que puede pensarse como la cantidad de formas de elegir a K elementos que irán en el subconjunto. Esto equivale a \[ \dfrac{N!}{K! * (N - K)!} \] \newline
 
+A priori, si realizamos esto, elegiriamos por cada k de 1 a n, todos los posibles conjuntos de tamaño k, y resolveriamos el mismo problema para una instancia de n - k elementos.
+La ecuación de recurrencia seria entonces:
+\[ T(n) =  \begin{cases} 
+      \mathcal{O}(1) & n = 0 \\
+      \sum_{k=1}^{n} [ {n \choose k} * T(n - k)] & n \neq 1 \\ 
+   \end{cases}
+ \]
 
-La complejidad de la recursión iterando siempre por los subconjuntos daría entonces \newline $\dfrac{N!}{K_{0}! * (N - K_{0})!} * \dfrac{(N - K_{0})!}{K_{1}! * (N - K_{0} - K_{1})!} ... * \dfrac{(N - K_{0} - K_{1} - ... K_{M-1})!}{K_{M}! * (N - K_{0} - K_{1} - ... K_{M})!} $ tal que $K_{i} >= 1 \forall{0 <= i <= M}$ y $\sum_{i=0}^{M} K_{i} = N$  \newline
-
-
+Aunque no lo acotamos formalmente, podemos ver que la complejidad de esta forma seria exponencial
 Pero no estamos teniendo en cuenta que por ejemplo tomar el primer elemento y luego el segundo es lo mismo que tomar el segundo y luego el primero o tomar los 2 primeros. Esto es porque como ya dijimos, no nos importa desde donde venimos, sólo nos importa el subconjunto actual y lo que calculamos es la forma óptima sobre ese subconjunto. Con hacer la memorización, en realidad sólo calculamos cada subconjunto 1 sola vez. \newline
 
 
