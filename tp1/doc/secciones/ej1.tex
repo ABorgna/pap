@@ -8,11 +8,15 @@ Podemos notar que es una variación del problema clásico conocido como \textbf{
 El algoritmo consiste en dividir la entrada en dos subgrupos de tamaño $\lceil n/2 \rceil$ y $\lfloor n/2 \rfloor$.
 Para el primer subgrupo calcular todas las posibles sumas para todos los subconjuntos posibles ($2^{n/2}$) y guardas las que sean menores a P en un conjunto que permita la consulta de la existencia de un elemento o bien que nos devuelva el primero más chico al buscado.
 
-Para el segundo subgrupo, nuevamente calcular todas las posibles sumas para todos los subconjuntos posibles y en caso de ser menor estricto a P, buscar en la estructura anterior el primer número que sea menor o igual a (P - la suma acumulada). Ese número que nos devuelva sumado a la suma que nos dio el subconjunto calculado son una posible respuesta. 
+Para el segundo subgrupo, nuevamente calcular todas las posibles sumas para todos los subconjuntos posibles y en caso de ser menor o igual a P, buscar en la estructura anterior el primer número que sea menor o igual a (P - la suma acumulada). Ese número que nos devuelva sumado a la suma que nos dio el subconjunto calculado son una posible respuesta. 
 
 Con el almacenamiento de una variable global que posea el máximo número alcanzado hasta el momento, ante cada consulta anterior me quedo siempre con el máximo hasta el momento y el nuevo valor encontrado. 
 
 Basta con reportar esta variable global que es la respuesta al problema que estábamos buscando.
+
+\subsection{Por qué esto vale}
+
+Estamos computando todas las sumas menores o iguales de los subconjuntos de una mitad y la de la otra y si para cada subconjunto de los primeros n/2 elementos lo unimos con cada subconjunto de los segundos n/2 elementos entonces conseguimos los $2^{n}$ posibles subconjuntos del original. De esta manera podemos asegurar que el conjunto de la respuesta va a estar presente en los subconjuntos que estamos considerando.
 
 \subsection{Cómo cumplir con las complejidades pedidas}
 
