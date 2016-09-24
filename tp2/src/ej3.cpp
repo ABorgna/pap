@@ -16,9 +16,6 @@ long n, m;
 graph adj;
 
 vector<bool> puente;          // e es puente
-vector<long> sizeComponente;  // tamaño de la componente i
-vector<vector<long>>
-    componentes;              // componentes biconexas a las que pertenece v
 vector<long> sumComponentes;  // cantidad de nodos que comparten un ciclo con v
 
 void dfsBC(vertex v, long d, vertex padre, stack<edge> &q,
@@ -49,24 +46,22 @@ void dfsBC(vertex v, long d, vertex padre, stack<edge> &q,
             if (low[u] >= depth[v]) {
                 // Completamos la componente,
                 // actualizamos los valores de las aristas
-                long comp = sizeComponente.size();
-                sizeComponente.push_back(0);
+                long size = 0;
                 long top;
 
                 do {
                     top = q.top();
-                    sizeComponente[comp]++;
+                    size++;
                     q.pop();
                 } while (top != e);
 
                 // Actualizamos la cantidad de nodos biconectados de cada u
                 do {
                     top = componentVertices.top();
-                    sumComponentes[top] += sizeComponente[comp] - 1;
-                    componentes[top].push_back(comp);
+                    sumComponentes[top] += size - 1;
                     componentVertices.pop();
                 } while (top != u);
-                sumComponentes[v] += sizeComponente[comp] - 1;
+                sumComponentes[v] += size - 1;
             }
             if (low[u] >= depth[u]) {
                 // (v,u) es puente
@@ -82,8 +77,6 @@ void dfsBC(vertex v, long d, vertex padre, stack<edge> &q,
 void findBiconnected() {
     // Computar componentes y puentes
     puente = vector<bool>(m, false);
-    componentes = vector<vector<long>>(n);
-    sizeComponente.resize(0);
     sumComponentes = vector<long>(n, 0);
 
     stack<long> q;
