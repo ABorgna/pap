@@ -15,14 +15,15 @@ typedef vector<vector<pair<vertex, edge>>> graph;
 long n, m;
 graph adj;
 
-vector<bool> puente;          // e es puente
-vector<long> sumComponentes;  // cantidad de nodos que comparten un ciclo con v
+vector<bool> puente;   // e es puente
+vector<long> size2EC;  // tamaño de la componente 2-edge conexa de v
 
-void dfsBC(vertex v, long d, vertex padre, stack<edge> &q,
-           stack<vertex> &componentVertices, vector<long> &depth,
-           vector<long> &low) {
+void dfsBC(vertex v, long d, vertex padre, stack<vertex> &vertices2EC,
+           vector<long> &depth, vector<long> &low) {
     depth[v] = d;
     low[v] = d;
+
+    vertices2EC.push(v);
 
     for (pair<vertex, edge> p : adj[v]) {
         vertex u = p.first;
@@ -31,45 +32,36 @@ void dfsBC(vertex v, long d, vertex padre, stack<edge> &q,
         if (u == padre)
             continue;
 
-        if (depth[u] < depth[v]) {
-            // Solo agregamos (u,v) si es un tree edge o un back edge nuevo
-            q.push(e);
-        }
-
         if (depth[u] == -1) {
             // Tree edge
-            componentVertices.push(u);
-
-            dfsBC(u, d + 1, v, q, componentVertices, depth, low);
+            long position2EC = vertices2EC.size();
+            dfsBC(u, d + 1, v, vertices2EC, depth, low);
             low[v] = min(low[v], low[u]);
 
-            if (low[u] >= depth[v]) {
-                // Completamos la componente,
-                // actualizamos los valores de las aristas
-                long size = 0;
-                long top;
-
-                do {
-                    top = q.top();
-                    size++;
-                    q.pop();
-                } while (top != e);
-
-                // Actualizamos la cantidad de nodos biconectados de cada u
-                do {
-                    top = componentVertices.top();
-                    sumComponentes[top] += size - 1;
-                    componentVertices.pop();
-                } while (top != u);
-                sumComponentes[v] += size - 1;
-            }
             if (low[u] >= depth[u]) {
                 // (v,u) es puente
                 puente[e] = true;
+
+                // Actualizamos la cantidad de nodos 2-edge conectados a cada u
+                vertex top;
+                long size = vertices2EC.size() - position2EC;
+                do {
+                    top = vertices2EC.top();
+                    size2EC[top] = size;
+                    vertices2EC.pop();
+                } while (top != u);
             }
         } else {
             // Back edge
             low[v] = min(low[v], depth[u]);
+        }
+    }
+
+    if (padre == -1) {
+        long size = vertices2EC.size();
+        while (not vertices2EC.empty()) {
+            size2EC[vertices2EC.top()] = size;
+            vertices2EC.pop();
         }
     }
 }
@@ -77,14 +69,13 @@ void dfsBC(vertex v, long d, vertex padre, stack<edge> &q,
 void findBiconnected() {
     // Computar componentes y puentes
     puente = vector<bool>(m, false);
-    sumComponentes = vector<long>(n, 0);
+    size2EC = vector<long>(n, 0);
 
-    stack<long> q;
-    stack<long> componentVertices;
+    stack<long> vertices2EC;
     vector<long> depth(n, -1);
     vector<long> low(n);
 
-    dfsBC(0, 0, -1, q, componentVertices, depth, low);
+    dfsBC(0, 0, -1, vertices2EC, depth, low);
 }
 
 pair<bool, long> dfsPuentes(vertex u, vertex dest, vector<bool> &vis) {
@@ -116,8 +107,8 @@ pair<bool, long> dfsPuentes(vertex u, vertex dest, vector<bool> &vis) {
 }
 
 long contarPuentes(vertex u, vertex v) {
-    // Contar la cantidad de puentes en el camino de u a v,
-    // o 0 si están en una misma componente de tamaño > 1
+    // Contar la cantidad de puentes en algun camino simple de u a v
+    // (todo camino simple pasa por la misma cantidad de puentes)
     vector<bool> visitado(n, false);
     return dfsPuentes(u, v, visitado).second;
 }
@@ -138,7 +129,7 @@ int main() {
         adj[v].push_back({u, i});
     }
 
-    // Precomputar componentes biconexas y puentes
+    // Precomputar componentes 2-edge conexas y puentes
     findBiconnected();
 
     cin >> queries;
@@ -147,8 +138,7 @@ int main() {
         cin >> type;
 
         if (type == 'A') {
-            // # puentes en un camino simple de v a u (0 si hay caminos
-            // disjuntos)
+            // # puentes en un camino simple de v a u
             vertex u, v;
             cin >> u >> v;
             u--;
@@ -165,12 +155,12 @@ int main() {
             cout << (puente[e] ? 1 : 0) << endl;
 
         } else {
-            // cantidad de vertices que comparten ciclo con u
+            // tamaño de la componente 2-edge conexa de u - 1
             vertex u;
             cin >> u;
             u--;
 
-            cout << sumComponentes[u] << endl;
+            cout << size2EC[u] - 1 << endl;
         }
     }
 
