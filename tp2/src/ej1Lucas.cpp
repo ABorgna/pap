@@ -35,6 +35,7 @@ int bfs(vector< aristas > & G,int endpoint){ //Como en la red residual las arist
 	int padre = P[actual];
 	while(padre!=-1){
 		G[padre][actual] = 0;
+		G[actual][padre] = 1;
 		actual = padre;
 		padre = P[actual];
 	}
