@@ -28,7 +28,9 @@ Para lograrlo definamos G', el grafo que se define como G'= (V',E') con V' = V $
 
 En palabras sería tomar el grafo anterior y agregarle dos nodos más, uno de ellos conectado a todas las escuelas y el otro conectado a todos los alumnos.
 
-Ahora bien, teniendo este nuevo grafo, podemos reducir el problema anterior a encontrar un corte mínimo de G sobre los vértices de manera tal que nos separe al grafo en dos componentes. ?`Pero por qué buscamos eso?
+\textbf{\textit{Aclaración: en todo momento, cuando se esté hablando en los siguientes párrafos sobre el flujo que se puede aplicar en el grafo, siempre consideramos a las aristas con capacidad 1. Por lo tanto al hablar de corte mínimo sobre aristas, la capacidad que éste tenga será igual a la cantidad de aristas que son necesarias sacar para la desconexión del grafo en dos componentes conexas.}}
+
+Ahora bien, teniendo este nuevo grafo, podemos reducir el problema anterior a encontrar un corte mínimo de G sobre los vértices, es decir encontrar el subconjunto más pequeño de vértices tales que si los removemos el grafo nos queda separado en dos componentes. ?`Pero por qué buscamos eso?
 
 Si tenemos un corte mínimo sobre los vértices de G', podemos poner sobre dichos nodos a un estudiante de computación y esto nos asegura que los alumnos se cruzarán sí o sí a un divulgador puesto que los candidatos para separar al grafo en dos componentes son todos los nodos menos s y t y en consecuencia son todos candidatos válidos (s y t no son candidatos ya que la remoción de cualquiera de ellos dos no aporta a la división en dos componentes del grafo y por lo tanto nunca podrían participar del corte mínimo). 
 
