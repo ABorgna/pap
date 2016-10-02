@@ -1,1 +1,57 @@
 \section{Ejercicio 1}
+
+En este ejercicio tenemos alumnos que desean ir a cualquier escuela en su barrio y nosotros como departamento de computación queremos interceptarlos para contarles sobre la carrera. Para eso queremos poner a estudiantes de la carrera de manera tal que no haya manera que ningún alumno nos pueda esquivar.
+
+Tenemos entonces tres tipos de esquinas en la ciudad. Las que tienen la casa de algún alumno, las que tienen una escuela y aquellas que están desocupadas.
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[scale = 0.225]{img/esquema.png}
+    \caption{Grafo G}
+\end{figure}
+
+Como se aprecia en la figura anterior tenemos dos conjuntos importantes, las casas de los alumnos y las escuelas. Vale destacar que estos son disjuntos puesto que por enunciado una esquina puede ser de un solo tipo.
+
+\subsection{Modelando el problema}
+
+La entrada del problema, es decir las calles y las esquinas con sus tipos nos definen un grafo G = (V,E). Este grafo es conexo ya que desde cualquier esquina se puede llegar a cualquier otra. Definamos A como el subconjunto de vértices donde se encuentran los alumnos y C como el subconjunto de vértices donde se encuentran las escuelas(C por colegios).
+
+Lo que buscamos es tomar un subconjunto de V de manera tal que para cualquier camino de un nodo que pertenece a A hacia un nodo que pertenece a C pase por algún nodo de ese subconjunto buscado. En particular buscamos que ese subconjunto sea mínimo.
+
+Para lograrlo definamos G', el grafo que se define como G'= (V',E') con V' = V $\cup$ $\{s,t\}$ y E' = E $\cup$ $\{(x,y)| x = s, x \in V , x \in Alumnos \}$ $\cup$ $\{(x,y)| y = t, x \in V , x \in Escuelas \}$.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[scale = 0.225]{img/gprima.png}
+    \caption{Grafo G'}
+\end{figure}
+
+En palabras sería tomar el grafo anterior y agregarle dos nodos más, uno de ellos conectado a todas las escuelas y el otro conectado a todos los alumnos.
+
+Ahora bien, teniendo este nuevo grafo, podemos reducir el problema anterior a encontrar un corte mínimo de G sobre los vértices de manera tal que nos separe al grafo en dos componentes. ?`Pero por qué buscamos eso?
+
+Si tenemos un corte mínimo sobre los vértices de G', podemos poner sobre dichos nodos a un estudiante de computación y esto nos asegura que los alumnos se cruzarán sí o sí a un divulgador puesto que los candidatos para separar al grafo en dos componentes son todos los nodos menos s y t y en consecuencia son todos candidatos válidos (s y t no son candidatos ya que la remoción de cualquiera de ellos dos no aporta a la división en dos componentes del grafo y por lo tanto nunca podrían participar del corte mínimo). 
+
+\subsection{Algoritmo para encontrar el corte mínimo sobre vértices en un grafo}
+
+Cómo bien sabemos, por el teorema max flow - min cut, si queremos encontrar el corte mínimo sobre aristas basta con encontrar el flujo máximo que nos define dicho grafo.
+
+Pero en nuestro caso buscamos el mínimo corte sobre vértices. Como por un nodo `x' puede pasar tantas unidades de flujo como sucesores directos tenga (como cota superior) en el grafo, la idea será duplicar al nodo en dos partes. Por un lado tenemos el nodo `x$_{in}$' al cual se le conectarán todas las aristas de los predecesores directos y por el otro tenemos a `x$_{out}$' del cual saldrán las aristas correspondientes a los sucesores directos. Si conectamos `x$_{in}$' con `x$_{out}$' con una arista entonces, aunque `x' tenga muchos sucesores directos a los cuales está conectado, solo podrá dejar pasar flujo a uno de ellos puesto que la arista entre sus dos nuevas partes lo limita a tan solo uno.
+
+Ahora sí, estamos en condiciones de decir que con esta nueva representación de nuestro grafo, si buscamos el corte mínimo sobre aristas este será igual al corte mínimo sobre vértices, puesto que el flujo máximo se limita a enviar tan solo una unidad de flujo por cada nodo.
+
+\subsection{Resolución al problema}
+
+Como primer paso entonces debemos construir el grafo (digrafo) de manera tal que para cada arista e = (a,b), e $\in$ E, conectamos `a$_{out}$' con `b$_{in}$' y `b$_{out}$' con `a$_{in}$'.
+
+Luego, hay que agregar los nodos s y t que usabamos para el grafo G'. Entonces conectamos s con todo vértice `v$_{in}$' si v $\in$ A y a todo vértice `w$_{out}$' con t si w $\in$ C.
+
+Ahora sí, ya tenemos nuestro digrafo construido al que tenemos que aplicarle un algoritmo de flujo máximo que nos dará la respuesta que buscamos.
+
+\subsection{Respetando las complejidades}
+
+Para construir el grafo utilizamos una lista de adyacencia la cual usaremos luego también como red residual. Es por eso que al conectar un nodo con otro en la lista de adyancencia, no solo agregamos cual es dicho vecino sino también la capacidad que tiene dicha arista (en nuestro caso todas las aristas comienzan con capacidad 1). Esto tiene complejidad \bigo(M+N) puesto que todas las aristas del grafo las agregamos dos veces en nuestro digrafo y las aristas a los dos supernodos (s y t) son a lo mucho N (en el caso donde todos los nodos son escuelas o alumnos). 
+
+El algoritmo de flujo máximo elegido es Edmons Karp que como bien vimos en clase tiene complejidad \bigo$(M^2 \times N)$.
+
+Por lo tanto la complejidad total está dominada por el algoritmo de flujo y nuestro problema tiene complejidad temporal total de \bigo$(M^2 \times N)$
