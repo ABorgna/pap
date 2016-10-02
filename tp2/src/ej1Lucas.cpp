@@ -1,11 +1,11 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <queue>
 using namespace std;
 
-typedef map<int,int> aristas;
+typedef unordered_map<int,int> aristas;
 const int inf = 9999999;
 
 int bfs(vector< aristas > & G,int endpoint){ //Como en la red residual las aristas valen 1 o 0 el camino de aumento siempre puede ser 1 (si es que lo hay) o 0 en caso contrario.
