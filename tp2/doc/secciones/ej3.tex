@@ -1,1 +1,171 @@
 \section{Ejercicio 3}
+
+En este problema tenemos una ciudad representada por esquinas y calles bidireccionales entre ellas, de forma tal que se puede ir desde cualquier esquina a cualquier otra. A continuación nos realizan varias preguntas que pueden ser de tres tipos:
+
+\begin{itemize}
+
+    \item \textbf{A}: contar la cantidad de calles que al ser cortadas desconectan dos esquinas dadas
+    \item \textbf{B}: decidir si al cortar una calle dada quedan desconectadas dos esquinas cualquiera
+    \item \textbf{C}: dada una esquina, contar la cantidad de esquinas que siempre seguirían conectadas a ella aunque se corte una calle cualquiera
+
+\end{itemize}
+
+\subsection{Modelado del problema}
+
+La ciudad se puede modelar fácilmente con un grafo $G$ donde cada esquina es un vértice y hay una arista por cada calle, conectando los nodos correspondientes a sus esquinas. Como siempre hay un camino entre dos esquinas, este grafo es conexo.
+
+A partir de esta representación se puede traducir los tres tipos de preguntas:
+\\
+
+\noindent Tipo \textbf{A}:
+
+Dados los dos vértices $u$ y $v$, consideramos todos los caminos simples entre ellos.
+Si existe una arista que pertenezca a todos los caminos, al cortar esta no habrá un camino entre $u$ y $v$.
+Si en cambio se corta una arista que no pertenecía a algún camino, este camino seguirá existiendo y por lo
+tanto $u$ y $v$ seguirán conectados.
+
+Mas aún, si una arista $e$ perteneciente a un camino $P$ entre $u$ y $v$ estuviera contenida en un ciclo del grafo, significa que existía un camino $P_e$ entre los vértices incidentes a $e$ que no pasa por este. Si tomamos el camino resultante de reemplazar $e$ por $P_e$ en $P$ (y obtener el camino simple contenido de ser necesario), obtendremos un camino simple entre $u$ y $v$ que no pasa por $e$. Si en cambio $e$ está en un camino simple entre $u$ y $v$ pero no pertenecía a algún ciclo de $G$, todo camino entre $u$ y $v$ tendrá que pasar por él ya que sino podríamos construirnos un ciclo que lo contenga.
+
+Por lo tanto, cortar $e$ desconectará $u$ y $v$ si y solo si $e$ estaba en un camino simple entre estos y $e$ no pertenecía a un ciclo de $G$ (esto es, $e$ es un puente). Finalmente, la respuesta a la pregunta será la cantidad de puentes en un camino simple desde $u$ hasta $v$.
+\\
+
+\noindent Tipo \textbf{B}:
+
+Dada una arista $e$, quiero saber si al cortar $e$ se desconectan dos vértices cualesquiera del grafo. Esto es equivalente a preguntar si $e$ es un puente.
+\\
+
+\noindent Tipo \textbf{C}:
+
+Dado un vértice $u$, quiero contar la cantidad de nodos a los que siempre llego cuando saque una arista cualquiera del grafo. Esto es, quiero contar la cantidad de nodos en la componente 2-edge conexa de $u$ (menos el propio $u$).
+
+\subsection{Algoritmo}
+
+La idea para resolver el problema es precalcular a partir del grafo los puentes y el tamaño de la componente 2-edge conexa a la que pertenece cada vértice.
+\\
+
+Para ello usamos el algoritmo para buscar componentes biconexas y puentes visto en clase, modificándolo para que calcule también componentes 2-edge conexas. Esto se logra gracias a que las componentes 2EC del grafo están separadas siempre por aristas puente (se puede ver trivialmente a partir de la definición que una arista es puente sii los nodos adyacentes pertenecen a componentes 2EC diferentes).
+
+Para ello mantenemos una pila con los nodos visitados que no fueron agregados a una componente 2EC, agregando los nodos que vamos visitando. Cuando detectamos un puente, sabemos que todos los nodos sin marcar a partir del que estamos explorando pertenecen a una nueva componente y por lo tanto los desencolamos y guardamos el tamaño de la componente a la que pertenecen en un array. Ademas debemos realizar esto con los nodos que queden sin extraer al finalizar el dfs.
+\\
+
+Teniendo estos valores, podemos responder una pregunta de tipo \textbf{A} buscando un camino simple cualquiera desde $u$ a $v$ usando DFS mientras contamos la cantidad de puentes por los que pasamos.
+Las preguntas de tipo \textbf{B} serán directamente ver si la arista dada era un puente.
+Y por último, las preguntas \textbf{C} se responden leyendo el tamaño de la componente 2-edge conexa del nodo y restándole 1 (para no contar el propio nodo).
+
+\subsection{Pseudocódigo}
+
+\algdef{SE}[DOWHILE]{Do}{doWhile}{\algorithmicdo}[1]{\algorithmicwhile\ #1}%
+
+\begin{algorithmic}
+
+\Function{precalcular}{}
+    \State inicializar el array $esPuente$ todos en false
+    \State inicializar el array $tamanoComponente2EC$ todos en 0
+
+    \State $verticesSinComponente : stack de vertices$
+    \State $depth : array de enteros$
+    \State $low : array de enteros$
+
+    \State $dfsPrecalculo(0, 0, -1, verticesSinComponente, depth, low)$
+\EndFunction
+\\
+
+\Function{dfsPrecalculo}{$v : int, d : int, padre : int, verticesSinComponente : stack<int>,$
+                         $depth : array<int>, low : array<int>$}
+    \State $depth[v] \gets d$
+    \State $low[v] \gets d$
+    \State encolar $v$ en $verticesSinComponente$
+
+    \For{$u$ vecino de $v$ diferente a $padre$ con arista $e$}
+        \If{$depth[u] = -1$}
+            \State \textbackslash\textbackslash Es un tree edge
+            \State $posicionEnElStack \gets verticesSinComponente.size()$
+            \State $dfsPrecalculo(u, d+1, v, verticesSinComponente, depth, low)$
+            \State $low[v] \gets min(low[v], low[w])$
+
+            \If{$low[u] \geq depth[u]$}
+                \State marcar $e$ como $puente$
+                \State \textbackslash\textbackslash
+                    Guardamos la componente 2EC que se cierra con el puente
+                \State $tamano \gets
+                    verticesSinComponente.size() - posicionEnElStack$
+                \Do
+                    \State $top \gets $tope de $verticesSinComponente$
+                    \State $tamanoComponente2EC[top] \gets tamano$
+                    \State desapilar el tope de $verticesSinComponente$
+                \doWhile{$top$ es diferente a $u$}
+            \EndIf
+        \Else
+            \State \textbackslash\textbackslash Es un back edge
+            \State $low[v] \gets min(low[v], depth[u])$
+        \EndIf
+    \EndFor
+    \If{no tenía $padre$}
+        \State $tamano \gets verticesSinComponente.size()$
+        \Do
+            \State $top \gets $tope de $verticesSinComponente$
+            \State $tamanoComponente2EC[top] \gets tamano$
+            \State desapilar el tope de $verticesSinComponente$
+        \doWhile{$verticesSinComponente$ tenga elementos}
+    \Else
+\EndFunction
+\\
+
+\end{algorithmic}
+
+\begin{algorithmic}
+
+\Function{queryA}{$u : int, v : int$}
+    \State inicializar el array $visitados$ todos en false
+    \State \Return $dfsPuentes(u,v).puentes$
+\EndFunction
+\\
+
+\Function{dfsPuentes}{$u : int, destino : int$}
+    \State Marcar $u$ como $visitado$
+    \If{$u$ es el $destino$}
+        \State \Return $\{porAca: true, puentes: 0\}$
+    \EndIf
+    \For{$v$ vecino no $visitado$ de $u$}
+        \State $res \gets dfsPuentes(v, destino)$
+        \If{$res.porAca$}
+            \If{$(uv)$ es puente}
+                \State \Return $\{porAca: true, puentes: res.puentes + 1\}$
+            \Else
+                \State \Return $\{porAca: true, puentes: res.puentes\}$
+            \EndIf
+        \EndIf
+    \EndFor
+    \State \Return $\{porAca: false, puentes: 0\}$
+\EndFunction
+\\
+
+\end{algorithmic}
+
+\begin{algorithmic}
+
+\Function{queryB}{$e : int$}
+    \State \Return{$e$ es puente}
+\EndFunction
+\\
+
+\end{algorithmic}
+
+\begin{algorithmic}
+
+\Function{queryC}{$u : int$}
+    \State \Return{tamano componente 2EC de $u - 1$}
+\EndFunction
+
+\end{algorithmic}
+
+\subsection{Complejidad}
+
+TODO: precómputo
+\\
+
+Luego del precómputo, saber si una arista es puente o el tamaño de la componente 2EC de un nodo es simplemente acceder a un array y por lo tanto se pueden hacer en \bigo(1).
+
+Por cada query \textbf{A}, realizamos un DFS con complejidad \bigo($M$). Y para las queries \textbf{B} y \textbf{C} hacemos solamente un acceso a un array y por lo tanto terminamos en tiempo \bigo(1).
+
+Finalmente, si $Q_A$, $Q_B$ y $Q_C$ representan las cantidades de queries de cada tipo, la complejidad final será el resultado de realizar el precómputo y luego las queries necesarias, \bigo($M + M Q_A + Q_B + Q_C$).
