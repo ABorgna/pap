@@ -1,55 +1,77 @@
 #include <iostream>
 #include <vector>
+#include <stack>
 #include <cstring>
 using namespace std;
-const int maxn  = 100000;
-vector<int> G[maxn], GT[maxn];
-int C[maxn];
-vector <int> st;
-void dfs(int no){
-	C[no]=1;
-	for(int v : G[no]){
-		if(!C[v])
-			dfs(v);
-	}
-	st.push_back(no);
-	return;
-}
 
-void dfs2(int no, int color){
-	if(!C[no]){
-		C[no]=color;
-		for(int v : GT[no]){
-			if(!C[v])
-				dfs2(v,color);
+stack <int > st;
+
+
+void dfs_componentes(int nodo, vector<int> vecinos[], bool visitado[], int componentes[]){ // dfs para asignarle a cada nodo su componente
+	visitado[nodo] = true;
+	for(int &vecino : vecinos[nodo]){
+		if(visitado[vecino] == false){
+			componentes[vecino] = componentes[nodo]; // la componente de mi vecino es la misma que la mia
+			dfs_componentes(vecino, vecinos, visitado, componentes);
 		}
 	}
 }
 
-int main(){
-	int N,M,Q,a,b,colores = 0;
-	cin>>N>>M;
-	for(int i = 0 ; i< M; i++){
-		cin>>a>>b; --a; --b;
-		G[a].push_back(b);
-		GT[b].push_back(a);		
+void dfs(int nodo, vector<int> vecinos[], bool visitado[]){ // dfs, voy agregando al stack a medida que termino de procesar un nodo
+	visitado[nodo] = true;
+	for(int &vecino : vecinos[nodo]){
+		if(visitado[vecino] == false){
+			dfs(vecino, vecinos, visitado);
+		}
 	}
-	for(int i = 0 ; i< N; i++){
-		if(!C[i])
-			dfs(i);
-	}
-	memset(C,0,sizeof(C));
-	while(st.size()){ 
-		int vec = st.back();
-		st.pop_back(); 
-		if( !C[vec]) 
-			dfs2(vec,++colores); 
-	} 
+	st.push(nodo);
+}
 
-	cin>>Q;
-	for(int i = 0 ; i < Q; i ++){
-		cin>>a>>b; --a; --b;
-		cout<<(C[a]==C[b]?"S\n":"N\n");
+
+int main(){
+	int nodos, aristas, queries;
+
+	cin >> nodos >> aristas;
+
+	vector<int> grafo[nodos + 1];
+	vector<int> grafoInverso[nodos + 1]; // grafo con aristas invertidas
+
+	for(int i = 0; i < aristas;i++){
+		int a, b;
+		cin >> a >> b;
+		grafo[a].push_back(b);
+		grafoInverso[b].push_back(a);
 	}
-	return 0;
+
+	bool visitado[nodos + 1];
+	int componentes[nodos + 1];
+
+	memset(visitado,0,sizeof(visitado));
+
+	for(int i = 1; i <= nodos; i++){
+		if(visitado[i] == false){
+			dfs(i, grafo, visitado);
+		}
+	}
+
+	memset(visitado,0,sizeof(visitado));
+
+	while(!st.empty()){ // calculo componentes en el orden en que me quedaron los nodos en el stack
+		int nodo = st.top();
+		st.pop();
+		if(visitado[nodo] == false){
+			componentes[nodo] = nodo; // inicializo mi componente como yo mismo
+			dfs_componentes(nodo, grafoInverso, visitado, componentes);
+		}
+	}
+
+	cin >> queries;
+
+	for(int i = 0; i < queries; i++){
+		int a, b;
+		cin >> a >> b;
+		cout << (componentes[a] == componentes[b] ? "S\n" : "N\n");
+	}
+
+
 }
