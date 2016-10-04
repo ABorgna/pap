@@ -1,1 +1,128 @@
 \section{Ejercicio 4}
+
+En este ejercicio tenemos un conjunto de aulas con respectivos pasillos que las unen, pero éstos sólo pueden atravesarse en un solo sentido. Para poder evacuar lo más rápido posible en caso de que una amenaza se repita, queremos saber si una persona que se encuentra en deteminada aula, puede ir hasta otra aula a avisarle al que se encuentre allí de evacuar y luego volver a la aula de la cual partió para buscar sus cosas. Luego sabemos que desde cualquier aula puede irse a la salida del pabellón, con lo cual sólo nos interesa si es posible realizar el recorrido mencionado. 
+
+
+\subsection{Modelando el problema}
+
+Si modelamos el problema con un grafo, las aulas pueden verse como nodos mientras que los pasillos entre aulas serían los arcos dirigidos que las unen en un sentido. Dado 2 aulas A y B, queremos saber si existe un camino que nos lleve de A hacia B pero que también exista un camino que vaya de B hacia A. \newline
+
+Una opción sería hacer un dfs desde A para saber si podemos llegar de A hacia B y luego otro dfs desde B para saber si puede llegar a A. Pero esto implicaría 2 dfs por cada pregunta que nos hacen, lo cual es demasiado para las cotas del problema. \newline
+
+Una mejor forma de pensarlo es que en definitiva, lo que nos interesa saber en la pregunta es si A y B están en una misma componente fuertemente conexa. Dado que una componente fuertemente conexa representa que entre cualquier par de nodos A y B de la misma existe un camino de A hacia B y viceversa, esto es precisamente lo que que nos interesa saber.  \newline
+
+Si dos nodos están en distintas componentes, esto quiere decir que por más que tal vez haya un camino entre uno y otro, no vale la vuelta. Con lo cual en estos casos queremos responder que no es posible. Si están en la misma componente, esto quiere decir que es posible armar el recorrido que buscamos tanto para la ida como para la vuelta, en estos casos queremos responder que es posible.\newline
+
+En consecuencia, responder que no o que sí a la pregunta que nos hacen es equivalente a ver si están o no en la misma componente fuertemente conexa.\newline
+
+\subsection{Algoritmo}
+
+Como se ha visto en clase, el algoritmo que nos resuelve esto es el algoritmo de Kosaraju. Como el algoritmo indica, la idea es primero hacer dfs sobre el grafo que nos dan y guardarnos el orden en que se sale de un nodo, es decir, cuando se terminaron de procesar sus vecinos. \newline
+
+Luego, se hace dfs sobre el grafo resultante de dar vuelta todos los arcos del original, aplicándolo a los nodos en orden decreciente según el orden en que se sale del mismo. Es decir, comenzamos por el último nodo que terminamos de procesar. \newline
+
+Los nodos que se alcancen con este dfs pertenecen a la misma componente fuertemente conexa (demostración vista en clase y en las slides).\newline
+
+
+\subsection{Resolución al problema}
+
+Sea A la cantidad de aulas, P la cantidad de pasillos.\newline
+
+Primero debemos construir el digrafo de A nodos y P arcos, manteniendo una lista de vecinos por cada nodo y agregando a v2 como vecino de v1 si en el input me dan que un pasillo conecta v1 con v2.\newline
+
+Además queremos el digrafo con las aristas invertidas, con lo cual mantenemos otra lista de vecinos en la cual agregamos a v1 como vecino de v2.\newline
+
+Ahora aplicamos dfs a los nodos sin procesar usando de vecinos las listas de vecinos del primer digrafo. Para guardar el orden de finalización de los nodos, usamos la estructura de stack. Es decir, luego de visitar los vecinos se agrega el nodo al stack.\newline
+
+Luego de visitar todos los nodos, los marcamos como no visitado y corremos otro dfs. Esta vez usamos las listas de vecinos con las aristas invertidas, y el dfs lo aplicamos a los nodos en el orden en que me los devuelve el stack. Es estos dfs debemos guardar a qué nodos puedo llegar desde el que inició el dfs, ya que éstos son los que pertenecen a la misma componente fuertemente conexa.\newline
+
+Para hacer esto, antes de iniciar el dfs marcamos la componente del nodo con el cual se empieza como sí mismo y luego en el dfs, antes de recorrer los vecinos de un nodo se asigna la componente del vecino como la componente del nodo. En definitiva lo que estamos haciendo es guardar la raíz del árbol que se está recorriendo a todo nodo de ese árbol, lo cual podemos usar para identificar si pertecen a la misma componene.\newline
+
+Finalmente, para cada pregunta nos fijamos si ambos nodos están en la misma componente, es decir, si la raíz del árbol en el cual fueron visitados es la misma. En caso de serlo, se responde con un sí mientras que en caso contrario, con un no.\newline
+
+
+\subsection{PseudoCódigo}
+
+
+\begin{algorithmic}
+
+\State $visitado[A] \gets \{false..false\}$
+
+\State $grafo[A] \gets \{lista..lista\}$
+\State $grafoInverso[A] \gets \{lista..lista\}$
+
+\State $stack$
+\State $componente[A]$
+
+\Function{$dfs$}{$nodo$}
+	\State $visitado[nodo] = true$
+	\For{$vecino : grafo[nodo]$}
+		\If{$visitado[vecino] == false$}
+			\State $dfs(vecino)$
+		\EndIf
+	\EndFor
+	\State $stack.add(nodo)$
+\EndFunction
+
+\Function{$dfs\_componentes$}{$nodo$}
+	\State $visitado[nodo] = true$
+	\For{$vecino : grafo[nodo]$}
+		\If{$visitado[vecino] == false$}
+			\State $componente[vecino] = componente[nodo]$
+			\State $dfs\_componentes(vecino)$
+		\EndIf
+	\EndFor
+\EndFunction
+
+
+\Function{$main$}{}
+    \For{$i = 0$ a $P$}
+    	\State $a, b \gets leerInput()$
+    	\State $grafo[a].agregar(b)$
+    	\State $grafo[b].agregar(a)$
+    \EndFor
+
+    \For{$i = 0$ a $A$}
+    	\If{$visitado[i] == false$}
+    		\State $dfs(i)$
+    	\EndIf
+    \EndFor
+
+    \State $visitado[A] \gets \{false..false\}$
+
+    \While{$stack no este vacia$}
+    	\State $nodo = stack.pop()$
+    	\If{$visitado[nodo] == false$}
+    		\State $componente[nodo] = nodo$
+    		\State $dfs_componentes(nodo)$
+    	\EndIf
+    \EndWhile
+
+    \For{$i = 0$ a $Q$}
+    	\State $a, b \gets leerInput()$
+    	\If{$componente[a] == componente[b]$}
+    		\State $Mostrar\ Si$
+    	\EndIf
+     	\If{$componente[a] != componente[b]$}
+    		\State $Mostrar\ No$
+    	\EndIf   	
+    \EndFor
+
+\EndFunction
+
+\end{algorithmic}
+
+
+\subsection{Respetando las complejidades}
+
+Sea A la cantidad de aulas, P la cantidad de pasillos y Q la cantidad de preguntas.\newline
+
+Para construir ambos digrafos, al utilizar un arreglo de listas de adyacencia la complejidad del armado de cada uno es O(P), pero contanto la inicialización de un arreglo de tamaño A, sería O(A + P).\newline
+
+Luego se aplica dfs común y corriente salvo lo de agregar el nodo al stack. Como cada nodo es procesado una sola vez, en definitiva estaremos agregando cada nodo al stack 1 sola vez, con lo cual como el agregado es O(1), nos termina quedando O(A + P) del dfs y O(A) del stack, con lo cual nos queda O(A + P).\newline
+
+Después se corre el dfs pero con el digrafo con arcos invertidos. Al igual que antes, cada nodo lo procesamos una sóla vez, sacando uno a uno del stack y aplicando dfs en caso de que no haya sido visitado aún. Sacar del stack es O(1), vamos a asignarle la componente a un nodo 1 sola vez por nodo, con lo cual también nos termina quedando O(A + P).\newline
+
+Por último por cada pregunta que nos hacen consultamos si la componente de cada nodo es la misma. Al guardar esto en un arreglo, es comparar 2 valores del mismo lo cual es O(1), con lo cual nos cuesta O(Q).\newline
+
+Si sumamos todo, nos queda O(A + P) * 2 para armar los digrafo + O(A + P) * 2 para los dfs + O(Q) para las preguntas. En definitiva, nos queda O(A + P + Q), cumpliendo la cota requerida del problema.\newline
