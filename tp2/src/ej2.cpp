@@ -9,8 +9,9 @@
 
 using namespace std;
 
-typedef unordered_map<int,int> aristas;
 const int inf = 9999999;
+
+typedef vector<vector<int> > adj_list;
 
 int nodo_sale(int x, int a){
   return x;
@@ -21,46 +22,73 @@ int nodo_entra(int x, int a){
 }
 
 
-int bfs(vector< aristas > & G,int endpoint){ //Como en la red residual las aristas valen 1 o 0 el camino de aumento siempre puede ser 1 (si es que lo hay) o 0 en caso contrario.
-	queue<int> cola;
-	bool visited [G.size()];
-	fill(visited,visited+endpoint+1,false);
-	cola.push(0);
-	int P[G.size()];
-	fill(P,P + endpoint+1,-1);
-	int aumento = 1;
-	//BFS
+int bfs(vector<vector<int> >& flujo_neto, adj_list& adj, int source, int sink){ 
+  //Como en la red residual las aristas valen 1 o 0 el camino de aumento siempre puede ser 1 (si es que lo hay) o 0 en caso contrario.
+	
+  queue<int> cola;
+	
+  cola.push(source);
+  
+  vector<bool> visited(adj.size(), false);
+
+  vector<int> p (adj.size(), -1);
+  
+  //BFS
+  
 	while(!cola.empty()){
 		int actual = cola.front();
 		cola.pop();
-		visited[actual] = true;
-		for(auto &a : G[actual])
-			if(not visited[a.first] and a.second == 1){
-				P[a.first] = actual;
-				cola.push(a.first);
+		
+    visited[actual] = true;
+		
+    for(auto& v : adj[actual]){
+			if(not visited[v] and flujo_neto[actual][v] < 1){
+				p[v] = actual;
+				cola.push(v);
 			}
+    }
 	} 
+  
 	//Si no hubo camino de aumento (no llegue al nodo final)
-	if(not visited[endpoint])
+	if(not visited[sink]){
 		return 0;
-	//En caso de que sí, reconstruyo el camino y a todas esas aristas las marco como usadas y no pueden volver a usarse.
-	int actual = endpoint;
-	int padre = P[actual];
-	while(padre!=-1){
-		G[padre][actual] = 0;
-		G[actual][padre] = 1;
-		actual = padre;
-		padre = P[actual];
+  }
+	
+  //En caso de que sí, reconstruyo el camino y a todas esas aristas las marco como usadas y no pueden volver a usarse.
+	int actual = sink;
+	int padre = p[actual];
+	
+  while(padre!=-1){
+		flujo_neto[padre][actual]++;
+    flujo_neto[actual][padre]--;
+    
+    actual = padre;
+		padre = p[actual];
 	}
+  
+  // Toda arista tiene capacidad 1
 	return 1;
 }
 
-int flujo(vector< aristas > & G , int endpoint){
+int max_flujo(adj_list& adj, int source, int sink){
 	int flujo_max = 0;
 	int aumento;
-	while((aumento = bfs(G,endpoint))>0){ //Mientras haya camino de aumento
-		flujo_max+=aumento;
-	}
+  
+  vector<vector<int> > flujo_neto(adj.size());
+  for(int i = 0; i < (int) adj.size();i++){
+    flujo_neto[i].resize(adj.size());
+    for(int j = 0; j < (int) adj.size(); j++){
+      flujo_neto[i][j] = 0;
+    }
+  }
+  
+  do {
+    aumento = bfs(flujo_neto, adj, source, sink);
+    flujo_max += aumento;
+    
+  } while (aumento > 0);
+  
+  
 	return flujo_max;
 }
 
@@ -83,9 +111,10 @@ int main() {
   
   std::vector<std::vector<int> > precios(a+1);
   
-  vector< aristas > G; //Todo nodo "v" va a ser duplicado por "v_entrantes" y "v_salientes" con una conexión entre ellos direccional. 
-  G.resize(2*a+2);
-  int endpoint = 2*a+1;
+  adj_list adj (2*a+ 2); //Todo nodo "v" va a ser duplicado por "v_entrantes" y "v_salientes" con una conexión entre ellos direccional. 
+  
+  int source = 0;
+  int sink = 2*a+1;
 
   
   for (int i = 1; i < a + 1; i++){ // acciones en [1 .. a+1)
@@ -97,18 +126,27 @@ int main() {
   }
   
   for(int i = 1; i < a + 1; i++){
-    G[nodo_entra(i, a)][endpoint] = 1;  // con el sink
-    G[0][nodo_sale(i, a)] = 1; // con el source
+    adj[nodo_entra(i, a)].push_back(sink);  // con el sink
+    adj[sink].push_back(nodo_entra(i, a));  // con el sink, la vuelta
+    
+    
+    adj[source].push_back(nodo_sale(i, a)); // con el source
+    adj[nodo_sale(i, a)].push_back(source); // con el source
+    
   }
   
   for(int i = 1; i < a + 1; i++){
     for (int j = 1; j < a + 1; j++){
       if (estaArribaDe(i, j, precios)){
-        G[nodo_sale(i, a)][nodo_entra(j, a)] = 1;
+    
+        adj[nodo_sale(i, a) ].push_back(nodo_entra(j, a));
+        adj[nodo_entra(j, a)].push_back(nodo_sale(i, a));
+    
       } 
     }
   }
   
-  int f = flujo(G, endpoint);
+  int f = max_flujo(adj, source, sink);
+  
   std::cout << a - f << std::endl;
 }
