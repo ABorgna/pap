@@ -1,1 +1,64 @@
 \section{Ejercicio 2}
+
+\subsection{Enunciado}
+
+\par{El enunciado nos dice que tenemos un grupo de A acciones, cuyos precios conocemos en D días. 
+Vamos a agrupar las acciones en gráficos. Dos acciones pueden ir en un mismo gráfico, si las lineas de sus dibujos
+como función no se tocan en ningún punto.}
+\par{Nos piden que demos la mínima cantidad de gráficos necesaria para poder graficar todas las acciones, con 
+la restricción previamente mencionada.} 
+
+\subsection{¿Cuándo se cruzan dos acciones?}
+
+\par{Vamos a notar que, el hecho de que dos acciones \textbf{NO} se crucen es equivalente a que 
+haya una cuyos precios en los D días sean estrictamente mayores a los correspondientes de la otra.}
+
+\par{Que dos acciones se crucen significa que, si tenemos un segmento A $\rightarrow$ B de una acción, 
+y otro C $\rightarrow$ D de la otra y correspondientes al mismo día,  entonces A mayor a C y B menor a D, o viceversa.} 
+
+\par{Si en los D días, una acción siempre domina a la otra (decimos que una ``está arriba'' de la otra ), entonces trivialmente no se cruzan.}
+
+\par{Si no se cruzan, entonces no hay dos segmentos correspondientes al mismo día que se den vuelta. 
+O A mayor a C y B mayor a D, o la inversa. Entonces una acción esta arriba de la otra. Afirmamos entonces que son equivalentes.}
+
+\subsection{Definamos un orden}
+
+\par{Nos interesa notar algunas propiedades de la relación \textbf{estar arriba}. Para empezar, 
+la relación es transitiva. Si A está arriba de B, y B de C, A está arriba de C.
+Si con un poco de cuidado, permitimos que dos elementos esten relacionados si sus precios son iguales en todo momento, entonces
+la relación nos queda reflexiva y antisimétrica. Con lo cual, nos define un \textbf{orden parcial}. }
+
+\par{Lo que el problema nos pide es una cantidad mínima de gráficos que necesitamos para dibujar todas las acciones. 
+Por la equivalencia que vimos antes, gráficos de este estilo, son conjuntos de acciones donde no se cruzan, es decir, 
+una esta arriba de otra, para dos cualesquiera del conjunto. Y como la relación es transitiva, existe una acción,
+A_1 > A_2 > ... > A_k, en un conjunto del mismo gráfico, con k acciones.} 
+
+\subsection{La gallinita dijo Eureka}
+
+\par{Por la observación, vemos que lo que estamos buscando es la mínima cantidad de \textbf{cadenas} que necesitamos
+para cubrir un conjunto parcialmente ordenado. Donde una cadena, es un conjunto totalmente ordenado.}
+
+\par{Sabemos además por el \textbf{Teorema de Dilworth} que esta mínima cantidad de cadenas es igual a la mínima anticadena
+(un conjunto de elementos incomparables), y que estas se pueden calcular mediante un Flujo Máximo!}
+
+\par{Usamos esta construcción de grafo de Dilworth, para calcular la mayor anticadena. El grafo que nos queda 
+tiene para cada acción a $in$ Acciones, dos nodos a$'$, a$''$ $in$ V. Por otro lado, tenemos dos nodos, s y t (source y sink del nuevo grafo).
+s esta conectado con todos los a$'$, con aristas de capacidad 1. Y t esta conectado con todos los a$''$ con aristas de capacidad 1.
+Por último, todos los si tenemos dos acciones a,b y a \textbf{está arriba} de b, entonces a$'$ esta conectada con b$''$ con una arista de capacidad 1.
+Si f es un flujo máximo de s a t en este nuevo grafo, por el teorema de Dilworth, la mayor anticadena es igual a $|acciones| - |f|$ = $A - |f|$, y es lo que buscábamos.  
+}
+
+\subsection{Complejidad}
+
+\par{La primer parte de nuestra solución, para construir el grafo, necesita ver si dadas dos acciones, 
+una esta arriba de la otra. Dadas dos acciones, chequear esto nos tarda \bigo(D), simplemente iterando por los días.
+Por eso esta primer parte es \bigo($A^2 \times D $)}
+
+\par{Luego, tenemos que buscar el flujo máximo. Utilizamos el algoritmo de Edmonds-Karp, que en cada iteración hace un BFS.
+Pero utilizamos la cota que nos dice que la cantidad de iteraciones esta acotada por el flujo máximo. 
+El flujo máximo es A, por construcción del grafo (las aristas que salen de s).
+Entonces sabemos que la complejidad del algoritmo es \bigo($ (E + V) \times A$), donde E y V son las aristas y nodos respectivamente.
+Ademas estas son \bigo($A^2$) y \bigo($A$) respectivamente, por lo cual el algoritmo de flujo termina siendo \bigo($ (A^2 + A) \times A$) 
+= \bigo($ (A^2) \times A$). }
+
+\par{Entonces, en total todo el algoritmo es \bigo($ A^2 \times (A + D) $) que es exactamente lo pedido.}
