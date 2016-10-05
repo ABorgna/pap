@@ -82,7 +82,7 @@ int max_flujo(adj_list& adj, std::vector<std::vector<int>>& capacidad_red_residu
 
 bool estaArribaDe(int a, int b, std::vector<std::vector<int> >& precios){
 	for(int i = 0; i < (int) precios[a].size(); i++){
-		if (precios[a][i] <= precios[b][i]){ // Ojo, vale el igual?!
+		if (precios[a][i] <= precios[b][i]){
 			return false;
 		}
 	}
