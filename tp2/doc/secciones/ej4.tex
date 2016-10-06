@@ -1,6 +1,6 @@
 \section{Ejercicio 4}
 
-En este ejercicio tenemos un conjunto de aulas con respectivos pasillos que las unen, pero éstos sólo pueden atravesarse en un solo sentido. Para poder evacuar lo más rápido posible en caso de que una amenaza se repita, queremos saber si una persona que se encuentra en deteminada aula, puede ir hasta otra aula a avisarle al que se encuentre allí de evacuar y luego volver a la aula de la cual partió para buscar sus cosas. Luego sabemos que desde cualquier aula puede irse a la salida del pabellón, con lo cual sólo nos interesa si es posible realizar el recorrido mencionado. 
+En este ejercicio tenemos un conjunto de aulas con respectivos pasillos que las unen, pero éstos sólo pueden atravesarse en un solo sentido. Para poder evacuar lo más rápido posible en caso de que una amenaza se repita, queremos saber si una persona que se encuentra en determinada aula, puede ir hasta otra aula a avisarle al que se encuentre allí de evacuar y luego volver a la aula de la cual partió para buscar sus cosas. Luego sabemos que desde cualquier aula puede irse a la salida del pabellón, con lo cual sólo nos interesa si es posible realizar el recorrido mencionado. 
 
 
 \subsection{Modelando el problema}
@@ -36,7 +36,7 @@ Ahora aplicamos dfs a los nodos sin procesar usando de vecinos las listas de vec
 
 Luego de visitar todos los nodos, los marcamos como no visitado y corremos otro dfs. Esta vez usamos las listas de vecinos con las aristas invertidas, y el dfs lo aplicamos a los nodos en el orden en que me los devuelve el stack. Es estos dfs debemos guardar a qué nodos puedo llegar desde el que inició el dfs, ya que éstos son los que pertenecen a la misma componente fuertemente conexa.\newline
 
-Para hacer esto, antes de iniciar el dfs marcamos la componente del nodo con el cual se empieza como sí mismo y luego en el dfs, antes de recorrer los vecinos de un nodo se asigna la componente del vecino como la componente del nodo. En definitiva lo que estamos haciendo es guardar la raíz del árbol que se está recorriendo a todo nodo de ese árbol, lo cual podemos usar para identificar si pertecen a la misma componene.\newline
+Para hacer esto, antes de iniciar el dfs marcamos la componente del nodo con el cual se empieza como sí mismo y luego en el dfs, antes de recorrer los vecinos de un nodo se asigna la componente del vecino como la componente del nodo. En definitiva lo que estamos haciendo es guardar la raíz del árbol que se está recorriendo a todo nodo de ese árbol, lo cual podemos usar para identificar si pertenecen a la misma componente.\newline
 
 Finalmente, para cada pregunta nos fijamos si ambos nodos están en la misma componente, es decir, si la raíz del árbol en el cual fueron visitados es la misma. En caso de serlo, se responde con un sí mientras que en caso contrario, con un no.\newline
 
@@ -117,7 +117,7 @@ Finalmente, para cada pregunta nos fijamos si ambos nodos están en la misma com
 
 Sea A la cantidad de aulas, P la cantidad de pasillos y Q la cantidad de preguntas.\newline
 
-Para construir ambos digrafos, al utilizar un arreglo de listas de adyacencia la complejidad del armado de cada uno es O(P), pero contanto la inicialización de un arreglo de tamaño A, sería O(A + P).\newline
+Para construir ambos digrafos, al utilizar un arreglo de listas de adyacencia la complejidad del armado de cada uno es O(P), pero contando la inicialización de un arreglo de tamaño A, sería O(A + P).\newline
 
 Luego se aplica dfs común y corriente salvo lo de agregar el nodo al stack. Como cada nodo es procesado una sola vez, en definitiva estaremos agregando cada nodo al stack 1 sola vez, con lo cual como el agregado es O(1), nos termina quedando O(A + P) del dfs y O(A) del stack, con lo cual nos queda O(A + P).\newline
 

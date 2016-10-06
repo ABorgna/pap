@@ -25,7 +25,7 @@ O A mayor a C y B mayor a D, o la inversa. Entonces una acción esta arriba de l
 
 \par{Nos interesa notar algunas propiedades de la relación \textbf{estar arriba}. Para empezar, 
 la relación es transitiva. Si A está arriba de B, y B de C, A está arriba de C.
-Si con un poco de cuidado, permitimos que dos elementos esten relacionados si sus precios son iguales en todo momento, entonces
+Si con un poco de cuidado, permitimos que dos elementos estén relacionados si sus precios son iguales en todo momento, entonces
 la relación nos queda reflexiva y antisimétrica. Con lo cual, nos define un \textbf{orden parcial}. }
 
 \par{Lo que el problema nos pide es una cantidad mínima de gráficos que necesitamos para dibujar todas las acciones. 
@@ -58,7 +58,7 @@ Por eso esta primer parte es \bigo($A^2 \times D $)}
 Pero utilizamos la cota que nos dice que la cantidad de iteraciones esta acotada por el flujo máximo. 
 El flujo máximo es A, por construcción del grafo (las aristas que salen de s).
 Entonces sabemos que la complejidad del algoritmo es \bigo($ (E + V) \times A$), donde E y V son las aristas y nodos respectivamente.
-Ademas estas son \bigo($A^2$) y \bigo($A$) respectivamente, por lo cual el algoritmo de flujo termina siendo \bigo($ (A^2 + A) \times A$) 
+Además estas son \bigo($A^2$) y \bigo($A$) respectivamente, por lo cual el algoritmo de flujo termina siendo \bigo($ (A^2 + A) \times A$) 
 = \bigo($ (A^2) \times A$). }
 
 \par{Entonces, en total todo el algoritmo es \bigo($ A^2 \times (A + D) $) que es exactamente lo pedido.}
@@ -109,7 +109,7 @@ Ademas estas son \bigo($A^2$) y \bigo($A$) respectivamente, por lo cual el algor
 \hspace{1cm}
 
 \begin{algorithmic}
-\Function{flujo$\_$maximo}{capacidad_red_residual, G,source, sink}
+\Function{flujo$\_$máximo}{capacidad_red_residual, G,source, sink}
 	\State flujo$\_$total $\leftarrow$ 0
 	\Repeat 
 			\State aumentar $\leftarrow$ calcular$\_$camino$\_$aumento(capacidad_red_residual, G, source,sink)
@@ -158,13 +158,13 @@ Ademas estas son \bigo($A^2$) y \bigo($A$) respectivamente, por lo cual el algor
 
 	\For{ v $\leftarrow$ [1..A]}
 		\For{w $\leftarrow$ [1..A]}
-			\If{v $\neq$ w and esta_arriba(v, w, D, graficos)} 
+			\If{v $\neq$ w and esta_arriba(v, w, D, precios)} 
 				\State conectar(capacidad_red_residual, G, v$'$, w$''$)
 			\EndIf
 		\EndFor
 	\EndFor
 	
-	\Return A - flujo$\_$maximo(capacidad_red_residual, G, source, sink)
+	\Return A - flujo$\_$máximo(capacidad_red_residual, G, source, sink)
 
 \EndFunction
 

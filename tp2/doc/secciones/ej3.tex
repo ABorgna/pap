@@ -70,7 +70,7 @@ Y por último, las preguntas \textbf{C} se responden leyendo el tamaño de la co
 \EndFunction
 \\
 
-\Function{dfsPrecalculo}{$v : int, d : int, padre : int, verticesSinComponente : stack<int>,$
+\Function{dfsPrecálculo}{$v : int, d : int, padre : int, verticesSinComponente : stack<int>,$
                          $depth : array<int>, low : array<int>$}
     \State $depth[v] \gets d$
     \State $low[v] \gets d$
@@ -154,14 +154,14 @@ Y por último, las preguntas \textbf{C} se responden leyendo el tamaño de la co
 \begin{algorithmic}
 
 \Function{queryC}{$u : int$}
-    \State \Return{tamano componente 2EC de $u - 1$}
+    \State \Return{tamaño componente 2EC de $u - 1$}
 \EndFunction
 
 \end{algorithmic}
 
 \subsection{Complejidad}
 
-Para realizar el precómputo se corre un DFS sobre el grafo, por lo que el \textit{for} de \textit{dfsPrecalculo} se ejecuta \bigo($M$) veces. Adentro de este se realiza, ademas de operaciones en \bigo(1), \textit{push} y \textit{pop} a \textit{verticesSinComponente}. Como cada vértice se apila y desapila una sola vez, esto termina teniendo un costo extra de \bigo($N$), por lo que todo el precómputo termina teniendo complejidad \bigo($N+M$). Pero como sabemos que el grafo es conexo, $N \in$ \bigo($M$) y por lo tanto el costo total es \bigo($M$).
+Para realizar el precómputo se corre un DFS sobre el grafo, por lo que el \textit{for} de \textit{dfsPrecálculo} se ejecuta \bigo($M$) veces. Adentro de este se realiza, además de operaciones en \bigo(1), \textit{push} y \textit{pop} a \textit{vérticesSinComponente}. Como cada vértice se apila y desapila una sola vez, esto termina teniendo un costo extra de \bigo($N$), por lo que todo el precómputo termina teniendo complejidad \bigo($N+M$). Pero como sabemos que el grafo es conexo, $N \in$ \bigo($M$) y por lo tanto el costo total es \bigo($M$).
 
 Luego del precómputo, saber si una arista es puente o el tamaño de la componente 2EC de un nodo es simplemente acceder a un array y por lo tanto se pueden hacer en \bigo(1).
 

@@ -46,13 +46,13 @@ Ahora sí, estamos en condiciones de decir que con esta nueva representación de
 
 Como primer paso entonces debemos construir el grafo (digrafo) de manera tal que para cada arista e = (a,b), e $\in$ E, conectamos `a$_{out}$' con `b$_{in}$' y `b$_{out}$' con `a$_{in}$'.
 
-Luego, hay que agregar los nodos s y t que usabamos para el grafo G'. Entonces conectamos s con todo vértice `v$_{in}$' si v $\in$ A y a todo vértice `w$_{out}$' con t si w $\in$ C.
+Luego, hay que agregar los nodos s y t que usábamos para el grafo G'. Entonces conectamos s con todo vértice `v$_{in}$' si v $\in$ A y a todo vértice `w$_{out}$' con t si w $\in$ C.
 
 Ahora sí, ya tenemos nuestro digrafo construido al que tenemos que aplicarle un algoritmo de flujo máximo que nos dará la respuesta que buscamos.
 
 \subsection{Respetando las complejidades}
 
-Para construir el grafo utilizamos una lista de adyacencia la cual usaremos luego también como red residual. Es por eso que al conectar un nodo con otro en la lista de adyancencia, no solo agregamos cual es dicho vecino sino también la capacidad que tiene dicha arista (en nuestro caso todas las aristas comienzan con capacidad 1). Esto tiene complejidad \bigo(M+N) puesto que todas las aristas del grafo las agregamos dos veces en nuestro digrafo y las aristas a los dos supernodos (s y t) son a lo mucho N (en el caso donde todos los nodos son escuelas o alumnos). 
+Para construir el grafo utilizamos una lista de adyacencia la cual usaremos luego también como red residual. Es por eso que al conectar un nodo con otro en la lista de adyacencia, no solo agregamos cual es dicho vecino sino también la capacidad que tiene dicha arista (en nuestro caso todas las aristas comienzan con capacidad 1). Esto tiene complejidad \bigo(M+N) puesto que todas las aristas del grafo las agregamos dos veces en nuestro digrafo y las aristas a los dos supernodos (s y t) son a lo mucho N (en el caso donde todos los nodos son escuelas o alumnos). 
 
 El algoritmo de flujo máximo elegido es Edmons Karp que como bien vimos en clase tiene complejidad \bigo$(M^2 \times N)$.
 
@@ -67,7 +67,7 @@ Por lo tanto la complejidad total está dominada por el algoritmo de flujo y nue
 	
 	\Comment{BFS}
 
-	\While{not cola.vacia}
+	\While{not cola.vacía}
 		\State actual $\leftarrow$ cola.tope()
 		\State cola.desencolar
 		
@@ -103,7 +103,7 @@ Por lo tanto la complejidad total está dominada por el algoritmo de flujo y nue
 \hspace{1cm}
 
 \begin{algorithmic}
-\Function{flujo$\_$maximo}{capacidad_red_residual, G,source, sink}
+\Function{flujo$\_$máximo}{capacidad_red_residual, G,source, sink}
 	\State flujo$\_$total $\leftarrow$ 0
 	\Repeat 
 			\State aumentar $\leftarrow$ calcular$\_$camino$\_$aumento(capacidad_red_residual, G, source,sink)
@@ -152,7 +152,7 @@ Por lo tanto la complejidad total está dominada por el algoritmo de flujo y nue
 		\State conectar(capacidad_red_residual, G, w$_{saliente}$, v$_{entrante}$)
 	\EndFor
 	
-	\Return flujo$\_$maximo(capacidad_red_residual, G, source, sink)
+	\Return flujo$\_$máximo(capacidad_red_residual, G, source, sink)
 
 \EndFunction
 
