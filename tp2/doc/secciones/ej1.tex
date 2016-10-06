@@ -28,19 +28,40 @@ Para lograrlo definamos G', el grafo que se define como G'= (V',E') con V' = V $
 
 En palabras sería tomar el grafo anterior y agregarle dos nodos más, uno de ellos conectado a todas las escuelas y el otro conectado a todos los alumnos.
 
-\textbf{\textit{Aclaración: en todo momento, cuando se esté hablando en los siguientes párrafos sobre el flujo que se puede aplicar en el grafo, siempre consideramos a las aristas con capacidad 1. Por lo tanto al hablar de corte mínimo sobre aristas, la capacidad que éste tenga será igual a la cantidad de aristas que son necesarias sacar para la desconexión del grafo en dos componentes conexas.}}
 
-Ahora bien, teniendo este nuevo grafo, podemos reducir el problema anterior a encontrar un corte mínimo de G sobre los vértices, es decir encontrar el subconjunto más pequeño de vértices tales que si los removemos el grafo nos queda separado en dos componentes. ?`Pero por qué buscamos eso?
+\par{Afirmamos que buscamos la minima cantidad de vertices tal que al removerlos, no haya camino de una un estudiante a una escuela. 
+Esto es asi ya que, si al removerlos nodos, deja de haber camino, quiere decir que cualquier camino de una estudiante a una escuela usaba por lo menos uno de estos vertices. 
+Entonces podemos usar a estos mismos como lugares para posicionarnos, y cubrimos todos los caminos, que es lo que queríamos. Ademas si sacamos menos que estos vertices, sigue habiendo por lo menos un camino de un un Estudiante  a una Escuela que no utiliza ninguno de estos vértices, por definicion. Entonces posicionarnos en menos lugares no nos sirve. }
+\par{
+Asi demostramos que nuestro problema es equivalente a la minima cantidad de vertices que desconecta las escuelas de los estudiantes. 
+Como todo camino de s a t (source y sink de G’) tiene como subcamino un camino de escuela a un estudiante, y todo camino de escuela a estudiante es subcamino de s a t, entonces es equivalente a buscar la mínima cantidad de vertices de G’ tal que al removerlos deja a s y t en dos componentes conexas distintas.}
+\par{
+Esto es exactamente igual a lo que se como “mínimo corte sobre los vertices que desconecta a s y t”. Llamado en inglés, minimum vertex cut.
+Ahora, una vez más, volvemos a reducir el problema. El “minimun vertex cut”  sobre s y t, es equivalente a la máxima cantidad de caminos disjuntos en vértices desde s a t, gracias al Teorema de Menger.}
 
-Si tenemos un corte mínimo sobre los vértices de G', podemos poner sobre dichos nodos a un estudiante de computación y esto nos asegura que los alumnos se cruzarán sí o sí a un divulgador puesto que los candidatos para separar al grafo en dos componentes son todos los nodos menos s y t y en consecuencia son todos candidatos válidos (s y t no son candidatos ya que la remoción de cualquiera de ellos dos no aporta a la división en dos componentes del grafo y por lo tanto nunca podrían participar del corte mínimo). 
+\subsection{Algoritmo para encontrar máxima cantidad de caminos disjuntos en un grafo}
 
-\subsection{Algoritmo para encontrar el corte mínimo sobre vértices en un grafo}
+Por lo dicho anteriormente, queremos encontrar la máxima cantidad de caminos disjuntos. De nuevo, vamos a seguir extendiendo el grafo para que tenga las 
+propiedades buscadas. Sea G'' un digrafo.
+Como por un nodo `x' de G puede pasar tantas unidades de flujo como sucesores directos tenga (como cota superior) en el grafo, la idea será duplicar al nodo en dos partes. Por un lado tenemos el nodo `x$_{in}$' al cual se le conectarán todas las aristas de los predecesores directos
+ y por el otro tenemos a `x$_{out}$' del cual saldrán las aristas correspondientes a los sucesores directos. 
+Si la única arista que sale de `x$_{in}$' va a `x$_{out}$' 
+entonces, aunque `x' tenga muchos sucesores directos a los cuales está conectado en G o G', en el nuevo grafo G'' solo podrá dejar pasar flujo a uno de ellos puesto que la arista entre sus dos nuevas partes lo limita a tan solo uno.
+Es decir, G'' es un digrafo que tiene, para cada vértice x de G, dos vértices x$_{in}$' y `x$_{out}$, anteriormenete descriptos. Además, tiene los mismos vértices s y t de G', 
+donde s se conecta a todos los x$_{in}$' correspondientes a los alumnos. Por otro lado t tiene una arista entrante desde todos los `x$_{out}$ correspondientes a las escuelas. 
+Estos vértices son todos los vértices que contiene G''. 
+Las aristas de G'' son aquellas aristas que teníamos en G', de x a y, pero de x$_{out}$' a `y$_{in}$, más las aristas del source y sink (s y t), más las aristas de x$_{in}$' a `x$_{out}$. Estas son todas las aristas.
+Todas las aristas tendran capacidad 1.
 
-Cómo bien sabemos, por el teorema max flow - min cut, si queremos encontrar el corte mínimo sobre aristas basta con encontrar el flujo máximo que nos define dicho grafo.
-
-Pero en nuestro caso buscamos el mínimo corte sobre vértices. Como por un nodo `x' puede pasar tantas unidades de flujo como sucesores directos tenga (como cota superior) en el grafo, la idea será duplicar al nodo en dos partes. Por un lado tenemos el nodo `x$_{in}$' al cual se le conectarán todas las aristas de los predecesores directos y por el otro tenemos a `x$_{out}$' del cual saldrán las aristas correspondientes a los sucesores directos. Si conectamos `x$_{in}$' con `x$_{out}$' con una arista entonces, aunque `x' tenga muchos sucesores directos a los cuales está conectado, solo podrá dejar pasar flujo a uno de ellos puesto que la arista entre sus dos nuevas partes lo limita a tan solo uno.
-
-Ahora sí, estamos en condiciones de decir que con esta nueva representación de nuestro grafo, si buscamos el corte mínimo sobre aristas este será igual al corte mínimo sobre vértices, puesto que el flujo máximo se limita a enviar tan solo una unidad de flujo por cada nodo.
+\par{Vamos a ver que un flujo máximo sobre G'' es igual a la máxima cantidad de caminos de s a t, disjuntos en vértices.
+Sea f un flujo en G''. El flujo |f| es igual a la cantidad de aristas que llegan a t, tal que f(e) = 1. Si tomamos una arista e, desde x$_{out}$ a t, podemos ver que, el flujo
+hasta x$_{out}$ es igual a 1, pues sale flujo de ella, y no llega mas de una arista. Entonces vamos a x$_{in}$, cuyo flujo es 1, ya que no sale mas de una arista de x$_{in}$.
+Asi podemos iterar hasta llegar a s, con lo cual tenemos un camino en G''. Como ninguna de estas aristas puede usarse en dos caminos, porque sus capacidades son 1,
+entonces tenemos caminos disjuntos en G''. Ademas, para cada camino en G'' podemos construir un camino distinto en G', porque si no, tendriamos aristas de G'' que van a parar a las mismas aristas o vértices de G', lo cual es falso. 
+Entones el valor del flujo |f| nos da una cantidad de caminos disjuntos en G'' y en G'. 
+Además, análogamente, si tenemos caminos disjuntos en G'', podemos definir un flujo, cuyo valor |f| es igual al cardinal del conjunto de caminos. Es decir, hay una biyección entre
+los flujos distintos y los caminos disjuntos en vértices.
+Entonces si f es flujo máximo, |f| nos da la máxima cantidad de caminos disjuntos en G' o en G'', que es lo que queríamos. }
 
 \subsection{Resolución al problema}
 
