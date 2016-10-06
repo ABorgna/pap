@@ -65,16 +65,15 @@ Por lo tanto la complejidad total está dominada por el algoritmo de flujo y nue
 	\State cola c, visited[tamaño(G)] = [false .. false], padre[tamaño(G)] = [-1 .. -1]
 	\State c.encolar(source)
 	
-	\State \textit{\textbf{BFS}}
+	\Comment{BFS}
 
 	\While{not cola.vacia}
 		\State actual $\leftarrow$ cola.tope()
 		\State cola.desencolar
 		
 		\State visited[actual] $\leftarrow$ true
-		
-		\State \textit{\textbf{Para cada vecino del nodo actual en G}}
-		\For{v : adj[actual]}
+	
+		\For{v : adj[actual]} \Comment{Para cada vecino del nodo actual en G}
 				\If {not visited[v] and capacidad_red_residual[actual][v] == 1}
 					\State p[v] $\leftarrow$ actual
 					\State cola.encolar(v)
@@ -82,12 +81,11 @@ Por lo tanto la complejidad total está dominada por el algoritmo de flujo y nue
 		\EndFor 
 	\EndWhile
 
-	\State \textit{\textbf{Si no hubo camino de aumento (no llegue al nodo final)}}
-	\If{not visited[sink]}
-		\Return 0
+	\If{not visited[sink]} 
+		\State \Return 0 \Comment{Si no hubo camino de aumento (no llegué al nodo final)}
 	\EndIf
 
-	\State \textit{\textbf{En caso de que sí, reconstruyo el camino y a todas esas aristas las marco como usadas y no pueden volver a usarse.}}
+	\Comment{Caso contrario reconstruyo el camino y reconstruyo la capacidad de la red residual.}
 	\State actual $\leftarrow$ sink
 	\State padre $\leftarrow$ p[actual]
 	
@@ -99,8 +97,7 @@ Por lo tanto la complejidad total está dominada por el algoritmo de flujo y nue
 		\State padre $\leftarrow$ p[actual]
 	\EndWhile
 
-	\State \textit{\textbf{Toda arista tiene capacidad 1 \\}}
-	\Return 1
+	\State \Return 1 \Comment{Toda arista tiene capacidad 1.}
 \EndFunction
 \end{algorithmic}
 \hspace{1cm}
