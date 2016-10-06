@@ -57,3 +57,106 @@ Para construir el grafo utilizamos una lista de adyacencia la cual usaremos lueg
 El algoritmo de flujo máximo elegido es Edmons Karp que como bien vimos en clase tiene complejidad \bigo$(M^2 \times N)$.
 
 Por lo tanto la complejidad total está dominada por el algoritmo de flujo y nuestro problema tiene complejidad temporal total de \bigo$(M^2 \times N)$
+
+\subsection{Pseudocódigo}
+	
+\begin{algorithmic}
+\Function{calcular$\_$camino$\_$aumento}{capacidad_red_residual, G, source, sink}
+	\State cola c, visited[tamaño(G)] = [false .. false], padre[tamaño(G)] = [-1 .. -1]
+	\State c.encolar(source)
+	
+	\State \textbf{BFS}
+
+	\While{not cola.vacia}
+		\State actual $\leftarrow$ cola.tope()
+		\State cola.desencolar
+		
+		\State visited[actual] $\leftarrow$ true;
+		
+		\For{v : adj[actual]}
+				\If {not visited[v] and capacidad_red_residual[actual][v] == 1}
+					\State p[v] $\leftarrow$ actual;
+					\State cola.encolar(v);
+				\EndIf
+		\EndFor 
+	\EndWhile
+
+	\State \textbf{Si no hubo camino de aumento (no llegue al nodo final)}
+	\If{not visited[sink]}
+		\Return 0
+	\EndIf
+
+	\State \textbf{En caso de que sí, reconstruyo el camino y a todas esas aristas las marco como usadas y no pueden volver a usarse.}
+	\State actual $\leftarrow$ sink
+	\State padre $\leftarrow$ p[actual];
+	
+	\While{padre!=-1}
+		\State capacidad_red_residual[padre][actual] $\leftarrow$ 0;
+		\State capacidad_red_residual[actual][padre] $\leftarrow$ 1;
+		
+		\State actual $\leftarrow$ padre;
+		\State padre $\leftarrow$ p[actual];
+	\EndWhile
+
+	\State \textbf{Toda arista tiene capacidad 1 \\}
+	\Return 1
+\EndFunction
+\end{algorithmic}
+\hspace{1cm}
+
+\begin{algorithmic}
+\Function{flujo$\_$maximo}{capacidad_red_residual, G,source, sink}
+	\State flujo$\_$total $\leftarrow$ 0
+	\Repeat 
+			\State aumentar $\leftarrow$ calcular$\_$camino$\_$aumento(capacidad_red_residual, G, source,sink)
+			\State flujo$\_$total = flujo$\_$total + aumentar
+	\Until{aumentar $\neq$ 0}
+	
+\EndFunction
+\end{algorithmic}
+\hspace{1cm}
+
+\begin{algorithmic}
+\Function{conectar}{capacidad_red_residual, G, A, B}
+	\State capacidad_red_residual [a][b] $\leftarrow$ 1
+	\State conectar A con B en G
+	\State conectar B con A en G
+\EndFunction
+\end{algorithmic}
+\hspace{1cm}
+
+\begin{algorithmic}
+\Function{main}{N, M, tipo$\_$esquina T[], lista$\_$incidencia L[]}
+	\State \textbf{Vamos a tener a todo nodo del grafo original duplicado como V$_{entrante}$ y V$_{saliente}$}
+	\State \textbf{Y el digrafo representado como una lista de adyacencia.}
+	\State Tamaño(G) = 2 * N + 2
+	\State \textbf{Por otro lado la red residual como una matriz de Tamaño(G) * Tamaño(G)}
+	\State capacidad_red_residual [Tamaño(G)][Tamaño(G)] $\leftarrow$ [0 .. 0] 
+	\State source $\leftarrow$ 0, sink $\leftarrow$ 2*N+1
+	\For{tipo$\_$esquina t : T}
+		\If{t = Escuela}
+			\State conectar(capacidad_red_residual, G, t$_{saliente}$, sink) 
+		\Else{
+			\If{t = Alumno}
+				\State conectar(capacidad_red_residual, G, source, t$_{entrante}$)
+			\EndIf
+		}
+		\EndIf
+	\EndFor
+	\For{v $\leftarrow$ [1..N]}
+		\State conectar(capacidad_red_residual, G, v$_{entrante}$, v$_{saliente}$)
+	\EndFor
+
+	\For{arista a : L}
+		\State v = extremo_izquierdo, w = extremo_derecho
+		\State conectar(capacidad_red_residual, G, v$_{saliente}$, w$_{entrante}$)
+		\State conectar(capacidad_red_residual, G, w$_{saliente}$, v$_{entrante}$)
+	\EndFor
+	
+	\Return flujo$\_$maximo(capacidad_red_residual, G, source, sink)
+
+\EndFunction
+
+\end{algorithmic}
+
+
