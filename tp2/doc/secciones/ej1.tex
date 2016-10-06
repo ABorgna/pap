@@ -65,40 +65,41 @@ Por lo tanto la complejidad total está dominada por el algoritmo de flujo y nue
 	\State cola c, visited[tamaño(G)] = [false .. false], padre[tamaño(G)] = [-1 .. -1]
 	\State c.encolar(source)
 	
-	\State \textbf{BFS}
+	\State \textit{\textbf{BFS}}
 
 	\While{not cola.vacia}
 		\State actual $\leftarrow$ cola.tope()
 		\State cola.desencolar
 		
-		\State visited[actual] $\leftarrow$ true;
+		\State visited[actual] $\leftarrow$ true
 		
+		\State \textit{\textbf{Para cada vecino del nodo actual en G}}
 		\For{v : adj[actual]}
 				\If {not visited[v] and capacidad_red_residual[actual][v] == 1}
-					\State p[v] $\leftarrow$ actual;
-					\State cola.encolar(v);
+					\State p[v] $\leftarrow$ actual
+					\State cola.encolar(v)
 				\EndIf
 		\EndFor 
 	\EndWhile
 
-	\State \textbf{Si no hubo camino de aumento (no llegue al nodo final)}
+	\State \textit{\textbf{Si no hubo camino de aumento (no llegue al nodo final)}}
 	\If{not visited[sink]}
 		\Return 0
 	\EndIf
 
-	\State \textbf{En caso de que sí, reconstruyo el camino y a todas esas aristas las marco como usadas y no pueden volver a usarse.}
+	\State \textit{\textbf{En caso de que sí, reconstruyo el camino y a todas esas aristas las marco como usadas y no pueden volver a usarse.}}
 	\State actual $\leftarrow$ sink
-	\State padre $\leftarrow$ p[actual];
+	\State padre $\leftarrow$ p[actual]
 	
 	\While{padre!=-1}
-		\State capacidad_red_residual[padre][actual] $\leftarrow$ 0;
-		\State capacidad_red_residual[actual][padre] $\leftarrow$ 1;
+		\State capacidad_red_residual[padre][actual] $\leftarrow$ 0
+		\State capacidad_red_residual[actual][padre] $\leftarrow$ 1
 		
-		\State actual $\leftarrow$ padre;
-		\State padre $\leftarrow$ p[actual];
+		\State actual $\leftarrow$ padre
+		\State padre $\leftarrow$ p[actual]
 	\EndWhile
 
-	\State \textbf{Toda arista tiene capacidad 1 \\}
+	\State \textit{\textbf{Toda arista tiene capacidad 1 \\}}
 	\Return 1
 \EndFunction
 \end{algorithmic}
@@ -127,10 +128,11 @@ Por lo tanto la complejidad total está dominada por el algoritmo de flujo y nue
 
 \begin{algorithmic}
 \Function{main}{N, M, tipo$\_$esquina T[], lista$\_$incidencia L[]}
-	\State \textbf{Vamos a tener a todo nodo del grafo original duplicado como V$_{entrante}$ y V$_{saliente}$}
-	\State \textbf{Y el digrafo representado como una lista de adyacencia.}
+	\State \textit{\textbf{Vamos a tener a todo nodo del grafo original duplicado como V$_{entrante}$ y V$_{saliente}$}}
+	\State \textit{\textbf{Y el digrafo representado como una lista de adyacencia.}}
+	\State \textit{\textbf{Por otro lado la red residual como una matriz de Tamaño(G) * Tamaño(G)}}
+	\State \textit{\textbf{Y como las capacidades en la red residual 0 o 1, entonces al generar caminos de aumento se simplificará para que devuelva 1 de aumento en el flujo si hay camino y 0 caso de que no.}}
 	\State Tamaño(G) = 2 * N + 2
-	\State \textbf{Por otro lado la red residual como una matriz de Tamaño(G) * Tamaño(G)}
 	\State capacidad_red_residual [Tamaño(G)][Tamaño(G)] $\leftarrow$ [0 .. 0] 
 	\State source $\leftarrow$ 0, sink $\leftarrow$ 2*N+1
 	\For{tipo$\_$esquina t : T}
