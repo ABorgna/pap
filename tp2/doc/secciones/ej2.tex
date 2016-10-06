@@ -31,7 +31,7 @@ la relación nos queda reflexiva y antisimétrica. Con lo cual, nos define un \t
 \par{Lo que el problema nos pide es una cantidad mínima de gráficos que necesitamos para dibujar todas las acciones. 
 Por la equivalencia que vimos antes, gráficos de este estilo, son conjuntos de acciones donde no se cruzan, es decir, 
 una esta arriba de otra, para dos cualesquiera del conjunto. Y como la relación es transitiva, existe una acción,
-A_1 > A_2 > ... > A_k, en un conjunto del mismo gráfico, con k acciones.} 
+A$_1$ $>$ A$_2$ $>$ ... $>$ A$_k$, en un conjunto del mismo gráfico, con k acciones.} 
 
 \subsection{La gallinita dijo Eureka}
 
@@ -42,7 +42,7 @@ para cubrir un conjunto parcialmente ordenado. Donde una cadena, es un conjunto 
 (un conjunto de elementos incomparables), y que estas se pueden calcular mediante un Flujo Máximo!}
 
 \par{Usamos esta construcción de grafo de Dilworth, para calcular la mayor anticadena. El grafo que nos queda 
-tiene para cada acción a $in$ Acciones, dos nodos a$'$, a$''$ $in$ V. Por otro lado, tenemos dos nodos, s y t (source y sink del nuevo grafo).
+tiene para cada acción a $\in$ Acciones, dos nodos a$'$, a$''$ $\in$ V. Por otro lado, tenemos dos nodos, s y t (source y sink del nuevo grafo).
 s esta conectado con todos los a$'$, con aristas de capacidad 1. Y t esta conectado con todos los a$''$ con aristas de capacidad 1.
 Por último, todos los si tenemos dos acciones a,b y a \textbf{está arriba} de b, entonces a$'$ esta conectada con b$''$ con una arista de capacidad 1.
 Si f es un flujo máximo de s a t en este nuevo grafo, por el teorema de Dilworth, la mayor anticadena es igual a $|acciones| - |f|$ = $A - |f|$, y es lo que buscábamos.  
@@ -62,3 +62,112 @@ Ademas estas son \bigo($A^2$) y \bigo($A$) respectivamente, por lo cual el algor
 = \bigo($ (A^2) \times A$). }
 
 \par{Entonces, en total todo el algoritmo es \bigo($ A^2 \times (A + D) $) que es exactamente lo pedido.}
+
+
+\subsection{Pseudocódigo}
+	
+\begin{algorithmic}
+\Function{calcular$\_$camino$\_$aumento}{capacidad_red_residual, G, source, sink}
+	\State cola c, visited[tamaño(G)] = [false .. false], padre[tamaño(G)] = [-1 .. -1]
+	\State c.encolar(source)
+	
+	\Comment{BFS}
+
+	\While{not cola.vacia}
+		\State actual $\leftarrow$ cola.tope()
+		\State cola.desencolar
+		
+		\State visited[actual] $\leftarrow$ true
+	
+		\For{v : adj[actual]} \Comment{Para cada vecino del nodo actual en G}
+				\If {not visited[v] and capacidad_red_residual[actual][v] == 1}
+					\State p[v] $\leftarrow$ actual
+					\State cola.encolar(v)
+				\EndIf
+		\EndFor 
+	\EndWhile
+
+	\If{not visited[sink]} 
+		\State \Return 0 \Comment{Si no hubo camino de aumento (no llegué al nodo final)}
+	\EndIf
+
+	\Comment{Caso contrario reconstruyo el camino y reconstruyo la capacidad de la red residual.}
+	\State actual $\leftarrow$ sink
+	\State padre $\leftarrow$ p[actual]
+	
+	\While{padre!=-1}
+		\State capacidad_red_residual[padre][actual] $\leftarrow$ 0
+		\State capacidad_red_residual[actual][padre] $\leftarrow$ 1
+		
+		\State actual $\leftarrow$ padre
+		\State padre $\leftarrow$ p[actual]
+	\EndWhile
+
+	\State \Return 1 \Comment{Toda arista tiene capacidad 1.}
+\EndFunction
+\end{algorithmic}
+\hspace{1cm}
+
+\begin{algorithmic}
+\Function{flujo$\_$maximo}{capacidad_red_residual, G,source, sink}
+	\State flujo$\_$total $\leftarrow$ 0
+	\Repeat 
+			\State aumentar $\leftarrow$ calcular$\_$camino$\_$aumento(capacidad_red_residual, G, source,sink)
+			\State flujo$\_$total = flujo$\_$total + aumentar
+	\Until{aumentar $\neq$ 0}
+	
+\EndFunction
+\end{algorithmic}
+\hspace{1cm}
+
+\begin{algorithmic}
+\Function{conectar}{capacidad_red_residual, G, A, B}
+	\State capacidad_red_residual [a][b] $\leftarrow$ 1
+	\State conectar A con B en G
+	\State conectar B con A en G
+\EndFunction
+\end{algorithmic}
+\hspace{1cm}
+
+
+\begin{algorithmic}
+\Function{está_arriba_de}{a, b, D, precios[][]}
+	\For{ i $\leftarrow$ [1 .. D]}
+		\If{precios[a][i] $\leq$ precios[b][i]}
+			\State \Return false
+		\EndIf
+	\EndFor	
+	\State \Return true
+\EndFunction
+\end{algorithmic}
+\hspace{1cm}
+
+\begin{algorithmic}
+\Function{main}{A, D, precios [][]}
+	\State \textit{\textbf{La red residual será modelada como una matriz de Tamaño(G) * Tamaño(G)}}
+	\State \textit{\textbf{Y como las capacidades en la red residual 0 o 1, entonces al generar caminos de aumento se simplificará para que devuelva 1 de aumento en el flujo si hay camino y 0 caso de que no.}}
+	\State \textit{\textbf{El grafo como una lista de adyacencia.}}
+	\State Tamaño(G) = 2 * A + 2
+	\State capacidad_red_residual [Tamaño(G)][Tamaño(G)] $\leftarrow$ [0 .. 0] 
+	\State source $\leftarrow$ 0, sink $\leftarrow$ 2*A+1
+
+	\For{v $\leftarrow$ [1..A]}
+		\State conectar(capacidad_red_residual, G, source, v$'$) \Comment{Conecto al source con los nodos del conjunto A.}
+		\State conectar(capacidad_red_residual, G, v$''$, sink) \Comment{Conecto a los nodos del conjunto B con el sink.}
+	\EndFor
+
+	\For{ v $\leftarrow$ [1..A]}
+		\For{w $\leftarrow$ [1..A]}
+			\If{v $\neq$ w and esta_arriba(v, w, D, graficos)} 
+				\State conectar(capacidad_red_residual, G, v$'$, w$''$)
+			\EndIf
+		\EndFor
+	\EndFor
+	
+	\Return A - flujo$\_$maximo(capacidad_red_residual, G, source, sink)
+
+\EndFunction
+
+\end{algorithmic}
+
+
