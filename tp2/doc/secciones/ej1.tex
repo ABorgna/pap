@@ -73,11 +73,18 @@ Ahora sí, ya tenemos nuestro digrafo construido al que tenemos que aplicarle un
 
 \subsection{Respetando las complejidades}
 
-Para construir el grafo utilizamos una lista de adyacencia la cual usaremos luego también como red residual. Es por eso que al conectar un nodo con otro en la lista de adyacencia, no solo agregamos cual es dicho vecino sino también la capacidad que tiene dicha arista (en nuestro caso todas las aristas comienzan con capacidad 1). Esto tiene complejidad \bigo(M+N) puesto que todas las aristas del grafo las agregamos dos veces en nuestro digrafo y las aristas a los dos supernodos (s y t) son a lo mucho N (en el caso donde todos los nodos son escuelas o alumnos). 
+Para construir el grafo utilizamos una lista de adyacencia, la cual nos dice quienes son los vecinos de un nodo dado. 
+Pero además utilizamos una matriz de capacidades cuadrada de $(2\times N + 2) \times (2\times N + 2)$, donde (2\times N + 2) es la cantidad de nodos del grafo. 
+Llamemos N' a esta cantidad de nodos, N' = $(2\times N + 2)$. M', la cantidad de aristas, es M' = M + 3 $\times$ N , las aristas del grafo original más las conexiones a 
+s, mas las conexiones a t, más las conexiones entre los `x$_{in}$' y `x$_{out}$'. Vemos que M $\in$ \bigo(M) y N $\in$ \bigo(N).
 
-El algoritmo de flujo máximo elegido es Edmons Karp que como bien vimos en clase tiene complejidad \bigo$(M^2 \times N)$.
+Entonces la construcción del grafo nos queda \bigo($N' + M' + N'^2$), donde el N'^2 viene por la matriz de capacidades. Esto es igual a \bigo($N + M + N^2$), por lo visto de M $\in$ \bigo(M) y N $\in$ \bigo(N).
 
-Por lo tanto la complejidad total está dominada por el algoritmo de flujo y nuestro problema tiene complejidad temporal total de \bigo$(M^2 \times N)$
+El algoritmo de flujo máximo elegido es Edmons Karp que como bien vimos en clase tiene complejidad \bigo$(M'^2 \times N')$, ya que M' y N' son las aristas y vértices del grafo. 
+Esto es lo mismo que \bigo$(M^2 \times N)$
+
+Por lo tanto, nuestro solución tiene complejidad temporal total de \bigo$(M^2 \times N + N + M + N^2 )$. Pero además, M \geq N porque M es conexo, entonces M $\in$ $\Omega$(N).
+Por lo cual nuestra solución es \bigo$(M^2 \times N )$, que fue lo pedido para este problema.
 
 \subsection{Pseudocódigo}
 	
