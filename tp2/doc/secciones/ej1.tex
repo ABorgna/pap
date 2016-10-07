@@ -32,15 +32,15 @@ Para lograrlo definamos G', el grafo que se define como G'= (V',E') con V' = V $
 En palabras sería tomar el grafo anterior y agregarle dos nodos más, uno de ellos conectado a todas las escuelas y el otro conectado a todos los alumnos.
 
 
-\par{Afirmamos que buscamos la minima cantidad de vertices tal que al removerlos, no haya camino de una un estudiante a una escuela. 
-Esto es asi ya que, si al removerlos nodos, deja de haber camino, quiere decir que cualquier camino de una estudiante a una escuela usaba por lo menos uno de estos vertices. 
-Entonces podemos usar a estos mismos como lugares para posicionarnos, y cubrimos todos los caminos, que es lo que queríamos. Ademas si sacamos menos que estos vertices, sigue habiendo por lo menos un camino de un un Estudiante  a una Escuela que no utiliza ninguno de estos vértices, por definicion. Entonces posicionarnos en menos lugares no nos sirve. }
+\par{Afirmamos que buscamos la mínima cantidad de vértices tal que al removerlos, no haya camino de una un estudiante a una escuela. 
+Esto es asi ya que, si al removerlos nodos, deja de haber camino, quiere decir que cualquier camino de un estudiante a una escuela usaba por lo menos uno de estos vértices. 
+Entonces podemos usar a estos mismos como lugares para posicionarnos, y cubrimos todos los caminos; eso es lo que queríamos. Además si sacamos menos que estos vértices, sigue habiendo por lo menos un camino de un un estudiante a una escuela que no utiliza ninguno de estos vértices, por definición. Entonces posicionarnos en menos lugares no nos sirve. }
 \par{
-Asi demostramos que nuestro problema es equivalente a la minima cantidad de vertices que desconecta las escuelas de los estudiantes. 
-Como todo camino de s a t (source y sink de G’) tiene como subcamino un camino de escuela a un estudiante, y todo camino de escuela a estudiante es subcamino de s a t, entonces es equivalente a buscar la mínima cantidad de vertices de G’ tal que al removerlos deja a s y t en dos componentes conexas distintas.}
+Asi demostramos que nuestro problema es equivalente a la mínima cantidad de vértices que desconecta las escuelas de los estudiantes. 
+Como todo camino de s a t (source y sink de G’) tiene como subcamino un camino de escuela a un estudiante, y todo camino de escuela a estudiante es subcamino de s a t, entonces es equivalente a buscar la mínima cantidad de vértices de G’ tal que al removerlos deja a s y t en dos componentes conexas distintas.}
 \par{
-Esto es exactamente igual a lo que se conoce como “mínimo corte sobre los vertices que desconecta a s y t”. Llamado en inglés, minimum vertex cut.
-Ahora, una vez más, volvemos a reducir el problema. El “minimun vertex cut”  sobre s y t, es equivalente a la máxima cantidad de caminos disjuntos en vértices desde s a t, gracias al Teorema de Menger.}
+Esto es exactamente igual a lo que se conoce como “mínimo corte sobre los vértices que desconecta a s y t”, también llamado minimum vertex cut en inglés.
+Ahora, una vez más, volvemos a reducir el problema. El “minimum vertex cut”  sobre s y t, es equivalente a la máxima cantidad de caminos disjuntos en vértices desde s a t, gracias al Teorema de Menger.}
 
 \subsection{Algoritmo para encontrar máxima cantidad de caminos disjuntos en un grafo}
 
@@ -50,17 +50,17 @@ Como por un nodo `x' de G puede pasar tantas unidades de flujo como sucesores di
  y por el otro tenemos a `x$_{out}$' del cual saldrán las aristas correspondientes a los sucesores directos. 
 Si la única arista que sale de `x$_{in}$' va a `x$_{out}$' 
 entonces, aunque `x' tenga muchos sucesores directos a los cuales está conectado en G o G', en el nuevo grafo G'' solo podrá dejar pasar flujo a uno de ellos puesto que la arista entre sus dos nuevas partes lo limita a tan solo uno.
-Es decir, G'' es un digrafo que tiene, para cada vértice x de G, dos vértices x$_{in}$' y `x$_{out}$, anteriormenete descriptos. Además, tiene los mismos vértices s y t de G', 
+Es decir, G'' es un digrafo que tiene, para cada vértice x de G, dos vértices x$_{in}$' y `x$_{out}$, anteriormente descriptos. Además, tiene los mismos vértices s y t de G', 
 donde s se conecta a todos los x$_{in}$' correspondientes a los alumnos. Por otro lado t tiene una arista entrante desde todos los `x$_{out}$ correspondientes a las escuelas. 
 Estos vértices son todos los vértices que contiene G''. 
-Las aristas de G'' son aquellas aristas que teníamos en G', de x a y, pero de x$_{out}$' a `y$_{in}$, más las aristas del source y sink (s y t), más las aristas de x$_{in}$' a `x$_{out}$. Estas son todas las aristas.
-Todas las aristas tendran capacidad 1.
+Las aristas de G'' son aquellas aristas que teníamos en G', de x a y, pero de x$_{out}$' a `y$_{in}$, más las aristas del source y sink (s y t), más las aristas de x$_{in}$' a `x$_{out}$. Éstas son todas las aristas.
+Todas las aristas tendrán capacidad 1.
 
 \par{Vamos a ver que un flujo máximo sobre G'' es igual a la máxima cantidad de caminos de s a t, disjuntos en vértices.
 Sea f un flujo en G''. El flujo $|f|$ es igual a la cantidad de aristas que llegan a t, tal que f(e) = 1. Si tomamos una arista e, desde x$_{out}$ a t, podemos ver que, el flujo
 hasta x$_{out}$ es igual a 1, pues sale flujo de ella, y no llega mas de una arista. Entonces vamos a x$_{in}$, cuyo flujo es 1, ya que no sale mas de una arista de x$_{in}$.
 Asi podemos iterar hasta llegar a s, con lo cual tenemos un camino en G''. Como ninguna de estas aristas puede usarse en dos caminos, porque sus capacidades son 1,
-entonces tenemos caminos disjuntos en G''. Ademas, para cada camino en G'' podemos construir un camino distinto en G', porque si no, tendriamos aristas de G'' que van a parar a las mismas aristas o vértices de G', lo cual es falso. 
+entonces tenemos caminos disjuntos en G''. Además, para cada camino en G'' podemos construir un camino distinto en G', porque si no, tendríamos aristas de G'' que van a parar a las mismas aristas o vértices de G', lo cual es falso. 
 Entones el valor del flujo $|f|$ nos da una cantidad de caminos disjuntos en G'' y en G'. 
 Además, análogamente, si tenemos caminos disjuntos en G'', podemos definir un flujo, cuyo valor $|f|$ es igual al cardinal del conjunto de caminos. Es decir, hay una biyección entre
 los flujos distintos y los caminos disjuntos en vértices.
