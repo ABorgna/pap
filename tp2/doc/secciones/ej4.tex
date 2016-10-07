@@ -46,13 +46,13 @@ Finalmente, para cada pregunta nos fijamos si ambos nodos están en la misma com
 
 \begin{algorithmic}
 
-\State $visitado[A] \gets \{false..false\}$
+\State $visitado[A + 1] \gets \{false..false\}$
 
-\State $grafo[A] \gets \{lista..lista\}$
-\State $grafoInverso[A] \gets \{lista..lista\}$
+\State $grafo[A + 1] \gets \{lista..lista\}$
+\State $grafoInverso[A + 1] \gets \{lista..lista\}$
 
 \State $stack$
-\State $componente[A]$
+\State $componente[A + 1]$
 
 \Function{$dfs$}{$nodo$}
 	\State $visitado[nodo] = true$
@@ -66,7 +66,7 @@ Finalmente, para cada pregunta nos fijamos si ambos nodos están en la misma com
 
 \Function{$dfs\_componentes$}{$nodo$}
 	\State $visitado[nodo] = true$
-	\For{$vecino : grafo[nodo]$}
+	\For{$vecino : grafoInverso[nodo]$}
 		\If{$visitado[vecino] == false$}
 			\State $componente[vecino] = componente[nodo]$
 			\State $dfs\_componentes(vecino)$
@@ -79,22 +79,22 @@ Finalmente, para cada pregunta nos fijamos si ambos nodos están en la misma com
     \For{$i = 0$ a $P$}
     	\State $a, b \gets leerInput()$
     	\State $grafo[a].agregar(b)$
-    	\State $grafo[b].agregar(a)$
+    	\State $grafoInverso[b].agregar(a)$
     \EndFor
 
-    \For{$i = 0$ a $A$}
+    \For{$i = 1$ a $A + 1$}
     	\If{$visitado[i] == false$}
     		\State $dfs(i)$
     	\EndIf
     \EndFor
 
-    \State $visitado[A] \gets \{false..false\}$
+    \State $visitado[A + 1] \gets \{false..false\}$
 
-    \While{$stack no este vacia$}
+    \While{stack no este vacia}
     	\State $nodo = stack.pop()$
     	\If{$visitado[nodo] == false$}
     		\State $componente[nodo] = nodo$
-    		\State $dfs_componentes(nodo)$
+    		\State $dfs\_componentes(nodo)$
     	\EndIf
     \EndWhile
 
