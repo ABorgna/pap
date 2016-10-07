@@ -14,11 +14,14 @@ Como se aprecia en la figura anterior tenemos dos conjuntos importantes, las cas
 
 \subsection{Modelando el problema}
 
-La entrada del problema, es decir las calles y las esquinas con sus tipos nos definen un grafo G = (V,E). Este grafo es conexo ya que desde cualquier esquina se puede llegar a cualquier otra. Definamos A como el subconjunto de vértices donde se encuentran los alumnos y C como el subconjunto de vértices donde se encuentran las escuelas(C por colegios).
+La entrada del problema, es decir las calles y las esquinas con sus tipos nos definen un grafo G = (V,E). 
+Este grafo es conexo 
+ya que desde cualquier esquina se puede llegar a cualquier otra. Definamos A como el subconjunto de vértices 
+donde se encuentran los alumnos y C como el subconjunto de vértices donde se encuentran las escuelas(C por colegios).
 
 Lo que buscamos es tomar un subconjunto de V de manera tal que para cualquier camino de un nodo que pertenece a A hacia un nodo que pertenece a C pase por algún nodo de ese subconjunto buscado. En particular buscamos que ese subconjunto sea mínimo.
 
-Para lograrlo definamos G', el grafo que se define como G'= (V',E') con V' = V $\cup$ $\{s,t\}$ y E' = E $\cup$ $\{(x,y)| x = s, x \in V , x \in Alumnos \}$ $\cup$ $\{(x,y)| y = t, x \in V , x \in Escuelas \}$.
+Para lograrlo definamos G', el grafo que se define como G'= (V',E') con V' = V $\cup$ $\{s,t\}$ y E' = E $\cup$ $\{(x,y)| x = s, y \in V , x \in Alumnos \}$ $\cup$ $\{(x,y)| y = t, x \in V , x \in Escuelas \}$.
 
 \begin{figure}[h!]
   \centering
@@ -36,7 +39,7 @@ Entonces podemos usar a estos mismos como lugares para posicionarnos, y cubrimos
 Asi demostramos que nuestro problema es equivalente a la minima cantidad de vertices que desconecta las escuelas de los estudiantes. 
 Como todo camino de s a t (source y sink de G’) tiene como subcamino un camino de escuela a un estudiante, y todo camino de escuela a estudiante es subcamino de s a t, entonces es equivalente a buscar la mínima cantidad de vertices de G’ tal que al removerlos deja a s y t en dos componentes conexas distintas.}
 \par{
-Esto es exactamente igual a lo que se como “mínimo corte sobre los vertices que desconecta a s y t”. Llamado en inglés, minimum vertex cut.
+Esto es exactamente igual a lo que se conoce como “mínimo corte sobre los vertices que desconecta a s y t”. Llamado en inglés, minimum vertex cut.
 Ahora, una vez más, volvemos a reducir el problema. El “minimun vertex cut”  sobre s y t, es equivalente a la máxima cantidad de caminos disjuntos en vértices desde s a t, gracias al Teorema de Menger.}
 
 \subsection{Algoritmo para encontrar máxima cantidad de caminos disjuntos en un grafo}
@@ -54,14 +57,14 @@ Las aristas de G'' son aquellas aristas que teníamos en G', de x a y, pero de x
 Todas las aristas tendran capacidad 1.
 
 \par{Vamos a ver que un flujo máximo sobre G'' es igual a la máxima cantidad de caminos de s a t, disjuntos en vértices.
-Sea f un flujo en G''. El flujo |f| es igual a la cantidad de aristas que llegan a t, tal que f(e) = 1. Si tomamos una arista e, desde x$_{out}$ a t, podemos ver que, el flujo
+Sea f un flujo en G''. El flujo $|f|$ es igual a la cantidad de aristas que llegan a t, tal que f(e) = 1. Si tomamos una arista e, desde x$_{out}$ a t, podemos ver que, el flujo
 hasta x$_{out}$ es igual a 1, pues sale flujo de ella, y no llega mas de una arista. Entonces vamos a x$_{in}$, cuyo flujo es 1, ya que no sale mas de una arista de x$_{in}$.
 Asi podemos iterar hasta llegar a s, con lo cual tenemos un camino en G''. Como ninguna de estas aristas puede usarse en dos caminos, porque sus capacidades son 1,
 entonces tenemos caminos disjuntos en G''. Ademas, para cada camino en G'' podemos construir un camino distinto en G', porque si no, tendriamos aristas de G'' que van a parar a las mismas aristas o vértices de G', lo cual es falso. 
-Entones el valor del flujo |f| nos da una cantidad de caminos disjuntos en G'' y en G'. 
-Además, análogamente, si tenemos caminos disjuntos en G'', podemos definir un flujo, cuyo valor |f| es igual al cardinal del conjunto de caminos. Es decir, hay una biyección entre
+Entones el valor del flujo $|f|$ nos da una cantidad de caminos disjuntos en G'' y en G'. 
+Además, análogamente, si tenemos caminos disjuntos en G'', podemos definir un flujo, cuyo valor $|f|$ es igual al cardinal del conjunto de caminos. Es decir, hay una biyección entre
 los flujos distintos y los caminos disjuntos en vértices.
-Entonces si f es flujo máximo, |f| nos da la máxima cantidad de caminos disjuntos en G' o en G'', que es lo que queríamos. }
+Entonces si f es flujo máximo, $|f|$ nos da la máxima cantidad de caminos disjuntos en G' o en G'', que es lo que queríamos. }
 
 \subsection{Resolución al problema}
 
@@ -74,16 +77,16 @@ Ahora sí, ya tenemos nuestro digrafo construido al que tenemos que aplicarle un
 \subsection{Respetando las complejidades}
 
 Para construir el grafo utilizamos una lista de adyacencia, la cual nos dice quienes son los vecinos de un nodo dado. 
-Pero además utilizamos una matriz de capacidades cuadrada de $(2\times N + 2) \times (2\times N + 2)$, donde (2\times N + 2) es la cantidad de nodos del grafo. 
-Llamemos N' a esta cantidad de nodos, N' = $(2\times N + 2)$. M', la cantidad de aristas, es M' = M + 3 $\times$ N , las aristas del grafo original más las conexiones a 
+Pero además utilizamos una matriz de capacidades cuadrada de $(2 \times N + 2) \times (2 \times N + 2)$, donde $(2 \times N + 2)$ es la cantidad de nodos del grafo. 
+Llamemos N' a esta cantidad de nodos, N' = $(2 \times N + 2)$. M', la cantidad de aristas, es M' = M + 3 $\times$ N , las aristas del grafo original más las conexiones a 
 s, mas las conexiones a t, más las conexiones entre los `x$_{in}$' y `x$_{out}$'. Vemos que M $\in$ \bigo(M) y N $\in$ \bigo(N).
 
-Entonces la construcción del grafo nos queda \bigo($N' + M' + N'^2$), donde el N'^2 viene por la matriz de capacidades. Esto es igual a \bigo($N + M + N^2$), por lo visto de M $\in$ \bigo(M) y N $\in$ \bigo(N).
+Entonces la construcción del grafo nos queda \bigo($N' + M' + N'^2$), donde el $N'^2$ viene por la matriz de capacidades. Esto es igual a \bigo($N + M + N^2$), por lo visto de M $\in$ \bigo(M) y N $\in$ \bigo(N).
 
 El algoritmo de flujo máximo elegido es Edmons Karp que como bien vimos en clase tiene complejidad \bigo$(M'^2 \times N')$, ya que M' y N' son las aristas y vértices del grafo. 
 Esto es lo mismo que \bigo$(M^2 \times N)$
 
-Por lo tanto, nuestro solución tiene complejidad temporal total de \bigo$(M^2 \times N + N + M + N^2 )$. Pero además, M \geq N porque M es conexo, entonces M $\in$ $\Omega$(N).
+Por lo tanto, nuestro solución tiene complejidad temporal total de \bigo$(M^2 \times N + N + M + N^2 )$. Pero además, M $\geq$ N porque M es conexo, entonces M $\in$ $\Omega$(N).
 Por lo cual nuestra solución es \bigo$(M^2 \times N )$, que fue lo pedido para este problema.
 
 \subsection{Pseudocódigo}
