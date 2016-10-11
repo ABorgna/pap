@@ -88,8 +88,8 @@ int main(){
 	limite_superior*=2; //Multiplico por dos para tener la cantidad total de nodos del árbol + 1 (el 0 que no uso)
 	
 	pair<int,int> arreglo[limite_superior]; //Segment Tree, lo inicializo en neutros.
-	for(int i = 0 ; i < D; i ++){
-		arreglo[limite_superior] = elemento_neutro;
+	for(int i = 0 ; i < limite_superior; i ++){
+		arreglo[i] = elemento_neutro;
 	}
 	
 	for(int i = 0 ; i < D; i ++){

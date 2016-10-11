@@ -1,1 +1,157 @@
 \section{Ejercicio 4}
+
+En este ejercicio se pide que ante una serie de consultas a intervalos de un arreglo, se devuelva para cada una la suma de los dos elementos más grandes.
+
+\subsection{Modelado}
+
+Para poder responder las consultas de manera eficiente se decidió el uso de un segment tree con la operación ``máximo'' asociada.\newline
+
+A diferencia de un segment tree clásico se decidió que no solo se guarde el valor máximo para el rango en cada uno de los nodos, sino también el índice a la posición del arreglo original que contiene dicho valor. Esto se debe a que se utilizará al momento de resolver la pregunta.
+
+\subsection{Resolviendo las preguntas}
+
+Las preguntas que nos piden son del tipo [a,b) al igual que uno usa al modelar un segment tree.\newline
+
+Por lo tanto, podemos aplicar una operación de tipo consulta en el rango [a,b) y con eso obtenemos el valor máximo en el mismo y la posición en la que se encuentra.\newline
+
+Cómo no solo buscamos el máximo, sino también el segundo más grande, esto equivale a actualizar el valor del máximo por el elemento neutro y volver a preguntarnos cual es el máximo en dicho rango. De esa manera tenemos los dos más grandes.\newline
+
+\textbf{PERO OJO! Nos quedó desactualizada la estructura al haber agregado un valor neutro donde no iba. Hay que actualizar el valor del elemento en dicha posición con el resultado de la primer consulta.}\newline
+
+Basta ahora sí, con responder la suma de los dos resultados obtenidos ante dichas operaciones ya que tenemos la estructura igual a como la teníamos antes de empezar esta pregunta.
+
+\subsection{Respetando la complejidad}
+
+El armado de un segment tree tiene como complejidad \bigo(D) siendo D la cantidad de elementos que vienen en la entrada.\newline
+
+Esto ocurre pues la cantidad de posiciones que tendrá dicho arreglo (cantidad de nodos en el árbol) será 2 $\times$ (la potencia de 2 mayor o igual a D) Este número está en el orden D. \newline
+
+Luego para cada pregunta en el intervalo se realizan dos llamadas a get de un segment tree y dos llamadas a set. Como bien vimos en clase, se realizan a lo sumo 4 preguntas por nivel del segment tree y al ser un árbol binario completo, tiene éste altura logarítmica y tenemos entonces a lo sumo 4 $\times$ log (D) operaciones de tipo constante (máximo de dos números, operaciones de mayor y retorno de funciones).\newline
+
+Por lo tanto para cada pregunta, tardamos tiempo logarítmico, lo cual nos lleva a una complejidad de \bigo(R $\times$ log D)  \newline 
+
+Como complejidad total, nos queda entonces la suma de dichas operaciones, lo que nos da \bigo(D + R $\times$ log D) como era pedido por enunciado.
+
+\subsection{Testing}
+
+Para probar la correctitud de dicho algoritmo, se decidió implementar un algortimo con complejidad \bigo(R $\times$ D) donde para cada intervalo, hacemos dos pasadas lineales buscando el máximo y el segundo más grande. \newline
+
+Luego, se armaron casos de prueba con al menos 1000 elementos aleatorios en el arreglo y 1000 preguntas con rangos totalmente aleatorios que respetaran la condición de que contengan al menos dos elementos. El resultado de ambos algoritmos para todas las corridas fueron exitosamente iguales.
+
+\subsection{Pseudocódigo}
+
+
+\begin{algorithmic}
+\Function{get}{segment_tree[], inicio, fin, N, limite_inferior, limite_superior}
+	\If{inicio $\leq$ limite_inferior $\land$ fin $\geq$ limite_superior} \Comment{Si el intervalo está totalmente contenido}
+		\State \Return segment_tree[N]
+	\EndIf
+	\If{fin $\leq$ limite_inferior $\lor$ inicio $\geq$ limite_superior} \Comment{Si el intervalo está afuera}
+		\State \Return elemento_neutro
+	\EndIf
+
+	\Comment{Mitad adentro, mitad afuera}
+
+	\State medio $\gets$ (limite_superior + minimo)/2;
+	
+	\State pair[int,int] parte_izquierda $\gets$ \textit{get(segment_tree, inicio, fin, 2*N, limite_inferior, medio)}
+	\State pair[int,int] parte_derecha $\gets$ \textit{get(segment_tree, inicio, fin, 2*N+1, medio, limite_superior)}
+	
+	\If{parte_izquierda.first $>$ parte_derecha.first}
+		\State \Return parte_izquierda
+	\Else
+		\State \Return parte_derecha
+	\EndIf
+
+
+\EndFunction
+\end{algorithmic}
+\hspace{.5cm}
+
+
+
+\begin{algorithmic}
+\Function{set}{segment_tree[], index, value,}
+	\State arreglo[index].first $\gets$ value
+	\State padre $\gets$ index/2
+	\State mantuve $\gets$ false
+	\While{padre$\geq$1 $\land \lnot$ mantuve}
+		\If{arreglo[2*padre].first $>$ arreglo[2*padre+1].first}
+		 	\State mantuve $\gets$ (arreglo[padre] == arreglo[2*padre]);
+			\State arreglo[padre] $\gets$ arreglo[2*padre]; 	
+		\Else
+			\State mantuve $\gets$ (arreglo[padre] == arreglo[2*padre+1]);
+		 	\State arreglo[padre] $\gets$ arreglo[2*padre+1];
+		\EndIf
+	\EndWhile 
+\EndFunction
+\end{algorithmic}
+\hspace{.5cm}
+
+\begin{algorithmic}
+\Function{preguntar}{segment_tree[], limite_superior, inicio, fin}
+
+	\State pair[int,int] mas_grande $\gets$ \textit{get(arreglo,inicio,fin, 1, 0, limite_superior/2)} \Comment{Busco el máximo}
+	\State llevo $\gets$ mas_grande.first
+	\State posicion_arreglo $\gets$ limite_superior / 2 + mas_grande.second
+	\State \textit{set(arreglo,posicion_arreglo,valor_neutro)} \Comment{Pongo un elemento neutro en él.}
+	\State pair[int,int] segundo_mas_grande $\gets$ \textit{get(arreglo,inicio,fin, 1, 0, limite_superior/2)} \Comment{Busco el segundo más grande.}
+	\State \textit{set(arreglo,posicion_arreglo,mas_grande.first)} \Comment{Le restauro el valor.}
+	\State llevo $\gets$ llevo + segundo_mas_grande.first \Comment{Tengo la suma de los dos más grandes.}
+	\State \Return llevo
+
+\EndFunction
+\end{algorithmic}
+\hspace{.5cm}
+
+\begin{algorithmic}
+\Function{armar_segment_tree}{segment_tree[], limite_superior}
+	\Comment {Para cada nodo interior, le pregunto cual de ambos de los hijos son más grandes y me lo guardo.}
+	\For{i $\gets$ (limite_superior/2)-1 .. 0 }
+		\If{segment_tree[2*i].first $>$ segment_tree[2*i+1].first}
+			\State segment_tree[i] $\gets$ segment_tree[2*i];
+		\Else
+			\State segment_tree[i] $\gets$ segment_tree[2*i+1];
+		\EndIf
+	\EndFor
+\EndFunction
+\end{algorithmic}
+\vspace{.5cm}
+\begin{algorithmic}
+\Function{llenar_hoja}{segment_tree [], valor, posicion, limite_superior}
+	\State segment_tree[limite_superior/2 + posicion] = {valor,posicion}
+\EndFunction
+\end{algorithmic}
+\vspace{.5cm}
+\begin{algorithmic}
+\Function{main}{D, R, diversion[D], pregunta[R]}
+	
+	\State elemento_neutro $\gets$ [-1,-1]
+
+	\State limite_superior $\gets$ 1
+
+
+	\Comment{Busco la potencia de dos que sea más grande a D. Ese será la cantidad de hojas.}
+	\While{limite_superior $<$ D}
+		\State limite_superior $\gets$ limite_superior * 2
+	\EndWhile
+
+	\Comment{Tengo guardado entonces el tamaño del árbol binario completo}
+	\State limite_superior $\gets$ limite_superior * 2 
+	\State pair[int,int] segment_tree [limite_superior]
+
+	\For{i $\gets$ 0 .. limite_superior} \Comment{Lleno el segment tree con todos valores neutros}
+		\State segment_tree[i] $\gets$ elemento_neutro
+	\EndFor
+	
+	\For{i $\gets$ 0 .. D} \Comment{Lleno las hojas con los valores correspondientes}
+		\State \textit{llenar_hoja(segment_tree, diversion[i], i, limite_superior)}
+	\EndFor
+
+	\State \textit{armar_segment_tree(arreglo,limite_superior)} \Comment{Completo los nodos internos del árbol binario}
+
+	\For{i $\gets$ 0 .. R}
+		\State \textit{preguntar(arreglo, limite_superior, pregunta[i].inicio, pregunta[i].fin)}
+	\EndFor
+\EndFunction
+\end{algorithmic}
