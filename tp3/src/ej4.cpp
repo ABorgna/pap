@@ -5,9 +5,9 @@ using namespace std;
 
 const pair<int,int> elemento_neutro = {-1,-1};
 const int valor_neutro = -1;
+typedef vector< pair<int,int> > arr_pairs;
 
-
-pair<int,int> get(pair<int,int> * arreglo, int inicio, int fin, int N , int minimo, int limite_superior){
+pair<int,int> get(arr_pairs& arreglo, int inicio, int fin, int N , int minimo, int limite_superior){
 	if(inicio <= minimo and fin >=limite_superior){ //Si estoy contenido totalmente
 		return arreglo[N];
 	}
@@ -28,7 +28,7 @@ pair<int,int> get(pair<int,int> * arreglo, int inicio, int fin, int N , int mini
 	}
 }
 
-void set(pair<int,int> * arreglo, int index, int value){
+void set(arr_pairs& arreglo, int index, int value){
 	arreglo[index].first = value; //Le pongo el nuevo valor a la hoja
 	int padre = index/2;
 	bool mantuve = false;
@@ -44,7 +44,7 @@ void set(pair<int,int> * arreglo, int index, int value){
 	}
 }
 
-int preguntar(pair<int,int> * arreglo, int limite_superior, int inicio, int fin){
+int preguntar(arr_pairs& arreglo, int limite_superior, int inicio, int fin){
 	pair<int,int> mas_grande = get(arreglo,inicio,fin, 1, 0, limite_superior/2); //Busco el máximo
 	
 	int llevo = mas_grande.first; //Este es el valor del máximo
@@ -63,7 +63,7 @@ int preguntar(pair<int,int> * arreglo, int limite_superior, int inicio, int fin)
 }
 
 
-void armar_segment_tree(pair<int,int> * arreglo, int limite_superior){
+void armar_segment_tree(arr_pairs& arreglo, int limite_superior){
 	for (int i = limite_superior/2-1; i>0;i--){ //Para cada nodo interior, le pregunto cual de ambos de los hijos son más grandes y me lo guardo.
 		if(arreglo[2*i].first > arreglo[2*i+1].first){
 			arreglo[i] = arreglo[2*i]; 	
@@ -73,7 +73,7 @@ void armar_segment_tree(pair<int,int> * arreglo, int limite_superior){
 	}
 }
 
-void llenar_hoja(pair<int,int> *arreglo, int valor, int posicion, int limite_superior){
+void llenar_hoja(arr_pairs& arreglo, int valor, int posicion, int limite_superior){
 	arreglo[limite_superior/2 + posicion] = {valor,posicion};
 }
 
@@ -87,10 +87,7 @@ int main(){
 	}
 	limite_superior*=2; //Multiplico por dos para tener la cantidad total de nodos del árbol + 1 (el 0 que no uso)
 	
-	pair<int,int> arreglo[limite_superior]; //Segment Tree, lo inicializo en neutros.
-	for(int i = 0 ; i < limite_superior; i ++){
-		arreglo[i] = elemento_neutro;
-	}
+	arr_pairs arreglo(limite_superior,elemento_neutro); //Segment Tree, lo inicializo en neutros.
 	
 	for(int i = 0 ; i < D; i ++){
 		int diversion;
