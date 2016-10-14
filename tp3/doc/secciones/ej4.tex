@@ -34,7 +34,7 @@ Como complejidad total, nos queda entonces la suma de dichas operaciones, lo que
 
 \subsection{Testing}
 
-Para probar la correctitud de dicho algoritmo, se decidió implementar un algortimo con complejidad \bigo(R $\times$ D) donde para cada intervalo, hacemos dos pasadas lineales buscando el máximo y el segundo más grande. \newline
+Para probar la correctitud de dicho algoritmo, se decidió implementar un algoritmo con complejidad \bigo(R $\times$ D) donde para cada intervalo, hacemos dos pasadas lineales buscando el máximo y el segundo más grande. \newline
 
 Luego, se armaron casos de prueba con al menos 1000 elementos aleatorios en el arreglo y 1000 preguntas con rangos totalmente aleatorios que respetaran la condición de que contengan al menos dos elementos. El resultado de ambos algoritmos para todas las corridas fueron exitosamente iguales.
 
@@ -52,7 +52,7 @@ Luego, se armaron casos de prueba con al menos 1000 elementos aleatorios en el a
 
 	\Comment{Mitad adentro, mitad afuera}
 
-	\State medio $\gets$ (limite_superior + minimo)/2;
+	\State medio $\gets$ (limite_superior + limite_inferior)/2;
 	
 	\State pair[int,int] parte_izquierda $\gets$ \textit{get(segment_tree, inicio, fin, 2*N, limite_inferior, medio)}
 	\State pair[int,int] parte_derecha $\gets$ \textit{get(segment_tree, inicio, fin, 2*N+1, medio, limite_superior)}
@@ -71,7 +71,7 @@ Luego, se armaron casos de prueba con al menos 1000 elementos aleatorios en el a
 
 
 \begin{algorithmic}
-\Function{set}{segment_tree[], index, value,}
+\Function{set}{segment_tree[], index, value}
 	\State arreglo[index].first $\gets$ value
 	\State padre $\gets$ index/2
 	\State mantuve $\gets$ false
@@ -118,13 +118,13 @@ Luego, se armaron casos de prueba con al menos 1000 elementos aleatorios en el a
 \end{algorithmic}
 \vspace{.5cm}
 \begin{algorithmic}
-\Function{llenar_hoja}{segment_tree [], valor, posicion, limite_superior}
-	\State segment_tree[limite_superior/2 + posicion] = {valor,posicion}
+\Function{llenar_hoja}{segment_tree [], valor, posición, limite_superior}
+	\State segment_tree[limite_superior/2 + posición] = {valor, posición}
 \EndFunction
 \end{algorithmic}
 \vspace{.5cm}
 \begin{algorithmic}
-\Function{main}{D, R, diversion[D], pregunta[R]}
+\Function{main}{D, R, diversión[D], pregunta[R]}
 	
 	\State elemento_neutro $\gets$ [-1,-1]
 
@@ -145,7 +145,7 @@ Luego, se armaron casos de prueba con al menos 1000 elementos aleatorios en el a
 	\EndFor
 	
 	\For{i $\gets$ 0 .. D} \Comment{Lleno las hojas con los valores correspondientes}
-		\State \textit{llenar_hoja(segment_tree, diversion[i], i, limite_superior)}
+		\State \textit{llenar_hoja(segment_tree, diversión[i], i, limite_superior)}
 	\EndFor
 
 	\State \textit{armar_segment_tree(arreglo,limite_superior)} \Comment{Completo los nodos internos del árbol binario}
