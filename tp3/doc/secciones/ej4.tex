@@ -24,7 +24,7 @@ Basta ahora sí, con responder la suma de los dos resultados obtenidos ante dich
 
 El armado de un segment tree tiene como complejidad \bigo(D) siendo D la cantidad de elementos que vienen en la entrada.\newline
 
-Esto ocurre pues la cantidad de posiciones que tendrá dicho arreglo (cantidad de nodos en el árbol) será 2 $\times$ (la potencia de 2 mayor o igual a D) Este número está en el orden D. \newline
+Esto ocurre pues la cantidad de posiciones que tendrá dicho arreglo (cantidad de nodos en el árbol) será 2 $\times$ (la potencia de 2 mayor o igual a D). Este número está en el orden de D. \newline
 
 Luego para cada pregunta en el intervalo se realizan dos llamadas a get de un segment tree y dos llamadas a set. Como bien vimos en clase, se realizan a lo sumo 4 preguntas por nivel del segment tree y al ser un árbol binario completo, tiene éste altura logarítmica y tenemos entonces a lo sumo 4 $\times$ log (D) operaciones de tipo constante (máximo de dos números, operaciones de mayor y retorno de funciones).\newline
 
@@ -34,7 +34,7 @@ Como complejidad total, nos queda entonces la suma de dichas operaciones, lo que
 
 \subsection{Testing}
 
-Para probar la correctitud de dicho algoritmo, se decidió implementar un algoritmo con complejidad \bigo(R $\times$ D) donde para cada intervalo, hacemos dos pasadas lineales buscando el máximo y el segundo más grande. \newline
+Para comprobar que la salida del programa que implementa este algoritmo sea la esperada, se decidió implementar un algoritmo con complejidad \bigo(R $\times$ D) donde para cada intervalo, hacemos dos pasadas lineales buscando el máximo y el segundo más grande. \newline
 
 Luego, se armaron casos de prueba con al menos 1000 elementos aleatorios en el arreglo y 1000 preguntas con rangos totalmente aleatorios que respetaran la condición de que contengan al menos dos elementos. El resultado de ambos algoritmos para todas las corridas fueron exitosamente iguales.
 
