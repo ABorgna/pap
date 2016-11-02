@@ -103,7 +103,39 @@ La idea es recorrer las posiciones $p$ de \sT en orden creciente (con $p \leq |\
 
 \subsection{Complejidad}
 
--- TODO --
+Veamos primero la complejidad de $precalcularTabla$.
+
+La inicialización de las variables se hace en \bigo($|s|$) ya que tenemos que crear el array.
+Además vemos que el cuerpo del \textbf{while} se realiza en \bigo(1) por lo que nos queda analizar la cantidad de veces que se corre.
+
+Lo importante es observar que en cada ciclo se incrementa $pos$ o $pos - prevBorde$, y ninguno de los dos decrementa nunca.
+
+\begin{itemize}
+    \item Si entra al \textbf{if}, $pos$ se incrementa en 1 y $pos - prevBorde$ se mantiene constante.
+    \item Si entra al \textbf{else if}, $prevBorde$ se reemplaza por su borde mas grande, que es estrictamente menor. Por lo tanto $pos$ se mantiene constante y $pos - prevBorde$ incrementa.
+    \item Si entra al \textbf{else}, $pos$ y $pos - prevBorde$ se incrementan.
+\end{itemize}
+
+Ahora, $pos$ está acotado por $|s|$ y como $prevBorde$ es siempre positivo, $pos - prevBorde$ también esta acotado por lo mismo. Por lo tanto el \textbf{while} no puede ejecutarse mas de $2 * |s|$ veces, por lo que se realiza en \bigo($|s|$).
+
+Y si sumamos ambas complejidades, $precalcularTabla$ corre en \bigo($|s|$).
+
+\vspace{1em}
+
+Veamos ahora $kmp$ en sí.
+
+Como por enunciado que la longitud de \sS es menor a la de \sT, \bigo($|\sS|$) $\in$ \bigo($|\sT|$), y por lo tanto la inicialización de variables se realiza en \bigo($precalcularTabla(\sS)$) $=$ \bigo($|\sT|$).
+
+Vemos que el cuerpo del \textbf{while} se realiza en \bigo(1), por lo nuevamente que nuevamente queremos acotar la cantidad de ciclos. Para ello vamos a ver que en cada ciclo se incrementa $pos$ o $pos + i$, y nunca se decrementan.
+
+\begin{itemize}
+    \item Si entra al primer \textbf{if} y no termina (no entra el segundo \textbf{if}), $pos + i$ se incrementa en 1 y $pos$ se mantiene constante.
+    \item Si entra al \textbf{else}, $pos$ se incrementa ya que si i es mayor a 0, $i - tabla[i]$ equivale a $i - |mayor borde de i|$ que es necesariamente positivo, y si $i=0$ la resta vale 1 (por como generamos la tabla). Por otro lado si $i>0$, $pos + i$ se mantiene constante y si $i$ era 0 se incrementa en 1.
+\end{itemize}
+
+Finalmente, vemos que $pos \leq |\sT| - |\sS|$ y $i < |\sS|$ por lo que el \textbf{while} se ejecutará a lo sumo $cota\ pos + cota\ (pos+i) \;\in\; \bigo(|\sT|) + \bigo(|\sT|) = \,\bigo(|\sT|)$ veces.
+
+Por lo tanto, el algoritmo completo tendrá complejidad temporal en \bigo($|\sT|$).
 
 \end{algorithmic}
 
