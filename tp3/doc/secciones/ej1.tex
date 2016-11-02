@@ -1,1 +1,104 @@
 \section{Ejercicio 1}
+
+\newcommand\sS{ \textbf{S} }
+\newcommand\sT{ \textbf{T} }
+
+En este problema queremos saber, dadas dos strings \sT y \sS, si \sS está contenida en \sT. Además queremos resolverlo en tiempo \bigo($|\sT|$).
+
+\subsection{Algoritmo}
+
+Implementamos el algoritmo KMP de búsqueda de substrings para poder resolver el problema en tiempo.
+\\
+
+Primero debemos definir lo que llamamos la \textit{tabla de bordes}. Un $borde$ de una string $s$ es un prefijo de longitud menor que a $|s|$ que también es sufijo de esta. Nuestra tabla de bordes será un array de longitud $|\sS|$ donde en la posición $i$ nos indica el largo del mayor borde de $\sS[0..i)$.
+
+    Para calcular la tabla vemos primero que la string vacía no tiene ningún borde, por lo que la primer posición de la tabla no tiene un valor definido, así que podemos setear $tabla[0] = -1$ (nos será útil luego). Además, el único prefijo de una string de largo $1$ será la string vacía, por lo que la $tabla[1] = 0$.
+
+Para $i \geq 2$ si $b$ es un borde no vacío de $\sS[0..i)$, necesariamente $b[0.. \,|b|-1)$ era un borde $\sS[0..i-1)$ (no necesariamente el mayor) por lo que si recorremos cada borde $b'$ de $i-1$ en orden decreciente hasta encontrar el primero tal que al agregarle un caracter se convierta en borde para $i$ (necesariamente el caracter a agregar será $\sS[ \,|b'|\, ]$, y será borde solo si el caracter es igual a $\sS[i-1]$). Si encontramos alguno, será el borde mas grande de $i$ y $tabla[i] = |b'| + 1$. Si no se encuentra ninguno, el borde será la string vacía y $tabla[i] = 0$.
+
+Ahora, en el paso anterior supusimos que podemos recorrer los bordes del prefijo $i-1$, pero no es tan directo ver que los tenemos en la tabla. Dado $i$ para el que queremos recorrer los bordes, conocemos el borde mayor $b_i$.
+
+\begin{itemize}
+    \item Si $b_i = 0$, no puede existir un borde menor.
+    \item Si $b_i \neq 0$, sea $b_i'$ el segundo mayor borde.
+
+        Como $b_i$ y $b_i'$ son prefijos de $\sS[0..i)$ y $|b_i| > |b_i'|$, necesariamente $b_i'$ es un prefijo de $|b_i|$. Lo mismo vale como sufijos, por lo tanto sabemos que $|b_i'|$ es borde de $|b_i|$.
+
+        Y si hubiera un borde de $|b_i|$ mayor a $|b_i'|$, por el recíproco del razonamiento anterior sería también un borde de $\sS[0..i)$ y violaría nuestra suposición de que $|b_i'|$ sea el segundo mayor borde. Por lo tanto $|b_i'|$ es el mayor borde de $|b_i|$, y ya lo tenemos calculado en $tabla[ \,|b_i|\, ]$.
+
+        Se sigue entonces que podemos reproducir todos los bordes para $i$ en orden decreciente siguiendo la cadena $(tabla[i], \; tabla[tabla[i]], \; \ldots)$ hasta llegar al borde de largo 0, la string vacía.
+
+\end{itemize}
+\\
+
+Ahora que tenemos la tabla de bordes, queremos realizar la búsqueda de \sS en \sT.
+
+La idea es recorrer las posiciones $p$ de \sT en orden creciente (con $p \leq |\sT| - |\sS|$ pues \sS debe caber en lo que resta de \sT), decidiendo si la substring de tamaño $|\sS|$ a partir de esa posición es efectivamente igual a \sS. Para ello debemos recorrer cada caracter $i$-ésimo de \sS y compararlo con el caracter $p+i$ de \sT.
+
+\begin{itemize}
+    \item Si todos los caracteres de \sS matchean, entonces \sS es substring de \sT.
+
+    \item Si la comparación con $\sS[i]$ falla (y las anteriores no), sabemos que \sS no comenzaba en la posición $p$ de \sT. Pero tenemos mas información que eso, ya que sabemos que $\sT[p..p+i) = \sS[0..i)$.
+
+        Supongamos que \sS era substring de \sT comenzando desde la posición $p+j$ para algún $0 < j < i$. Por lo tanto, $\sT[p+j..p+i) = \sS[0..i-j) = \sT[p..p+i-j)$. Y entonces $\sS[0..i)$ tenía un borde de largo $i-j$ y como teníamos calculado la longitud del borde máximo, $tabla[i] \geq i-j \implies j \geq i - tabla[i]$.
+
+        De esta forma sabemos que la siguiente posición candidato como inicio de \sS es $p + i - tabla[i]$ y además ya sabemos que $\sT[p + i - tabla[i].. p+i) = \sS[0..i - tabla[i])$, por lo que empezamos el nuevo escaneo con $i' = i - tabla[i]$.
+
+        Es importante notar que como definimos $tabla[0] = -1$, en el paso anterior tendremos $0 - tabla[0] = 1$ y por lo tanto vale para $i=0$ si la nueva posición de escaneo la seteamos como $i' = max(0, i-tabla[i])$ (simplemente empezamos a escanear \sS desde la siguiente posición en \sT), por mas que el borde no esté propiamente definido.
+
+\end{itemize}
+
+\subsection{Pseudocódigo}
+
+\begin{algorithmic}
+
+\Function{precalcularTabla}{$s : string$}{$\; \rightarrow vector<int>$}
+    \State $tabla : vector<int>$ de tamaño $|s|$
+    \State $tabla$[$0$] $\gets -1$
+    \State $tabla$[$1$] $\gets 0$
+    \State $pos = 2$
+    \State $prevBorde = 0$
+
+    \While{$pos < |s|$}
+        \If{$s[pos-1] = s[prevBorde]$}
+            \State $prevBorde++$
+            \State $tabla[pos] = prevBorde$
+            \State $pos++$
+        \ElsIf{$prevBorde > 0$}
+            \State $prevBorde = tabla[prevBorde]$
+        \Else
+            \State $tabla[pos] = 0$
+            \State $pos++$
+        \EndIf
+    \EndWhile
+
+    \State \Return $tabla$
+\EndFunction
+\\
+
+\Function{kmp}{$t : string, s : string$}{$\; \rightarrow bool$}
+    \State $tabla = precalcularTabla(s)$
+    \State $i = 0$
+    \State $pos = 0$
+
+    \While{$pos \leq |t|-|s|$}
+        \If{$s[i] = t[i+pos]$}
+            \If{$i = |s| - 1$}
+                \State \Return $true$
+            \EndIf
+            \State $i++$
+        \Else
+            \State $pos = pos + i - tabla[i]$
+            \State $i = max(0, tabla[i])$
+        \EndIf
+    \EndWhile
+
+    \State \Return $false$
+\EndFunction
+
+\subsection{Complejidad}
+
+-- TODO --
+
+\end{algorithmic}
+
