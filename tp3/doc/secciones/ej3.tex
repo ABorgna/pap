@@ -9,8 +9,12 @@ Es decir, lo que nos interesa calcular es $\sum_{i = 1}^{c_2} \sum_{j = 1}^{a_2}
 \begin{enumerate}
 	\item Lo que ganaría con cargo c$_2$ y antigüedad a$_2$ : $\sum_{i = 1}^{c_2} \sum_{j = 1}^{a_2} sueldos[i][j]$
 	\item Lo que gana actualmente con cargo c$_1$ y antigüedad a$_1$ : $\sum_{i = 1}^{c_1} \sum_{j = 1}^{a_1} sueldos[i][j]$
-	\item Lo que puede ganar como máximo manteniendo cargo c$_1$ pero subiendo antigüedad : $\sum_{i = 1}^{c_1} \sum_{j = 1}^{a_2} sueldos[i][j]$
-	\item Lo que puede ganar como máximo manteniendo antigüedad a$_1$ pero subiendo cargo : $\sum_{i = 1}^{c_2} \sum_{j = 1}^{a_1} sueldos[i][j]$
+	\item Lo que puede ganar como máximo manteniendo cargo c$_1$ pero subiendo antigüedad :
+
+	 $\sum_{i = 1}^{c_1} \sum_{j = 1}^{a_2} sueldos[i][j]$
+	\item Lo que puede ganar como máximo manteniendo antigüedad a$_1$ pero subiendo cargo : 
+
+	$\sum_{i = 1}^{c_2} \sum_{j = 1}^{a_1} sueldos[i][j]$
 \end{enumerate}
 
 En definitiva, lo que queremos es la primera $-$ la unión de las otras 3. El problema por un lado es que la tercera y cuarta incluyen a la segunda ($a_2 \geq a_1\ y\ c_2 \geq c_1$) y por otro, la intersección de la tercera y la cuarta es efectivamente la segunda. Con lo cual no podemos realizar la resta de una, ya que estaríamos restando algunos sueldos múltiples veces. Hay varias formas de resolver esto. \newline
