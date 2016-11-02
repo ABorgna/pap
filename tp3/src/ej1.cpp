@@ -24,9 +24,6 @@ vector<int64_t> make_kmp_table(const string& s) {
         }
     }
 
-    for(auto i : table) cerr << i << " ";
-    cerr << endl;
-
     return table;
 }
 

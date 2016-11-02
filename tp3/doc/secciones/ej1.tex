@@ -29,9 +29,11 @@ Ahora, en el paso anterior supusimos que podemos recorrer los bordes del prefijo
         Se sigue entonces que podemos reproducir todos los bordes para $i$ en orden decreciente siguiendo la cadena $(tabla[i], \; tabla[tabla[i]], \; \ldots)$ hasta llegar al borde de largo 0, la string vacía.
 
 \end{itemize}
-\\
+
+\vspace*{1em}
 
 Ahora que tenemos la tabla de bordes, queremos realizar la búsqueda de \sS en \sT.
+\\
 
 La idea es recorrer las posiciones $p$ de \sT en orden creciente (con $p \leq |\sT| - |\sS|$ pues \sS debe caber en lo que resta de \sT), decidiendo si la substring de tamaño $|\sS|$ a partir de esa posición es efectivamente igual a \sS. Para ello debemos recorrer cada caracter $i$-ésimo de \sS y compararlo con el caracter $p+i$ de \sT.
 
