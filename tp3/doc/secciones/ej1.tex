@@ -12,19 +12,22 @@ Implementamos el algoritmo KMP de búsqueda de substrings para poder resolver el
 
 Primero debemos definir lo que llamamos la \textit{tabla de bordes}. Un $borde$ de una string $s$ es un prefijo de longitud menor que a $|s|$ que también es sufijo de esta. Nuestra tabla de bordes será un array de longitud $|\sS|$ donde en la posición $i$ nos indica el largo del mayor borde de $\sS[0..i)$.
 
-    Para calcular la tabla vemos primero que la string vacía no tiene ningún borde, por lo que la primer posición de la tabla no tiene un valor definido, así que podemos setear $tabla[0] = -1$ (nos será útil luego). Además, el único prefijo de una string de largo $1$ será la string vacía, por lo que la $tabla[1] = 0$.
+    Para calcular la tabla vemos primero que el string vacío no tiene ningún borde, por lo que la primer posición de la tabla no tiene un valor definido, así que podemos setear $tabla[0] = -1$ (nos será útil luego). Además, el único prefijo de una string de largo $1$ será la string vacía, por lo que la $tabla[1] = 0$.
 
-Para $i \geq 2$ si $b$ es un borde no vacío de $\sS[0..i)$, necesariamente $b[0.. \,|b|-1)$ era un borde $\sS[0..i-1)$ (no necesariamente el mayor) por lo que si recorremos cada borde $b'$ de $i-1$ en orden decreciente hasta encontrar el primero tal que al agregarle un caracter se convierta en borde para $i$ (necesariamente el caracter a agregar será $\sS[ \,|b'|\, ]$, y será borde solo si el caracter es igual a $\sS[i-1]$). Si encontramos alguno, será el borde mas grande de $i$ y $tabla[i] = |b'| + 1$. Si no se encuentra ninguno, el borde será la string vacía y $tabla[i] = 0$.
+Para $i \geq 2$ si $b$ es un borde no vacío de $\sS[0..i)$, necesariamente $b[0.. \,|b|-1)$ era un borde $\sS[0..i-1)$ (no necesariamente el mayor) por lo que si queremos encontrar un borde de S[0..i) recorremos cada borde $b'$ de $i-1$ en orden decreciente hasta encontrar el primero tal que al agregarle un caracter se convierta en borde para $i$ (necesariamente el caracter a agregar será $\sS[ \,|b'|\, ]$, y será borde solo si el caracter es igual a $\sS[i-1]$).
+No puede existir un borde de S[0..i) que no encontremos mediante este proceso, por la propiedad antes mencionada.
+Si encontramos alguno, será el borde más grande de $i$, pues todos los bordes que podamos encontrar siguientes tendrán tamaño menor y $tabla[i] = |b'| + 1$. Si no se encuentra ninguno, el borde será la string vacía y $tabla[i] = 0$.
 
 Ahora, en el paso anterior supusimos que podemos recorrer los bordes del prefijo $i-1$, pero no es tan directo ver que los tenemos en la tabla. Dado $i$ para el que queremos recorrer los bordes, conocemos el borde mayor $b_i$.
 
 \begin{itemize}
     \item Si $b_i = 0$, no puede existir un borde menor.
-    \item Si $b_i \neq 0$, sea $b_i'$ el segundo mayor borde.
+    \item Si $b_i \neq 0$, sea $b_i'$ el segundo mayor borde. $b_i'$ existe porque siempre tenemos el borde vacío.
 
-        Como $b_i$ y $b_i'$ son prefijos de $\sS[0..i)$ y $|b_i| > |b_i'|$, necesariamente $b_i'$ es un prefijo de $|b_i|$. Lo mismo vale como sufijos, por lo tanto sabemos que $|b_i'|$ es borde de $|b_i|$.
+        Como $b_i$ y $b_i'$ son prefijos de $\sS[0..i)$ y $|b_i| > |b_i'|$, necesariamente $b_i'$ es un prefijo de $b_i$. Lo mismo vale como sufijos, por lo tanto sabemos que $b_i'$ es borde de $b_i$.
+        Además vale la recíproca. Si tenemos un $b_i'$ cualquiera borde de $b_i$, es prefijo y es sufijo de un prefijo y sufijo de S[0..i), por lo cual es también prefijo y sufijo, lo que nos dice que un borde de un borde, tambien es borde.
 
-        Y si hubiera un borde de $|b_i|$ mayor a $|b_i'|$, por el recíproco del razonamiento anterior sería también un borde de $\sS[0..i)$ y violaría nuestra suposición de que $|b_i'|$ sea el segundo mayor borde. Por lo tanto $|b_i'|$ es el mayor borde de $|b_i|$, y ya lo tenemos calculado en $tabla[ \,|b_i|\, ]$.
+        Y si hubiera un borde de $b_i$ de tamaño mayor a $|b_i'|$, por el razonamiento anterior sería también un borde de $\sS[0..i)$ y violaría nuestra suposición de que $b_i'$ es el segundo mayor borde. Por lo tanto $b_i'$ es el mayor borde de $b_i$, y ya lo tenemos calculado en $tabla[ \,|b_i|\, ]$.
 
         Se sigue entonces que podemos reproducir todos los bordes para $i$ en orden decreciente siguiendo la cadena $(tabla[i], \; tabla[tabla[i]], \; \ldots)$ hasta llegar al borde de largo 0, la string vacía.
 
