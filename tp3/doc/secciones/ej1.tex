@@ -10,13 +10,13 @@ En este problema queremos saber, dadas dos strings \sT y \sS, si \sS está conte
 Implementamos el algoritmo KMP de búsqueda de substrings para poder resolver el problema en tiempo.
 \\
 
-Primero debemos definir lo que llamamos la \textit{tabla de bordes}. Un $borde$ de una string $s$ es un prefijo de longitud menor que a $|s|$ que también es sufijo de esta. Nuestra tabla de bordes será un array de longitud $|\sS|$ donde en la posición $i$ nos indica el largo del mayor borde de $\sS[0..i)$.
+Primero debemos definir lo que llamamos la \textit{tabla de bordes}. Un $borde$ de un string $s$ es un prefijo de longitud menor que a $|s|$ que también es sufijo de este. Nuestra tabla de bordes será un array de longitud $|\sS|$ donde en la posición $i$ nos indica el largo del mayor borde de $\sS[0..i)$.
 
-    Para calcular la tabla vemos primero que el string vacío no tiene ningún borde, por lo que la primer posición de la tabla no tiene un valor definido, así que podemos setear $tabla[0] = -1$ (nos será útil luego). Además, el único prefijo de una string de largo $1$ será la string vacía, por lo que la $tabla[1] = 0$.
+    Para calcular la tabla vemos primero que el string vacío no tiene ningún borde, por lo que la primer posición de la tabla no tiene un valor definido, así que podemos setear $tabla[0] = -1$ (nos será útil luego). Además, el único prefijo de un string de largo $1$ será el string vacío, por lo que la $tabla[1] = 0$.
 
 Para $i \geq 2$ si $b$ es un borde no vacío de $\sS[0..i)$, necesariamente $b[0.. \,|b|-1)$ era un borde $\sS[0..i-1)$ (no necesariamente el mayor) por lo que si queremos encontrar un borde de S[0..i) recorremos cada borde $b'$ de $i-1$ en orden decreciente hasta encontrar el primero tal que al agregarle un caracter se convierta en borde para $i$ (necesariamente el caracter a agregar será $\sS[ \,|b'|\, ]$, y será borde solo si el caracter es igual a $\sS[i-1]$).
 No puede existir un borde de S[0..i) que no encontremos mediante este proceso, por la propiedad antes mencionada.
-Si encontramos alguno, será el borde más grande de $i$, pues todos los bordes que podamos encontrar siguientes tendrán tamaño menor y $tabla[i] = |b'| + 1$. Si no se encuentra ninguno, el borde será la string vacía y $tabla[i] = 0$.
+Si encontramos alguno, será el borde más grande de $i$, pues todos los bordes que podamos encontrar siguientes tendrán tamaño menor y $tabla[i] = |b'| + 1$. Si no se encuentra ninguno, el borde será el string vacío y $tabla[i] = 0$.
 
 Ahora, en el paso anterior supusimos que podemos recorrer los bordes del prefijo $i-1$, pero no es tan directo ver que los tenemos en la tabla. Dado $i$ para el que queremos recorrer los bordes, conocemos el borde mayor $b_i$.
 
@@ -29,7 +29,7 @@ Ahora, en el paso anterior supusimos que podemos recorrer los bordes del prefijo
 
         Y si hubiera un borde de $b_i$ de tamaño mayor a $|b_i'|$, por el razonamiento anterior sería también un borde de $\sS[0..i)$ y violaría nuestra suposición de que $b_i'$ es el segundo mayor borde. Por lo tanto $b_i'$ es el mayor borde de $b_i$, y ya lo tenemos calculado en $tabla[ \,|b_i|\, ]$.
 
-        Se sigue entonces que podemos reproducir todos los bordes para $i$ en orden decreciente siguiendo la cadena $(tabla[i], \; tabla[tabla[i]], \; \ldots)$ hasta llegar al borde de largo 0, la string vacía.
+        Se sigue entonces que podemos reproducir todos los bordes para $i$ en orden decreciente siguiendo la cadena $(tabla[i], \; tabla[tabla[i]], \; \ldots)$ hasta llegar al borde de largo 0, el string vacío.
 
 \end{itemize}
 
@@ -38,7 +38,7 @@ Ahora, en el paso anterior supusimos que podemos recorrer los bordes del prefijo
 Ahora que tenemos la tabla de bordes, queremos realizar la búsqueda de \sS en \sT.
 \\
 
-La idea es recorrer las posiciones $p$ de \sT en orden creciente (con $p \leq |\sT| - |\sS|$ pues \sS debe caber en lo que resta de \sT), decidiendo si la substring de tamaño $|\sS|$ a partir de esa posición es efectivamente igual a \sS. Para ello debemos recorrer cada caracter $i$-ésimo de \sS y compararlo con el caracter $p+i$ de \sT.
+La idea es recorrer las posiciones $p$ de \sT en orden creciente (con $p \leq |\sT| - |\sS|$ pues \sS debe caber en lo que resta de \sT), decidiendo si el substring de tamaño $|\sS|$ a partir de esa posición es efectivamente igual a \sS. Para ello debemos recorrer cada caracter $i$-ésimo de \sS y compararlo con el caracter $p+i$ de \sT.
 
 \begin{itemize}
     \item Si todos los caracteres de \sS matchean, entonces \sS es substring de \sT.
