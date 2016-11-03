@@ -12,7 +12,7 @@ Implementamos el algoritmo KMP de búsqueda de substrings para poder resolver el
 
 Primero debemos definir lo que llamamos la \textit{tabla de bordes}. Un $borde$ de un string $s$ es un prefijo de longitud menor que a $|s|$ que también es sufijo de este. Nuestra tabla de bordes será un array de longitud $|\sS|$ donde en la posición $i$ nos indica el largo del mayor borde de $\sS[0..i)$.
 
-    Para calcular la tabla vemos primero que el string vacío no tiene ningún borde, por lo que la primer posición de la tabla no tiene un valor definido, así que podemos setear $tabla[0] = -1$ (nos será útil luego). Además, el único prefijo de un string de largo $1$ será el string vacío, por lo que la $tabla[1] = 0$.
+    Para calcular la tabla vemos primero que el string vacío no tiene ningún borde, por lo que la primer posición de la tabla no tiene un valor definido, así que podemos setear $tabla[0] = -1$ (nos será útil luego). Además, el único borde de un string de largo $1$ será el string vacío, por lo que la $tabla[1] = 0$.
 
 Para $i \geq 2$ si $b$ es un borde no vacío de $\sS[0..i)$, necesariamente $b[0.. \,|b|-1)$ era un borde $\sS[0..i-1)$ (no necesariamente el mayor) por lo que si queremos encontrar un borde de S[0..i) recorremos cada borde $b'$ de $i-1$ en orden decreciente hasta encontrar el primero tal que al agregarle un caracter se convierta en borde para $i$ (necesariamente el caracter a agregar será $\sS[ \,|b'|\, ]$, y será borde solo si el caracter es igual a $\sS[i-1]$).
 No puede existir un borde de S[0..i) que no encontremos mediante este proceso, por la propiedad antes mencionada.
@@ -132,7 +132,7 @@ Vemos que el cuerpo del \textbf{while} se realiza en \bigo(1), por lo nuevamente
 
 \begin{itemize}
     \item Si entra al primer \textbf{if} y no termina (no entra el segundo \textbf{if}), $pos + i$ se incrementa en 1 y $pos$ se mantiene constante.
-    \item Si entra al \textbf{else}, $pos$ se incrementa ya que si i es mayor a 0, $i - tabla[i]$ equivale a $i - |mayor\ borde\ de\ i|$ que es estrictamente positivo (pues los bordes siempre son mas chicos que la string), y si $i=0$ la resta vale 1 (por como generamos la tabla). Por otro lado si $i>0$, $pos + i$ se mantiene constante y si $i$ era 0 se incrementa en 1.
+    \item Si entra al \textbf{else}, $pos$ se incrementa ya que si i es mayor a 0, $i - tabla[i]$ equivale a $i - |mayor\ borde\ de\ i|$ que es estrictamente positivo (pues los bordes siempre son mas chicos que el string), y si $i=0$ la resta vale 1 (por como generamos la tabla). Por otro lado si $i>0$, $pos + i$ se mantiene constante y si $i$ era 0 se incrementa en 1.
 \end{itemize}
 
 Finalmente, vemos que $0 \leq pos \leq |\sT| - |\sS|$ y $0 \leq i < |\sS|$ por lo que el \textbf{while} se ejecutará a lo sumo $(|\sT| - |\sS| + 1) + (|\sS|) \;\in\; \bigo(|\sT|) + \bigo(|\sT|) = \,\bigo(|\sT|)$ veces.
