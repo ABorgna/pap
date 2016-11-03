@@ -90,10 +90,10 @@ Luego, se armaron casos de prueba con al menos 1000 elementos aleatorios en el a
 	\State mantuve $\gets$ false
 	\While{padre$\geq$1 $\land \lnot$ mantuve}
 		\If{arreglo[2*padre].first $>$ arreglo[2*padre+1].first}
-		 	\State mantuve $\gets$ (arreglo[padre] == arreglo[2*padre]);
+		 	\State mantuve $\gets$ (arreglo[padre] $=$ arreglo[2*padre]);
 			\State arreglo[padre] $\gets$ arreglo[2*padre]; 	
 		\Else
-			\State mantuve $\gets$ (arreglo[padre] == arreglo[2*padre+1]);
+			\State mantuve $\gets$ (arreglo[padre] $=$ arreglo[2*padre+1]);
 		 	\State arreglo[padre] $\gets$ arreglo[2*padre+1];
 		\EndIf
 	\EndWhile 

@@ -3,7 +3,7 @@
 \newcommand\sS{ \textbf{S} }
 \newcommand\sT{ \textbf{T} }
 
-En este problema queremos saber, dadas dos strings \sT y \sS, si \sS está contenida en \sT. Además queremos resolverlo en tiempo \bigo($|\sT|$).
+En este problema queremos saber, dados dos strings \sT y \sS, si \sS está contenido en \sT. Además queremos resolverlo en tiempo \bigo($|\sT|$).
 
 \subsection{Algoritmo}
 
@@ -25,7 +25,7 @@ Ahora, en el paso anterior supusimos que podemos recorrer los bordes del prefijo
     \item Si $b_i \neq 0$, sea $b_i'$ el segundo mayor borde. $b_i'$ existe porque siempre tenemos el borde vacío.
 
         Como $b_i$ y $b_i'$ son prefijos de $\sS[0..i)$ y $|b_i| > |b_i'|$, necesariamente $b_i'$ es un prefijo de $b_i$. Lo mismo vale como sufijos, por lo tanto sabemos que $b_i'$ es borde de $b_i$.
-        Además vale la recíproca. Si tenemos un $b_i'$ cualquiera borde de $b_i$, es prefijo y es sufijo de un prefijo y sufijo de S[0..i), por lo cual es también prefijo y sufijo, lo que nos dice que un borde de un borde, tambien es borde.
+        Además vale la recíproca. Si tenemos un $b_i'$ cualquiera borde de $b_i$, es prefijo y es sufijo de un prefijo y sufijo de S[0..i), por lo cual es también prefijo y sufijo, lo que nos dice que un borde de un borde, también es borde.
 
         Y si hubiera un borde de $b_i$ de tamaño mayor a $|b_i'|$, por el razonamiento anterior sería también un borde de $\sS[0..i)$ y violaría nuestra suposición de que $b_i'$ es el segundo mayor borde. Por lo tanto $b_i'$ es el mayor borde de $b_i$, y ya lo tenemos calculado en $tabla[ \,|b_i|\, ]$.
 
