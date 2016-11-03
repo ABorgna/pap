@@ -14,8 +14,8 @@ A diferencia de un segment tree clásico se decidió que no solo se guarde el va
 Esto será equivalente a tener un segment tree con operación de máximo, como lo visto en clase, pero donde la operación de máximo se aplica a pares ordenados (número, posicion).
 Por ende, todo el análisis será reutilizar argumentos sobre segment tree clásico. 
 Como debemos definir un \textbf{elemento neutro} para la operación que realizamos sobre un segment tree, definimos
-el (-1, -1) como tal. Como los elementos de nuestro arreglo original son no negativos, y la comparación se hace primero sobre la primer coordenada, tendremos que las consultas sobre segment tree no nos
-retornaran el elemento neutro. Más específicamente esto ocurre en rangos donde existe un elemento no neutro, como los que se aplican en el problema.
+el (-1, -1) como tal. Como los elementos de nuestro arreglo original son no negativos, y la comparación se hace primero sobre la primer coordenada, tendremos que las consultas que se nos piden sobre el segment tree no nos
+retornaran el elemento neutro. Más específicamente esto ocurre en rangos donde existe un elemento no neutro, como los que se piden en el problema.
 }
 
 \subsection{Resolviendo las preguntas}
