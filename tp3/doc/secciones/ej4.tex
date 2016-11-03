@@ -132,7 +132,7 @@ Luego, se armaron casos de prueba con al menos 1000 elementos aleatorios en el a
 \vspace{.5cm}
 \begin{algorithmic}
 \Function{llenar_hoja}{segment_tree [], valor, posición, limite_superior}
-	\State segment_tree[limite_superior/2 + posición] = {valor, posición}
+	\State segment_tree[limite_superior/2 + posición] $\gets$ \{valor, posición\}
 \EndFunction
 \end{algorithmic}
 \vspace{.5cm}
@@ -164,7 +164,7 @@ Luego, se armaron casos de prueba con al menos 1000 elementos aleatorios en el a
 	\State \textit{armar_segment_tree(arreglo,limite_superior)} \Comment{Completo los nodos internos del árbol binario}
 
 	\For{i $\gets$ 0 .. R}
-		\State \textit{preguntar(arreglo, limite_superior, pregunta[i].inicio, pregunta[i].fin)}
+		\State \textit{mostrar(preguntar(arreglo, limite_superior, pregunta[i].inicio, pregunta[i].fin))}
 	\EndFor
 \EndFunction
 \end{algorithmic}
