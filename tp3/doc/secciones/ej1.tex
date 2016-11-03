@@ -61,18 +61,18 @@ La idea es recorrer las posiciones $p$ de \sT en orden creciente (con $p \leq |\
     \State $tabla : vector<int>$ de tamaño $|s|$
     \State $tabla$[$0$] $\gets -1$
     \State $tabla$[$1$] $\gets 0$
-    \State $pos = 2$
-    \State $prevBorde = 0$
+    \State $pos \gets 2$
+    \State $prevBorde \gets 0$
 
     \While{$pos < |s|$}
         \If{$s[pos-1] = s[prevBorde]$}
             \State $prevBorde++$
-            \State $tabla[pos] = prevBorde$
+            \State $tabla[pos] \gets prevBorde$
             \State $pos++$
         \ElsIf{$prevBorde > 0$}
-            \State $prevBorde = tabla[prevBorde]$
+            \State $prevBorde \gets tabla[prevBorde]$
         \Else
-            \State $tabla[pos] = 0$
+            \State $tabla[pos] \gets 0$
             \State $pos++$
         \EndIf
     \EndWhile
@@ -82,9 +82,9 @@ La idea es recorrer las posiciones $p$ de \sT en orden creciente (con $p \leq |\
 \\
 
 \Function{kmp}{$t : string, s : string$}{$\; \rightarrow bool$}
-    \State $tabla = precalcularTabla(s)$
-    \State $i = 0$
-    \State $pos = 0$
+    \State $tabla \gets precalcularTabla(s)$
+    \State $i \gets 0$
+    \State $pos \gets 0$
 
     \While{$pos \leq |t|-|s|$}
         \If{$s[i] = t[i+pos]$}
@@ -93,8 +93,8 @@ La idea es recorrer las posiciones $p$ de \sT en orden creciente (con $p \leq |\
             \EndIf
             \State $i++$
         \Else
-            \State $pos = pos + i - tabla[i]$
-            \State $i = max(0, tabla[i])$
+            \State $pos \gets pos + i - tabla[i]$
+            \State $i \gets max(0, tabla[i])$
         \EndIf
     \EndWhile
 

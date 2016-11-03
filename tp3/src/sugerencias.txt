@@ -1,0 +1,17 @@
+
+
+hay que decir que pos es positivo para que no se vaya al chori.
+de esa forma, tambien 0<=pos< |s|,  y dejar en claro que eso solo tiene esos valores posibles.
+y por lo tanto, como tenemos dos variables, cada una con |s| valores, tiramos la fruta de la complejidad.
+
+
+O(s) pertenece a O(T). SI PERO NO. O(s) contenido en O(T)
+
+por lo nuevamente que nuevamente
+
+i - |mayorborde| positivo, porque los bordes nunca pueden ser todo el string
+
+por lo que el while se ejecutara a lo sumo COTA. definir eso de cota, explayar. Copiar de antes.
+
+
+
