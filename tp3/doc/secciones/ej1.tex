@@ -45,11 +45,13 @@ La idea es recorrer las posiciones $p$ de \sT en orden creciente (con $p \leq |\
 
     \item Si la comparación con $\sS[i]$ falla (y las anteriores no), sabemos que \sS no comenzaba en la posición $p$ de \sT. Pero tenemos mas información que eso, ya que sabemos que $\sT[p..p+i) = \sS[0..i)$.
 
-        Supongamos que \sS era substring de \sT comenzando desde la posición $p+j$ para algún $0 < j < i$. Por lo tanto, $\sT[p+j..p+i) = \sS[0..i-j) = \sT[p..p+i-j)$. Y entonces $\sS[0..i)$ tenía un borde de largo $i-j$ y como teníamos calculado la longitud del borde máximo, $tabla[i] \geq i-j \implies j \geq i - tabla[i]$.
+        Supongamos que \sS era substring de \sT comenzando desde la posición $p+j$ para algún $0 < j \leq i$. Si esto sucede, en particular $\sT[p+j..p+i)$ va a ser igual a $\sS[0..i-j)$, y como sabíamos también que los primeros $i$ caracteres a partir de $p$ coincidian con \sS, también vale $\sT[p+j..p+i) = \sS[j..i)$. Por lo tanto entonces $\sS[0..i)$ tenía un borde de largo $i-j$ y como teníamos calculado la longitud del borde máximo, $tabla[i] \geq i-j \implies j \geq i - tabla[i]$.
 
-        De esta forma sabemos que la siguiente posición candidato como inicio de \sS es $p + i - tabla[i]$ y además ya sabemos que $\sT[p + i - tabla[i].. p+i) = \sS[0..i - tabla[i])$, por lo que empezamos el nuevo escaneo con $i' = i - tabla[i]$.
+        De esta forma sabemos que la siguiente posición candidato como inicio de \sS en \sT es $p + i - tabla[i]$ pues no podría empezar \sS desde una posición anterior.
+        Además ya sabemos que $\sT[p + i - tabla[i].. p+i) = \sS[0..i - tabla[i])$, por lo que empezamos el nuevo escaneo con $i' = i - tabla[i]$.
 
-        Es importante notar que como definimos $tabla[0] = -1$, en el paso anterior tendremos $0 - tabla[0] = 1$ y por lo tanto vale para $i=0$ si la nueva posición de escaneo la seteamos como $i' = max(0, i-tabla[i])$ (simplemente empezamos a escanear \sS desde la siguiente posición en \sT), por mas que el borde no esté propiamente definido.
+        Es importante notar que como definimos $tabla[0] = -1$, en el paso anterior tendremos $0 - tabla[0] = 1$ y por lo tanto el algoritmo de elección del candidato descripto vale para $i=0$ si la nueva posición de escaneo la seteamos como $i' = max(0, i-tabla[i])$ (simplemente empezamos a escanear \sS desde la siguiente posición en \sT), por mas que el borde no esté propiamente definido.
+        Además, para $i > 0$ siempre tendremos el borde vacío por lo que siempre tendremos un candidato para empezar a escanear.
 
 \end{itemize}
 
@@ -116,7 +118,7 @@ Lo importante es observar que en cada ciclo se incrementa $pos$ o $pos - prevBor
     \item Si entra al \textbf{else}, $pos$ y $pos - prevBorde$ se incrementan.
 \end{itemize}
 
-Ahora, $pos$ está acotado por $|s|$ y como $prevBorde$ es siempre positivo, $pos - prevBorde$ también esta acotado por lo mismo. Por lo tanto el \textbf{while} no puede ejecutarse mas de $2 * |s|$ veces, por lo que se realiza en \bigo($|s|$).
+Ahora, $pos$ se inicializa en $0$ y está acotado por $|s|$ y como $prevBorde$ es siempre positivo, $pos - prevBorde$ también esta acotado por lo mismo. Por lo tanto el \textbf{while} no puede ejecutarse mas de $2 * |s|$ veces, por lo que se realiza en \bigo($|s|$).
 
 Y si sumamos ambas complejidades, $precalcularTabla$ corre en \bigo($|s|$).
 
@@ -124,16 +126,16 @@ Y si sumamos ambas complejidades, $precalcularTabla$ corre en \bigo($|s|$).
 
 Veamos ahora $kmp$ en sí.
 
-Como por enunciado que la longitud de \sS es menor a la de \sT, \bigo($|\sS|$) $\in$ \bigo($|\sT|$), y por lo tanto la inicialización de variables se realiza en \bigo($precalcularTabla(\sS)$) $=$ \bigo($|\sT|$).
+Como por enunciado que la longitud de \sS es menor a la de \sT, \bigo($|\sS|$) $\subseteq$ \bigo($|\sT|$), y por lo tanto la inicialización de variables se realiza en \bigo($precalcularTabla(\sS)$) $=$ \bigo($|\sT|$).
 
 Vemos que el cuerpo del \textbf{while} se realiza en \bigo(1), por lo nuevamente que nuevamente queremos acotar la cantidad de ciclos. Para ello vamos a ver que en cada ciclo se incrementa $pos$ o $pos + i$, y nunca se decrementan.
 
 \begin{itemize}
     \item Si entra al primer \textbf{if} y no termina (no entra el segundo \textbf{if}), $pos + i$ se incrementa en 1 y $pos$ se mantiene constante.
-    \item Si entra al \textbf{else}, $pos$ se incrementa ya que si i es mayor a 0, $i - tabla[i]$ equivale a $i - |mayor borde de i|$ que es necesariamente positivo, y si $i=0$ la resta vale 1 (por como generamos la tabla). Por otro lado si $i>0$, $pos + i$ se mantiene constante y si $i$ era 0 se incrementa en 1.
+    \item Si entra al \textbf{else}, $pos$ se incrementa ya que si i es mayor a 0, $i - tabla[i]$ equivale a $i - |mayor\ borde\ de\ i|$ que es estrictamente positivo (pues los bordes siempre son mas chicos que la string), y si $i=0$ la resta vale 1 (por como generamos la tabla). Por otro lado si $i>0$, $pos + i$ se mantiene constante y si $i$ era 0 se incrementa en 1.
 \end{itemize}
 
-Finalmente, vemos que $pos \leq |\sT| - |\sS|$ y $i < |\sS|$ por lo que el \textbf{while} se ejecutará a lo sumo $cota\ pos + cota\ (pos+i) \;\in\; \bigo(|\sT|) + \bigo(|\sT|) = \,\bigo(|\sT|)$ veces.
+Finalmente, vemos que $0 \leq pos \leq |\sT| - |\sS|$ y $0 \leq i < |\sS|$ por lo que el \textbf{while} se ejecutará a lo sumo $(|\sT| - |\sS| + 1) + (|\sS|) \;\in\; \bigo(|\sT|) + \bigo(|\sT|) = \,\bigo(|\sT|)$ veces.
 
 Por lo tanto, el algoritmo completo tendrá complejidad temporal en \bigo($|\sT|$).
 
