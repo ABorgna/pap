@@ -1,0 +1,158 @@
+% ******************************************************** %
+%              TEMPLATE DE INFORME                         %
+% ******************************************************** %
+% ******************************************************** %
+%                                                          %
+% ALGUNOS PAQUETES REQUERIDOS (EN UBUNTU):                 %
+% ========================================
+%                                                          %
+% texlive-latex-base                                       %
+% texlive-latex-recommended                                %
+% texlive-fonts-recommended                                %
+% texlive-latex-extra?                                     %
+% texlive-lang-spanish (en ubuntu 13.10)                   %
+% ******************************************************** %
+
+
+\documentclass[a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{charter}   % tipografia
+\usepackage{graphicx}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{hyperref}
+%\usepackage{makeidx}
+\usepackage{paralist} %itemize inline
+\usepackage{algpseudocode}
+
+\usepackage{float}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{amsfonts}
+%\usepackage{sectsty}
+%\usepackage{charter}
+%\usepackage{wrapfig}
+\usepackage{listingsutf8}
+
+% \setcounter{secnumdepth}{2}
+\usepackage{underscore}
+\usepackage{caratula}
+\usepackage{url}
+\usepackage{fixltx2e}
+
+%\usepackage[superscript,biblabel]{cite}
+%\usepackage{dibujitos}
+
+% ********************************************************* %
+% ~~~~~~~~              Code snippets             ~~~~~~~~~ %
+% ********************************************************* %
+
+\usepackage{color} % para snipets de codigo coloreados
+\usepackage{fancybox}  % para el sbox de los snipets de codigo
+
+\newcommand{\quotes}[1]{``#1''}
+
+
+\definecolor{litegrey}{gray}{0.94}
+
+\newenvironment{codesnippet}{%
+	\begin{Sbox}\begin{minipage}{\textwidth}\sffamily\small}%
+	{\end{minipage}\end{Sbox}%
+		\begin{center}%
+		\vspace{-0.4cm}\colorbox{litegrey}{\TheSbox}\end{center}\vspace{0.3cm}}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+  backgroundcolor=\color{litegrey},
+  basicstyle=\footnotesize,
+  breakatwhitespace=true,
+  breaklines=true,
+  captionpos=b,                    % sets the caption-position to bottom
+  mathescape=true,
+  keepspaces=true,
+  language=Python,
+  showspaces=false,
+  tabsize=2,                       % sets default tabsize to 2 spaces
+  inputencoding=utf8/latin1
+}
+
+\newcommand{\cuidado}{{\large $\Delta$!!!} \hspace*{1em}}
+
+% ********************************************************* %
+% ~~~~~~~~         Formato de las páginas         ~~~~~~~~~ %
+% ********************************************************* %
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ - #1}}
+
+\fancyhf{}
+
+\fancyhead[LO]{Sección \rightmark} % \thesection\
+\fancyfoot[LO]{\small{}} % alumnos
+\fancyfoot[RO]{\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\setlength{\hoffset}{-0.8in}
+\setlength{\textwidth}{16cm}
+%\setlength{\hoffset}{-1.1cm}
+%\setlength{\textwidth}{16cm}
+\setlength{\headsep}{0.5cm}
+\setlength{\textheight}{25cm}
+\setlength{\voffset}{-0.7in}
+\setlength{\headwidth}{\textwidth}
+\setlength{\headheight}{13.1pt}
+
+\renewcommand{\baselinestretch}{1.1}  % line spacing
+
+% ******************************************************** %
+% Cosas utiles
+\newcommand\bigo{\ensuremath{\mathcal{O}}}
+
+% ******************************************************** %
+
+\begin{document}
+
+
+\thispagestyle{empty}
+\materia{Problemas, Algoritmos y Programación}
+\submateria{Segundo Cuatrimestre de 2016}
+\titulo{Trabajo Práctico 4}
+    \subtitulo{Grupo \#\#Nombre}
+
+\maketitle
+\newpage
+
+\thispagestyle{empty}
+\vfill
+
+\thispagestyle{empty}
+\vspace{2cm}
+\tableofcontents
+\normalsize
+
+\vspace{4cm}
+\section*{Puntajes}
+
+\textcolor{red}{\Large{// Completar}}
+\begin{center}
+  \begin{tabular}{ | c | c | c | c| }
+    \hline
+    Ej1& Ej2 & Ej3 & Ej4 \\ \hline
+     9 & 9 & 8 & 10 \\ \hline
+  \end{tabular}
+\end{center}
+
+\newpage
+\input{secciones/ej1}
+\newpage
+\input{secciones/ej2}
+\newpage
+\input{secciones/ej3}
+\newpage
+\input{secciones/ej4}
+
+\end{document}
