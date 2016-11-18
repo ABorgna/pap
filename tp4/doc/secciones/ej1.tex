@@ -41,9 +41,14 @@ Solamente nos falta devolver dichos lados en sentido horario.\newline
 
 Para eso podemos podemos pensar de la siguiente manera: como tenemos un polígono, para cada uno de los vértices vamos a tener dos vértices incidentes, con lo cual tenemos dos vértices vecinos.\newline
 
-Luego, podemos tomar un punto arbitrario de los que tenemos y hacemos el producto cruz entre los vectores que nos definen los segmentos que se generan con los dos vecinos al punto. Como bien vimos en clase, el signo del producto cruz entre dos vectores nos determina si el segundo vector está a la izquierda o bien a la derecha del primero (en nuestro caso no puede dar cero al no haber puntos colineales).\newline
+Luego, podemos tomar un punto arbitrario de los que tenemos y hacemos el producto cruz entre los vectores que nos definen los segmentos que se generan con los dos vecinos al punto. Como bien vimos en clase, el signo del producto cruz entre dos vectores nos determina si el segundo vector está a la izquierda o bien a la derecha del primero (en nuestro caso no puede dar cero al no haber puntos colineales).Si dicho punto arbitrario es el que está más abajo a la izquierda de todos los del polígono, tomar el segmento que se define con los vecinos que está a la izquierda del otro podemos asegurar que al moverse a partir de ahí en adelante el sentido que tomaremos será horario. En la siguiente figura se refleja lo planteado anteriormente.
 
-Así, nos quedamos con el que está a la izquierda y empezamos a recorrer el polígono a través de sus lados hasta llegar nuevamente hasta el punto y así tenemos nuestro polígono recorrido en sentido horario.\newline    
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale = 0.25]{img/sentido-horario.png}
+\end{figure}
+
+Con lo cual empezamos a recorrer el polígono a partir de este segmento que tomamos y a través de los lados del polígono nos movemos hasta llegar nuevamente hasta el origen y así tenemos nuestro polígono recorrido en sentido horario.\newline    
 
 Esto lo logramos a partir de un recorrido de dfs en el grafo inducido que nos da el polígono.\newline
 
