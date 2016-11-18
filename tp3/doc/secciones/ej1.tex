@@ -1,1 +1,143 @@
 \section{Ejercicio 1}
+
+\newcommand\sS{ \textbf{S} }
+\newcommand\sT{ \textbf{T} }
+
+En este problema queremos saber, dados dos strings \sT y \sS, si \sS está contenido en \sT. Además queremos resolverlo en tiempo \bigo($|\sT|$).
+
+\subsection{Algoritmo}
+
+Implementamos el algoritmo KMP de búsqueda de substrings para poder resolver el problema en tiempo.
+\\
+
+Primero debemos definir lo que llamamos la \textit{tabla de bordes}. Un $borde$ de un string $s$ es un prefijo de longitud menor que a $|s|$ que también es sufijo de este. Nuestra tabla de bordes será un array de longitud $|\sS|$ donde en la posición $i$ nos indica el largo del mayor borde de $\sS[0..i)$.
+
+    Para calcular la tabla vemos primero que el string vacío no tiene ningún borde, por lo que la primer posición de la tabla no tiene un valor definido, así que podemos setear $tabla[0] = -1$ (nos será útil luego). Además, el único borde de un string de largo $1$ será el string vacío, por lo que la $tabla[1] = 0$.
+
+Para $i \geq 2$ si $b$ es un borde no vacío de $\sS[0..i)$, necesariamente $b[0.. \,|b|-1)$ era un borde $\sS[0..i-1)$ (no necesariamente el mayor) por lo que si queremos encontrar un borde de S[0..i) recorremos cada borde $b'$ de $i-1$ en orden decreciente hasta encontrar el primero tal que al agregarle un caracter se convierta en borde para $i$ (necesariamente el caracter a agregar será $\sS[ \,|b'|\, ]$, y será borde solo si el caracter es igual a $\sS[i-1]$).
+No puede existir un borde de S[0..i) que no encontremos mediante este proceso, por la propiedad antes mencionada.
+Si encontramos alguno, será el borde más grande de $i$, pues todos los bordes que podamos encontrar siguientes tendrán tamaño menor y $tabla[i] = |b'| + 1$. Si no se encuentra ninguno, el borde será el string vacío y $tabla[i] = 0$.
+
+Ahora, en el paso anterior supusimos que podemos recorrer los bordes del prefijo $i-1$, pero no es tan directo ver que los tenemos en la tabla. Dado $i$ para el que queremos recorrer los bordes, conocemos el borde mayor $b_i$.
+
+\begin{itemize}
+    \item Si $b_i = 0$, no puede existir un borde menor.
+    \item Si $b_i \neq 0$, sea $b_i'$ el segundo mayor borde. $b_i'$ existe porque siempre tenemos el borde vacío.
+
+        Como $b_i$ y $b_i'$ son prefijos de $\sS[0..i)$ y $|b_i| > |b_i'|$, necesariamente $b_i'$ es un prefijo de $b_i$. Lo mismo vale como sufijos, por lo tanto sabemos que $b_i'$ es borde de $b_i$.
+        Además vale la recíproca. Si tenemos un $b_i'$ cualquiera borde de $b_i$, es prefijo y es sufijo de un prefijo y sufijo de S[0..i), por lo cual es también prefijo y sufijo, lo que nos dice que un borde de un borde, también es borde.
+
+        Y si hubiera un borde de $b_i$ de tamaño mayor a $|b_i'|$, por el razonamiento anterior sería también un borde de $\sS[0..i)$ y violaría nuestra suposición de que $b_i'$ es el segundo mayor borde. Por lo tanto $b_i'$ es el mayor borde de $b_i$, y ya lo tenemos calculado en $tabla[ \,|b_i|\, ]$.
+
+        Se sigue entonces que podemos reproducir todos los bordes para $i$ en orden decreciente siguiendo la cadena $(tabla[i], \; tabla[tabla[i]], \; \ldots)$ hasta llegar al borde de largo 0, el string vacío.
+
+\end{itemize}
+
+\vspace*{1em}
+
+Ahora que tenemos la tabla de bordes, queremos realizar la búsqueda de \sS en \sT.
+\\
+
+La idea es recorrer las posiciones $p$ de \sT en orden creciente (con $p \leq |\sT| - |\sS|$ pues \sS debe caber en lo que resta de \sT), decidiendo si el substring de tamaño $|\sS|$ a partir de esa posición es efectivamente igual a \sS. Para ello debemos recorrer cada caracter $i$-ésimo de \sS y compararlo con el caracter $p+i$ de \sT.
+
+\begin{itemize}
+    \item Si todos los caracteres de \sS matchean, entonces \sS es substring de \sT.
+
+    \item Si la comparación con $\sS[i]$ falla (y las anteriores no), sabemos que \sS no comenzaba en la posición $p$ de \sT. Pero tenemos mas información que eso, ya que sabemos que $\sT[p..p+i) = \sS[0..i)$.
+
+        Supongamos que \sS era substring de \sT comenzando desde la posición $p+j$ para algún $0 < j \leq i$. Si esto sucede, en particular $\sT[p+j..p+i)$ va a ser igual a $\sS[0..i-j)$, y como sabíamos también que los primeros $i$ caracteres a partir de $p$ coincidian con \sS, también vale $\sT[p+j..p+i) = \sS[j..i)$. Por lo tanto entonces $\sS[0..i)$ tenía un borde de largo $i-j$ y como teníamos calculado la longitud del borde máximo, $tabla[i] \geq i-j \implies j \geq i - tabla[i]$.
+
+        De esta forma sabemos que la siguiente posición candidato como inicio de \sS en \sT es $p + i - tabla[i]$ pues no podría empezar \sS desde una posición anterior.
+        Además ya sabemos que $\sT[p + i - tabla[i].. p+i) = \sS[0..i - tabla[i])$, por lo que empezamos el nuevo escaneo con $i' = i - tabla[i]$.
+
+        Es importante notar que como definimos $tabla[0] = -1$, en el paso anterior tendremos $0 - tabla[0] = 1$ y por lo tanto el algoritmo de elección del candidato descripto vale para $i=0$ si la nueva posición de escaneo la seteamos como $i' = max(0, i-tabla[i])$ (simplemente empezamos a escanear \sS desde la siguiente posición en \sT), por mas que el borde no esté propiamente definido.
+        Además, para $i > 0$ siempre tendremos el borde vacío por lo que siempre tendremos un candidato para empezar a escanear.
+
+\end{itemize}
+
+\subsection{Pseudocódigo}
+
+\begin{algorithmic}
+
+\Function{precalcularTabla}{$s : string$}{$\; \rightarrow vector<int>$}
+    \State $tabla : vector<int>$ de tamaño $|s|$
+    \State $tabla$[$0$] $\gets -1$
+    \State $tabla$[$1$] $\gets 0$
+    \State $pos \gets 2$
+    \State $prevBorde \gets 0$
+
+    \While{$pos < |s|$}
+        \If{$s[pos-1] = s[prevBorde]$}
+            \State $prevBorde++$
+            \State $tabla[pos] \gets prevBorde$
+            \State $pos++$
+        \ElsIf{$prevBorde > 0$}
+            \State $prevBorde \gets tabla[prevBorde]$
+        \Else
+            \State $tabla[pos] \gets 0$
+            \State $pos++$
+        \EndIf
+    \EndWhile
+
+    \State \Return $tabla$
+\EndFunction
+\\
+
+\Function{kmp}{$t : string, s : string$}{$\; \rightarrow bool$}
+    \State $tabla \gets precalcularTabla(s)$
+    \State $i \gets 0$
+    \State $pos \gets 0$
+
+    \While{$pos \leq |t|-|s|$}
+        \If{$s[i] = t[i+pos]$}
+            \If{$i = |s| - 1$}
+                \State \Return $true$
+            \EndIf
+            \State $i++$
+        \Else
+            \State $pos \gets pos + i - tabla[i]$
+            \State $i \gets max(0, tabla[i])$
+        \EndIf
+    \EndWhile
+
+    \State \Return $false$
+\EndFunction
+
+\subsection{Complejidad}
+
+Veamos primero la complejidad de $precalcularTabla$.
+
+La inicialización de las variables se hace en \bigo($|s|$) ya que tenemos que crear el array.
+Además vemos que el cuerpo del \textbf{while} se realiza en \bigo(1) por lo que nos queda analizar la cantidad de veces que se corre.
+
+Lo importante es observar que en cada ciclo se incrementa $pos$ o $pos - prevBorde$, y ninguno de los dos decrementa nunca.
+
+\begin{itemize}
+    \item Si entra al \textbf{if}, $pos$ se incrementa en 1 y $pos - prevBorde$ se mantiene constante.
+    \item Si entra al \textbf{else if}, $prevBorde$ se reemplaza por su borde mas grande, que es estrictamente menor. Por lo tanto $pos$ se mantiene constante y $pos - prevBorde$ incrementa.
+    \item Si entra al \textbf{else}, $pos$ y $pos - prevBorde$ se incrementan.
+\end{itemize}
+
+Ahora, $pos$ se inicializa en $0$ y está acotado por $|s|$ y como $prevBorde$ es siempre positivo, $pos - prevBorde$ también esta acotado por lo mismo. Por lo tanto el \textbf{while} no puede ejecutarse mas de $2 * |s|$ veces, por lo que se realiza en \bigo($|s|$).
+
+Y si sumamos ambas complejidades, $precalcularTabla$ corre en \bigo($|s|$).
+
+\vspace{1em}
+
+Veamos ahora $kmp$ en sí.
+
+Como por enunciado que la longitud de \sS es menor a la de \sT, \bigo($|\sS|$) $\subseteq$ \bigo($|\sT|$), y por lo tanto la inicialización de variables se realiza en \bigo($precalcularTabla(\sS)$) $=$ \bigo($|\sT|$).
+
+Vemos que el cuerpo del \textbf{while} se realiza en \bigo(1), por lo nuevamente que nuevamente queremos acotar la cantidad de ciclos. Para ello vamos a ver que en cada ciclo se incrementa $pos$ o $pos + i$, y nunca se decrementan.
+
+\begin{itemize}
+    \item Si entra al primer \textbf{if} y no termina (no entra el segundo \textbf{if}), $pos + i$ se incrementa en 1 y $pos$ se mantiene constante.
+    \item Si entra al \textbf{else}, $pos$ se incrementa ya que si i es mayor a 0, $i - tabla[i]$ equivale a $i - |mayor\ borde\ de\ i|$ que es estrictamente positivo (pues los bordes siempre son mas chicos que el string), y si $i=0$ la resta vale 1 (por como generamos la tabla). Por otro lado si $i>0$, $pos + i$ se mantiene constante y si $i$ era 0 se incrementa en 1.
+\end{itemize}
+
+Finalmente, vemos que $0 \leq pos \leq |\sT| - |\sS|$ y $0 \leq i < |\sS|$ por lo que el \textbf{while} se ejecutará a lo sumo $(|\sT| - |\sS| + 1) + (|\sS|) \;\in\; \bigo(|\sT|) + \bigo(|\sT|) = \,\bigo(|\sT|)$ veces.
+
+Por lo tanto, el algoritmo completo tendrá complejidad temporal en \bigo($|\sT|$).
+
+\end{algorithmic}
+

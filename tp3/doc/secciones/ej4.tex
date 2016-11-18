@@ -1,12 +1,22 @@
 \section{Ejercicio 4}
+\subsection{Enunciado}
+El enunciado del ejercicio se reduce a, dada una cantidad D de días, R una cantidad de rangos, un arreglo
+de D enteros no negativos que representan diversión en ese día, y R consultas del tipo [$P_i$, $U_i$) encontrar
+la suma de los dos números más grandes en ese rango. Es decir, dos elementos cuya suma maximice la diversión.
 
-En este ejercicio se pide que ante una serie de consultas a intervalos de un arreglo, se devuelva para cada una la suma de los dos elementos más grandes.
-
-\subsection{Modelado}
+\subsection{Estructuras que usaremos}
 
 Para poder responder las consultas de manera eficiente se decidió el uso de un segment tree con la operación ``máximo'' asociada.\newline
 
-A diferencia de un segment tree clásico se decidió que no solo se guarde el valor máximo para el rango en cada uno de los nodos, sino también el índice a la posición del arreglo original que contiene dicho valor. Esto se debe a que se utilizará al momento de resolver la pregunta.
+A diferencia de un segment tree clásico se decidió que no solo se guarde el valor máximo para el rango en cada uno de los nodos, sino también el índice a la posición del arreglo original que contiene dicho valor. Esto se debe a que se utilizará al momento de resolver la pregunta.  \newline
+
+\par{
+Esto será equivalente a tener un segment tree con operación de máximo, como lo visto en clase, pero donde la operación de máximo se aplica a pares ordenados (número, posicion).
+Por ende, todo el análisis será reutilizar argumentos sobre segment tree clásico. 
+Como debemos definir un \textbf{elemento neutro} para la operación que realizamos sobre un segment tree, definimos
+el (-1, -1) como tal. Como los elementos de nuestro arreglo original son no negativos, y la comparación se hace primero sobre la primer coordenada, tendremos que las consultas que se nos piden sobre el segment tree no nos
+retornaran el elemento neutro. Más específicamente esto ocurre en rangos donde existe un elemento no neutro, como los que se piden en el problema.
+}
 
 \subsection{Resolviendo las preguntas}
 
@@ -16,7 +26,7 @@ Por lo tanto, podemos aplicar una operación de tipo consulta en el rango [a,b) 
 
 Cómo no solo buscamos el máximo, sino también el segundo más grande, esto equivale a actualizar el valor del máximo por el elemento neutro y volver a preguntarnos cual es el máximo en dicho rango. De esa manera tenemos los dos más grandes.\newline
 
-\textbf{PERO OJO! Nos quedó desactualizada la estructura al haber agregado un valor neutro donde no iba. Hay que actualizar el valor del elemento en dicha posición con el resultado de la primer consulta.}\newline
+\textbf{¡PERO Cuidado! Nos quedó desactualizada la estructura al haber agregado un valor neutro donde no iba. Hay que actualizar el valor del elemento en dicha posición con el valor inicial.}\newline
 
 Basta ahora sí, con responder la suma de los dos resultados obtenidos ante dichas operaciones ya que tenemos la estructura igual a como la teníamos antes de empezar esta pregunta.
 
@@ -24,13 +34,16 @@ Basta ahora sí, con responder la suma de los dos resultados obtenidos ante dich
 
 El armado de un segment tree tiene como complejidad \bigo(D) siendo D la cantidad de elementos que vienen en la entrada.\newline
 
-Esto ocurre pues la cantidad de posiciones que tendrá dicho arreglo (cantidad de nodos en el árbol) será 2 $\times$ (la potencia de 2 mayor o igual a D). Este número está en el orden de D. \newline
+Esto ocurre pues la cantidad de posiciones que tendrá dicho arreglo (cantidad de nodos en el árbol) será 2 $\times$ (la potencia de 2 mayor o igual a D). 
+Es decir, si D = $2^x$, nos movemos a un D' = 2\textsuperscript{$\lceil x \rceil$}. Y por ende, D' $\leq$ 2 $\times$ D. Por lo cual D' $\in$ \bigo(D). 
+Luego 2 $\times$ D', tambien esta en \bigo(D) \newline
 
-Luego para cada pregunta en el intervalo se realizan dos llamadas a get de un segment tree y dos llamadas a set. Como bien vimos en clase, se realizan a lo sumo 4 preguntas por nivel del segment tree y al ser un árbol binario completo, tiene éste altura logarítmica y tenemos entonces a lo sumo 4 $\times$ log (D) operaciones de tipo constante (máximo de dos números, operaciones de mayor y retorno de funciones).\newline
+Luego para cada pregunta en el intervalo se realizan dos llamadas a get de un segment tree y dos llamadas a set. Como bien vimos en clase, se realizan a lo sumo 4 preguntas por nivel del segment tree y al ser un árbol binario completo, tiene éste altura logarítmica, así que tenemos entonces a lo sumo 4 $\times$ log (D) operaciones de tipo constante (máximo de dos números, operaciones de mayor y retorno de funciones).\newline
 
-Por lo tanto para cada pregunta, tardamos tiempo logarítmico, lo cual nos lleva a una complejidad de \bigo(R $\times$ log D)  \newline 
+Por lo tanto para cada pregunta, tenemos complejidad temporal logarítmica, ya que \bigo(4 $\times$ log D) = \bigo(log D).
+Como tenemos R operaciones de estas, tenemos asociada una complejidad  de \bigo(R $\times$ log D) en las consultas. \newline 
 
-Como complejidad total, nos queda entonces la suma de dichas operaciones, lo que nos da \bigo(D + R $\times$ log D) como era pedido por enunciado.
+Como complejidad total, nos queda agregar la inicialización, lo que nos da \bigo(D + R $\times$ log D) como era pedido por enunciado.
 
 \subsection{Testing}
 
@@ -77,10 +90,10 @@ Luego, se armaron casos de prueba con al menos 1000 elementos aleatorios en el a
 	\State mantuve $\gets$ false
 	\While{padre$\geq$1 $\land \lnot$ mantuve}
 		\If{arreglo[2*padre].first $>$ arreglo[2*padre+1].first}
-		 	\State mantuve $\gets$ (arreglo[padre] == arreglo[2*padre]);
+		 	\State mantuve $\gets$ (arreglo[padre] $=$ arreglo[2*padre]);
 			\State arreglo[padre] $\gets$ arreglo[2*padre]; 	
 		\Else
-			\State mantuve $\gets$ (arreglo[padre] == arreglo[2*padre+1]);
+			\State mantuve $\gets$ (arreglo[padre] $=$ arreglo[2*padre+1]);
 		 	\State arreglo[padre] $\gets$ arreglo[2*padre+1];
 		\EndIf
 	\EndWhile 
@@ -119,7 +132,7 @@ Luego, se armaron casos de prueba con al menos 1000 elementos aleatorios en el a
 \vspace{.5cm}
 \begin{algorithmic}
 \Function{llenar_hoja}{segment_tree [], valor, posición, limite_superior}
-	\State segment_tree[limite_superior/2 + posición] = {valor, posición}
+	\State segment_tree[limite_superior/2 + posición] $\gets$ \{valor, posición\}
 \EndFunction
 \end{algorithmic}
 \vspace{.5cm}
@@ -151,7 +164,7 @@ Luego, se armaron casos de prueba con al menos 1000 elementos aleatorios en el a
 	\State \textit{armar_segment_tree(arreglo,limite_superior)} \Comment{Completo los nodos internos del árbol binario}
 
 	\For{i $\gets$ 0 .. R}
-		\State \textit{preguntar(arreglo, limite_superior, pregunta[i].inicio, pregunta[i].fin)}
+		\State \textit{mostrar(preguntar(arreglo, limite_superior, pregunta[i].inicio, pregunta[i].fin))}
 	\EndFor
 \EndFunction
 \end{algorithmic}

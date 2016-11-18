@@ -5,27 +5,26 @@
 using namespace std;
 
 vector<int64_t> make_kmp_table(const string& s) {
-    vector<int64_t> v(s.size());
-    v[0] = -1;
-    v[1] = 0;
+    vector<int64_t> table(s.size());
+    table[0] = -1;
+    table[1] = 0;
 
-    int64_t pos = 2;
-    int64_t next = 0;
-    while (pos < (unsigned)s.length()) {
-        if (s[pos - 1] == s[next]) {
-            v[pos] = next + 1;
-            next++;
+    uint64_t pos = 2;
+    int64_t prevBorde = 0;
+    while (pos < s.length()) {
+        if (s[pos - 1] == s[prevBorde]) {
+            prevBorde++;
+            table[pos] = prevBorde;
             pos++;
-        } else if (next > 0) {
-            next = v[next];
-            v[pos] = 0;
+        } else if (prevBorde > 0) {
+            prevBorde = table[prevBorde];
         } else {
-            v[pos] = 0;
+            table[pos] = 0;
             pos++;
         }
     }
 
-    return v;
+    return table;
 }
 
 bool kmp(const string& t, const string& s) {
@@ -34,21 +33,16 @@ bool kmp(const string& t, const string& s) {
 
     auto table = make_kmp_table(s);
 
-    int64_t match = 0;
+    int64_t i = 0;
     int64_t pos = 0;
-    while (match + pos < (unsigned)t.length()) {
-        if (s[pos] == t[match + pos]) {
-            if (pos == (unsigned)s.length() - 1)
+    while (pos <= (unsigned)t.length() - (unsigned)s.length()) {
+        if (s[i] == t[i + pos]) {
+            if (i == (unsigned)s.length() - 1)
                 return true;
-            pos++;
+            i++;
         } else {
-            if (table[pos] > -1) {
-                match += pos - table[pos];
-                pos = table[pos];
-            } else {
-                match++;
-                pos = 0;
-            }
+            pos += i - table[i];
+            i = max((int64_t)0, table[i]);
         }
     }
 

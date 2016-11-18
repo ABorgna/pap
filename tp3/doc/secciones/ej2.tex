@@ -1,1 +1,123 @@
 \section{Ejercicio 2}
+
+\subsection{Enunciado}
+
+El problema que se nos plantea es el siguiente. Nos pasan una lista de las direcciones de correo electrónico de todos los alumnos que cursarán PAP el cuatrimestre que viene, omitiendo la última parte que es común a todos (@dc.uba.ar). Además, para cada una de estas direcciones, recibimos un prefijo de las mismas (en realidad, el número de caracteres del prefijo, que es equivalente).
+Nos piden calcular cuál es el mínimo valor de T que cumpla que para cada dirección
+de correo electrónico que les pasemos junto con su prefijo, existen a lo sumo T direcciones que comparten ese prefijo.
+
+La entrada es una cantidad A de direcciones, y luego direcciones seguidas de su prefijo, de la forma que ya especificamos.
+
+\subsection{Reducción del problema}
+
+Tenemos entonces para cada i en el rango de 1 a A, la $direccion_i$ y el $P_i$, el tamaño del prefijo.
+Queremos ver como encontrar el número T pedido por el enunciado.
+\par{Definimos entonces un $T_i$ para cada i, como la cantidad de direcciones que comparten el prefijo indicado por $P_i$. }
+\par{Supongamos que T es la respuesta al problema, con T $<$ $T_i$ para algún i en el rango 1 a A. Entonces para ese i, tenemos $T_i$ direcciones que comparten el prefijo, y es mayor que T. Pero el problema nos pedía que T cumpla con que a lo sumo T direcciones comparten el prefijo. Absurdo.
+Entonces sabemos que T $\geq$ $T_i$. El mínimo numero que cumple esta desigualdad es T = max\{$T_i$\}.} \par{Si probamos que este T cumple lo pedido, 
+entonces es, por definición, el mínimo valor que cumple que para cada dirección
+de correo electrónico que les pasemos junto con su prefijo, existen a lo sumo T direcciones que comparten ese prefijo.}
+\par{Podemos ver que, como T $\geq$ $T_i$, la cantidad de direcciones que comparten cualquier prefijo de los indicados, es a lo sumo T.
+Por lo cual este T efectivamente cumple lo pedido. 
+Como comentario, lo que probamos es que un T esta en el conjunto al cual le tomamos mínimo, sí y solo sí T $\geq$ $T_i$.}
+
+\subsection{Solución}
+\par{Lo que nos queda entonces es, conseguir, para cada i en el rango 1 a A, el número $T_i$.
+Es decir, queremos la cantidad de direcciones que comparten el prefijo indicado.}
+\par{Para esto, recordaremos de Algoritmos y Estructuras de Datos II, la estructura \quotes{Trie}.
+Recordemos que un Trie es un árbol que nos provee una representación eficiente de conjuntos o diccionarios cuyas entradas son cadenas de texto. En un Trie, tendremos a cada arista del árbol que formamos se le asigna un caracter del diccionario. Luego, un nodo cualquiera del árbol está en correspondencia directa con un prefijo del conjunto, ya que podemos subir a los padres hasta llegar a la raiz, para saber a que prefijo se corresponde ese nodo. Le asignamos al nodo raíz el prefijo vacío.}
+\par{Además, las operaciones de inserción y consulta en un Trie, son proporcionales al largo del texto
+insertado/consultado. En este caso, \bigo($\mid D_i \mid$). Por último, durante la inserción en un Trie, podemos llevar la cuenta de cuantas cadenas insertadas usan este nodo. Esto nos diría cuantas cadenas
+tienen como prefijo al mismo prefijo representado por el nodo.}
+\par{Por ende, para calcular $T_i$, debemos acceder a este valor que vamos a calcular en las inserciones, que está en el nodo correspondiente. Para acceder al nodo, lo consultamos como cuando consultamos un valor en un diccionario sobre Trie. Luego esta consulta va a ser \bigo($P_i$), donde
+\bigo($P_i$) $\subseteq$ \bigo($\mid D_i \mid$), ya que $P_i$ $<$ $\mid D_i \mid$ . Por lo cual, decimos que esta consulta es \bigo($\mid D_i \mid$)}
+
+\subsection{Implementación}
+Vamos a dar una implementación de Trie no habitual. Definimos un struct Trie, en el cual
+vamos a tener punteros a los hijos. Pero en lugar de manejar esos punteros de forma implícita, 
+como es habitual, simplemente tenemos una estructura de diccionario de caracter a estructura Trie.
+Esta estructura utiliza internamente memoria dinámica, así que nos almacenará implícitamente 
+los punteros a estructuras de tipo Trie. Cuando hacemos un acceso, simplemente buscamos un valor
+del diccionario. Map de la STL de C++ nos permite accesos en \bigo(log N), donde N es la cantidad de claves del diccionario. Como en este caso, el mayor N es el tamaño del diccionario, y este esta
+acotado por ser cadenas de texto, entonces tenemos acceso en \bigo(log Tamaño dicc) = \bigo(1).
+Por lo cual esta estructura se comporta igual que la clásica implementación sobre arreglos.
+Además tiene la ventaja de que al utilizar el operador \quotes{[]}(corchetes) para acceder a un elemento, si este no existe, entonces se crea una entrada con valor por defecto. Y en este caso, 
+el valor por defecto es nodo del Trie vacío, por lo cual funciona correctamente.
+
+
+\lstset{language=C++,
+           basicstyle=\ttfamily,
+           keywordstyle=\color{blue}\ttfamily,
+           stringstyle=\color{red}\ttfamily,
+           commentstyle=\color{green}\ttfamily,
+          breaklines=true,
+          stepnumber=1,
+          tabsize=2}
+
+\begin{lstlisting}
+	
+struct Trie {
+	map<char, Trie> hijos;
+	
+	int contador;
+};
+
+\end{lstlisting}
+
+\subsection{Pseudo-C++}
+
+\begin{algorithmic}
+	
+	\Function{Agregar}{Trie nodo, string s, int i}
+		\State nodo.contador++
+		\If {i == s.size()}
+			\State \Return
+		\Else
+			\State agregar(nodo.hijos[s[i]], s, i+1);
+		\EndIf
+
+	\EndFunction
+	
+	\vspace{1.5em}
+
+	\Function{Contador}{Trie nodo, string s, int prefijo, int i}
+		\If {i == prefijo}
+			\State \Return nodo.contador
+		\Else
+			\State \Return contador(nodo.hijos[s[i]], s, prefijo, i+1)
+		\EndIf
+	\EndFunction
+
+	\vspace{1.5em}
+
+	\Function{Main}{}
+		\State root $\gets$ Trie() \Comment Inicializo el Trie vacío
+
+		\State A $\gets$ leer_input()
+
+		\For{i = 0 to A}
+			\State $D_i$ $\gets$ leer_input()
+			\State Agregar(root, d, 0);
+
+		\EndFor
+
+		\For{i = 0 to A}
+			\State $T_i$ $\gets$ contador(root, $D_i$, $P_i$, 0)
+		\EndFor
+
+		\State T $\gets$ max\{$T_i$\}
+
+		\State Imprimir(T)
+
+	\EndFunction
+
+
+
+
+
+\end{algorithmic}
+
+\subsection{Complejidad}
+
+Como dijimos antes, todas las operaciones sobre el Trie son \bigo($\mid D_i \mid$). Hacemos una inserción y una consulta sobre cada $D_i$, con lo cual la complejidad nos queda
+\bigo($\mid D_1 \mid$ + ... + $\mid D_A \mid$ ), que es la complejidad requerida por el enunciado. 

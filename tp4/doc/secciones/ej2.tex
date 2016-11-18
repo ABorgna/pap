@@ -1,0 +1,102 @@
+\section{Ejercicio 2}
+
+En este problema queremos calcular la cantidad esperada de permutaciones que realiza el siguiente algoritmo
+hasta ordenar un array dado.
+
+\begin{enumerate}
+    \item Comenzamos con $i = 0$ y el arreglo $A$ de tamaño $N$ dado en la entrada.
+
+    \item Permutamos al azar el arreglo $A[i..N)$.
+
+    \item Mientras que $i$ sea menor a $N$ y el menor elemento de $A[i..N)$
+            sea $A[i]$ incrementamos $i$ en $1$.
+
+    \item Si $i < N$ volvemos al paso $2$.
+\end{enumerate}
+
+Como siempre se realiza una permutación aleatoria de todo el arreglo al iniciar,
+no nos importa el orden inicial de $A$.
+Llamaremos $B$ al array que queremos obtener, con los elementos de $A$ ordenados.
+
+\subsection{La solución}
+
+El algoritmo presentado va incrementando $i$ de a uno siempre manteniendo el invariante
+de que $A[0..i)$ ya está ordenado, o sea que $A[0..i) = B[0..i)$ y por lo tanto
+los elementos de $A[i..N)$ serán los mismos que $B[i..N)$.
+
+Llamaremos $X$ a la cantidad total de permutaciones que se realizan y
+$X_i$ a la cantidad de permutaciones realizadas durante el paso $i$.
+$X = 1 + \sum_{i=0}^{N-1} X_i$ (ya que siempre se realiza una permutación al inicio).
+\\
+
+Luego de cada permutación, la probabilidad de que haya quedado en la posición $i$ un elemento
+menor o igual a todos los siguientes la podemos calcular como
+
+$$
+p_i =
+\frac{\#\ de\ elementos\ minimos\ en\ A[i..N)}{\#\ de\ elementos\ en\ A[i..N)} =
+\frac{\#\{x \in B[i..N) \;|\; \forall x' \in B[i..N), \; x \leq x' \}}{N - i}
+$$
+
+Como siempre al empezar el paso $i$ los elementos de $A[i..N)$ ya se encuentran distribuidos uniformemente,
+queremos contar la cantidad de permutaciones \textit{fallidas} (que no colocaron un elemento mínimo al principio). Por lo tanto $X_i$ tendrá una distribución geométrica que contará la cantidad de fallos,
+donde cada ensayo tiene probabilidad $p_i$.
+
+Por propiedad de la distribución geométrica, $E(X_i) = \frac{1}{p} - 1$.
+\\
+
+Queremos calcular la esperanza del total de permutaciones del array, $E(X) = E(1 + \sum_{i=0}^{N-1} X_i)$.
+Por la linealidad de la esperanza, $E(X) = 1 + \sum_{i=0}^{N-1} E(X_i) = 1 + \sum_{i=0}^{N-1} (\frac{1}{p_i} - 1)$.
+
+Sabiendo esto, para calcular el resultado solo necesitamos ir recorriendo el array ordenado $B$
+acumulando en cada paso el $E(X_i)$ correspondiente.
+
+\subsection{El algoritmo}
+
+Como para calcular $p_i$ necesitamos conocer la cantidad de veces que se repite el menor elemento,
+ordenamos inicialmente $A$.
+
+Luego recorremos cada posición $i$ del array ordenado,
+manteniendo siempre un valor $j \geq i$ que indica la posición del primer elemento diferente a $A[i]$.
+
+$j$ se inicializa en 0 y al comenzar cada ciclo lo actualizamos realizando una búsqueda lineal
+en $A$ a partir de $j$, deteniéndonos cuando encontramos un elemento diferente a $A[i]$.
+Si en algún momento $j = i$ al inicializar el ciclo necesariamente tendremos que incrementarlo ya que $A[i] = A[i]$, y como $i$ se incrementa de a $1$ por ciclo nunca puede quedar $j<i$.
+
+Solo resta calcular $p_i$ y sumárselo al resultado. La cantidad total de elementos restantes la calculamos como $N - i$. Y la cantidad de elementos mínimos, como el array está ordenado, será $j - i$.
+\\
+
+A continuación se muestra el pseudocódigo del algoritmo:
+
+\newpage
+
+\begin{algorithmic}
+
+\Function{calcularEsperanza}{$a : vector<int>$}{$\; \rightarrow float$}
+    \State ordenar $a$
+    \State $res \gets 1$
+    \State $j \gets 0$
+    \For{$i$ entre $0$ y $n-1$}
+        \State $j \gets$ buscar el indice del primer elemento $\neq a[i]$ a partir de $j$
+        \State $res \gets res + (j-i)/(n-i)$
+    \EndFor
+    \State \Return $res$
+\EndFunction
+
+\end{algorithmic}
+
+\subsection{Complejidad}
+
+Primero debemos leer la entrada en tiempo \bigo($n$).
+
+Luego ordenamos $a$ en \bigo($n\ log(n)$).
+
+El ciclo se ejecuta $n$ veces y el nuevo resultado se calcula en \bigo(1),
+por lo que nos quedaría ver la complejidad de actualizar $j$.
+
+Cada búsqueda local compara una vez contra el elemento $j$ y luego, si este era igual al $i$-ésimo,
+realiza $k_i \geq 0$ comparaciones mas hasta que finalmente encuentra un elemento diferente y aumenta
+$j$ en $k_i$. Como $j$ está acotado por $n$, la suma de todas las $k_i$ no supera este valor y por lo
+tanto entre todas las búsquedas se realizan \bigo($n$) operaciones.
+
+Finalmente, sumando todas las complejidades, el algoritmo corre en \bigo($n\ log(n)$).
