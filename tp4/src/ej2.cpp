@@ -15,19 +15,12 @@ int main() {
     sort(v.begin(), v.end());
 
     double res = 1;
-    auto it = v.begin();
-
-    while (it != v.end()) {
-        auto itNext =
-            find_if_not(it + 1, v.end(), [&it](int k) { return k == *it; });
-
-        int count = distance(it, itNext);
-        int restantes = distance(it, v.end());
-        for (int i = 0; i < count; i++) {
-            res += (double)(restantes - i) / (double)(count - i) - 1;
-        }
-
-        it = itNext;
+    auto itEnd = v.begin();
+    for (auto it = v.begin(); it != v.end(); it++) {
+        itEnd = find_if_not(itEnd, v.end(), [&it](int k) { return k == *it; });
+        int iguales = distance(it, itEnd);
+        int total = distance(it, v.end());
+        res += (double)iguales / total - 1;
     }
 
     cout << fixed << setprecision(6) << res << endl;
