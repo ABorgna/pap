@@ -91,7 +91,7 @@ int main(){
 		for(int i = 1 ; i < N+1; i ++){
 			cin>>tipo;
 			if(tipo=='E'){
-				conectar(G,capacidad_red_residual,i,endpoint);//Las escuelas las conecto con el sumidero
+				conectar(G,capacidad_red_residual,i+N,endpoint);//Las escuelas las conecto con el sumidero
 			}
 			else{
 				if(tipo=='A'){
