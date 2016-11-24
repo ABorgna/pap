@@ -1,1 +1,34 @@
 \section{Ejercicio 4}
+
+\subsection{Interpretación del ejercicio}
+
+En este ejercicio nos advierten que en 2017 el sistema del Torneo Argentino de Programación 2017 tendrá un nuevo formato basado en que cada equipo compite con todos los demás en competencias de a 2 equipos. Esto cambia notablemente las estrategias de mirar el scorebord entre otras, pero además nos aseguran que hay un equipo que gana y otro que pierde, es decir, no hay empates (lo que nos llevaría a pensar que si ambos equipos resuelven los mismos problemas en los mismos tiempos, gana el que tenga nombre de equipo más copado o algún criterio similar). \newline
+
+Diego y Daniela (nuevos colaboradores del tap?) corrieron una simulación y fueron anotando los resultados en planillas distintas. Además, cada uno se refirió a cada equipo con un número de 1 a $|equipos|$, pero utilizaron un mapeo de equipos a números diferente. Afortunadamente, esto no provocó que haya que correr las simulacions de nuevo ya que se vio que los resultados anotados por ambos fueron los mismos. \newline
+
+Sin embargo, Diego es muy difícil de convencer y no nos cree que eso sea posible (tal vez se dio cuenta que a mayor n las chances de que esto ocurra disminuyen notablemente) y como nos gusta siempre tener razón, queremos demostrarle que esto sí es posible. \newline
+
+Para ello Diego nos va a dar una permutación P y le vamos a decir cuántos de los posibles resultados entre las competencias de los equipos cumplen con que al renombrar los equipos del 1 al N con la permutación P, estos no se modifican. \newline
+
+\subsection{Dónde estamos parados}
+
+En la primaria aprendimos a contar números. En la secundaria aprendimos temáticas un poco más interesantes como múltiplo común menor y exponenciación. En la facultad aprendimos sobre funciones, biyección y varias temáticas de interés como contar permutaciones, combinacioes de cosas y álgebra modular. \newline 
+
+Ahora nuestro nuevo desafío es aprender a contar la cantidad de posibles resultados que cumplen con esta propiedad mencionada (que al renombrar los equipos, si el equipo i le ganaba al equipo j, P(i) le gana a P(j)). Esperemos que entre que aprendimos a contar y ahora, tengamos los conocimientos suficientes para afrontar esta ardua tarea. \newline
+
+
+\subsection{Algunas definiciones}
+
+Llamaremos F(P) a la función resultante del renombre causado por la permutación P, es decir, F(i) = el i-ésimo número de la secuencia P. El dominio e imagen de la misma es de 1 a N, ya que hay N equipos y la permutación cumple con que los equipos son los mismos (y únicos) pero están en distinto orden. \newline
+
+Llamaremos G(P) al grafo resultante de ``dibujar'' F(P), es decir, un grafo (V, E) en el cual V son los nodos de 1 a N y $E=\left\{ (u, v)\in\mathbb{N \times N}| F(u) = v \right\}$  \newline
+
+LLamaremos batalla a la competencia entre 2 equipos. Llamaremos R(a, b) al resultado de la batalla entre a y b (devuelve a si ganó a y b si ganó b) \newline
+
+Llamaremos torneo al digrafo resultante de tomar un resultado posible de las batallas y dibujarlo, es decir, un grafo (V, E) en el cual V son los nodos de 1 a N y $E=\left\{ (u, v)\in\mathbb{N \times N}| R(u, v) = u \right\}$, es decir, la dirección del arco entre dos nodos me indica cuál ganó.
+
+\subsection{Observaciones}
+
+Si pensamos en cuántos torneos posibles puede haber, en definitiva los nodos son siempre los mismos (de 1 a N) y siempre hay (N \times (N - 1)) / 2 arcos, ya que cada equipo compite con todos los demás y hay sólo un arco entre cada par de equipos distintos. Con lo cual lo único que puede variar son las direcciones de los arcos. Como cada arco tiene 2 posibles direcciones, esto nos dice que hay 2^|E| posibilidades de resultados.
+
+Como esto es exponencial y podría darse en caso de que P sea la permutación de 1 a N, parecería que contar cada posible torneo no es una buena estrategia para llegar a una complejidad de n log n (creemos que cuanto mejor sea la complejidad, más convenceremos a Diego).
