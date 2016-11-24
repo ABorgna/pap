@@ -37,6 +37,9 @@ int bfs(std::vector<std::vector<int> >& capacidad_red_residual, adj_list& adj, i
 		int actual = cola.front();
 		cola.pop();
 		
+		if (visited[actual]) {
+			continue;
+		}
 		visited[actual] = true;
 		
 		for(auto& v : adj[actual]){
