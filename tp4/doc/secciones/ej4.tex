@@ -2,33 +2,185 @@
 
 \subsection{Interpretación del ejercicio}
 
-En este ejercicio nos advierten que en 2017 el sistema del Torneo Argentino de Programación 2017 tendrá un nuevo formato basado en que cada equipo compite con todos los demás en competencias de a 2 equipos. Esto cambia notablemente las estrategias de mirar el scorebord entre otras, pero además nos aseguran que hay un equipo que gana y otro que pierde, es decir, no hay empates (lo que nos llevaría a pensar que si ambos equipos resuelven los mismos problemas en los mismos tiempos, gana el que tenga nombre de equipo más copado o algún criterio similar). \newline
+	En este ejercicio nos advierten que en 2017 el sistema del Torneo Argentino de Programación 2017 tendrá un nuevo formato basado en que cada equipo compite con todos los demás en competencias de a 2 equipos. Esto cambia notablemente las estrategias de mirar el scorebord entre otras, pero además nos aseguran que hay un equipo que gana y otro que pierde, es decir, no hay empates (lo que nos llevaría a pensar que si ambos equipos resuelven los mismos problemas en los mismos tiempos, gana el que tenga nombre de equipo más copado o algún criterio similar). \newline
 
-Diego y Daniela (nuevos colaboradores del tap?) corrieron una simulación y fueron anotando los resultados en planillas distintas. Además, cada uno se refirió a cada equipo con un número de 1 a $|equipos|$, pero utilizaron un mapeo de equipos a números diferente. Afortunadamente, esto no provocó que haya que correr las simulacions de nuevo ya que se vio que los resultados anotados por ambos fueron los mismos. \newline
+	Diego y Daniela (nuevos colaboradores del tap?) corrieron una simulación y fueron anotando los resultados en planillas distintas. Además, cada uno se refirió a cada equipo con un número de 1 a $|equipos|$, pero utilizaron un mapeo de equipos a números diferente. Afortunadamente, esto no provocó que haya que correr las simulacions de nuevo ya que se vio que los resultados anotados por ambos fueron los mismos. \newline
 
-Sin embargo, Diego es muy difícil de convencer y no nos cree que eso sea posible (tal vez se dio cuenta que a mayor n las chances de que esto ocurra disminuyen notablemente) y como nos gusta siempre tener razón, queremos demostrarle que esto sí es posible. \newline
+	Sin embargo, Diego es muy difícil de convencer y no nos cree que eso sea posible (tal vez se dio cuenta que a mayor n las chances de que esto ocurra disminuyen notablemente) y como nos gusta siempre tener razón, queremos demostrarle que esto sí es posible. \newline
 
-Para ello Diego nos va a dar una permutación P y le vamos a decir cuántos de los posibles resultados entre las competencias de los equipos cumplen con que al renombrar los equipos del 1 al N con la permutación P, estos no se modifican. \newline
+	Para ello Diego nos va a dar una permutación P y le vamos a decir cuántos de los posibles resultados entre las competencias de los equipos cumplen con que al renombrar los equipos del 1 al N con la permutación P, estos no se modifican. \newline
 
 \subsection{Dónde estamos parados}
 
-En la primaria aprendimos a contar números. En la secundaria aprendimos temáticas un poco más interesantes como múltiplo común menor y exponenciación. En la facultad aprendimos sobre funciones, biyección y varias temáticas de interés como contar permutaciones, combinacioes de cosas y álgebra modular. \newline 
+	En la primaria aprendimos a contar números. En la secundaria aprendimos temáticas un poco más interesantes como múltiplo común menor y exponenciación. En la facultad aprendimos sobre funciones, biyección y varias temáticas de interés como contar permutaciones, combinacioes de cosas y álgebra modular. \newline 
 
-Ahora nuestro nuevo desafío es aprender a contar la cantidad de posibles resultados que cumplen con esta propiedad mencionada (que al renombrar los equipos, si el equipo i le ganaba al equipo j, P(i) le gana a P(j)). Esperemos que entre que aprendimos a contar y ahora, tengamos los conocimientos suficientes para afrontar esta ardua tarea. \newline
+	Ahora nuestro nuevo desafío es aprender a contar la cantidad de posibles resultados que cumplen con esta propiedad mencionada (que al renombrar los equipos, si el equipo i le ganaba al equipo j, P(i) le gana a P(j)). Esperemos que entre que aprendimos a contar y ahora, tengamos los conocimientos suficientes para afrontar esta ardua tarea. \newline
 
 
 \subsection{Algunas definiciones}
 
-Llamaremos F(P) a la función resultante del renombre causado por la permutación P, es decir, F(i) = el i-ésimo número de la secuencia P. El dominio e imagen de la misma es de 1 a N, ya que hay N equipos y la permutación cumple con que los equipos son los mismos (y únicos) pero están en distinto orden. \newline
+	Llamaremos F(P) a la función resultante del renombre causado por la permutación P, es decir, F(i) = el i-ésimo número de la secuencia P. El dominio e imagen de la misma es de 1 a N, ya que hay N equipos y la permutación cumple con que los equipos son los mismos (y únicos) pero están en distinto orden. \newline
 
-Llamaremos G(P) al grafo resultante de ``dibujar'' F(P), es decir, un grafo (V, E) en el cual V son los nodos de 1 a N y $E=\left\{ (u, v)\in\mathbb{N \times N}| F(u) = v \right\}$  \newline
+	Llamaremos G(P) al grafo resultante de ``dibujar'' F(P), es decir, un grafo (V, E) en el cual V son los nodos de 1 a N y $E=\left\{ (u, v)\in\mathbb{N \times N}| F(u) = v \right\}$  \newline
 
-LLamaremos batalla a la competencia entre 2 equipos. Llamaremos R(a, b) al resultado de la batalla entre a y b (devuelve a si ganó a y b si ganó b) \newline
+	LLamaremos batalla a la competencia entre 2 equipos. Llamaremos R(a, b) al resultado de la batalla entre a y b (devuelve a si ganó a y b si ganó b) \newline
 
-Llamaremos torneo al digrafo resultante de tomar un resultado posible de las batallas y dibujarlo, es decir, un grafo (V, E) en el cual V son los nodos de 1 a N y $E=\left\{ (u, v)\in\mathbb{N \times N}| R(u, v) = u \right\}$, es decir, la dirección del arco entre dos nodos me indica cuál ganó.
+	Llamaremos torneo al digrafo resultante de tomar un resultado posible de las batallas y dibujarlo, es decir, un grafo (V, E) en el cual V son los nodos de 1 a N y $E=\left\{ (u, v)\in\mathbb{N \times N}| R(u, v) = u \right\}$, es decir, la dirección del arco entre dos nodos me indica cuál ganó.
 
 \subsection{Observaciones}
 
-Si pensamos en cuántos torneos posibles puede haber, en definitiva los nodos son siempre los mismos (de 1 a N) y siempre hay (N \times (N - 1)) / 2 arcos, ya que cada equipo compite con todos los demás y hay sólo un arco entre cada par de equipos distintos. Con lo cual lo único que puede variar son las direcciones de los arcos. Como cada arco tiene 2 posibles direcciones, esto nos dice que hay 2^|E| posibilidades de resultados.
+	Si pensamos en cuántos torneos posibles puede haber, en definitiva los nodos son siempre los mismos (de 1 a N) y siempre hay $(N \times (N - 1)) / 2$ arcos, ya que cada equipo compite con todos los demás y hay sólo un arco entre cada par de equipos distintos. Con lo cual lo único que puede variar son las direcciones de los arcos. Como cada arco tiene 2 posibles direcciones, esto nos dice que hay $2^|E|$ posibilidades de resultados.  \newline
 
-Como esto es exponencial y podría darse en caso de que P sea la permutación de 1 a N, parecería que contar cada posible torneo no es una buena estrategia para llegar a una complejidad de n log n (creemos que cuanto mejor sea la complejidad, más convenceremos a Diego).
+	Como esto es exponencial y podría darse en caso de que P sea la permutación de 1 a N, parecería que contar cada posible torneo no es una buena estrategia para llegar a una complejidad de n log n (creemos que cuanto mejor sea la complejidad, más convenceremos a Diego).  \newline
+
+\subsection{Propiedades del problema}
+
+\newtheorem{theorem}{Lemma}
+\newtheorem{corollary}{Corolario}[theorem]
+
+
+\begin{theorem}
+	Todo G(P) tiene una descomposición única en ciclos.
+\end{theorem}
+
+\begin{proof}
+	Sea u un nodo cualquiera de G(P) tal que $F(u) \neq u$ (si $F(u) = u$, ya tengo mi ciclo). Sea c el camino obtenido de ir desde u a F(u), de F(u) a F(F(u)) y así sucesivamente hasta llegar a un nodo ya visto, al que llamaremos v. Supongamos $u \ne v$ y $F(v) \neq v$ (si $F(V) = v$ y $u \ne v$ significa que empezando por u no podría haber llegado a v).  \newline
+
+	Esto nos dice que el camino es de la forma $u \Rightarrow F(u) \Rightarrow F(F(u)) \Rightarrow \ldots \Rightarrow n1 -> v \Rightarrow \ldots \Rightarrow n2 \Rightarrow v$ (ilustrativo, n1 pordría ser u). Es decir, hubo 2 nodos n1 y n2 tal que F(n1) = F(n2) = v.   \newline
+
+	Si $n1 \ne n2$, esto es absurdo porque F(P) era biyectiva (no pueden dos nodos ir a parar al mismo). Si $n1 = n2$, significa que ya había repetido un nodo en el camino antes de v, lo cual es absurdo porque tomé v tal que sea el primer nodo repetido en el camino. Esto nos dice que en realidad $u = v$. Por ende, el camino era un ciclo.  \newline
+
+	Luego repetir el siguiente procedimiento :  \newline
+
+	\begin{enumerate}
+		\item{Si ya visité todos los nodos, me quedó V particinado en conjuntos de nodos que forman ciclos}
+		\item{Tomar un nodo cualquiera de G(P) no visitado y repetir la idea de antes marcando cada nodo por el que paso como visitado hasta llegar a uno repetido, que como vimos es el mismo con el cual empezamos. Esto nos define un conjunto de nodos que forman un ciclo}
+	\end{enumerate}	
+
+	Notar que esta descomposición es única ya que dado cualquier nodo de un ciclo, aplicar el procedimiento me brinda todos los nodos de ese ciclo, con lo cual sin importar con cuál comienzo, el conjunto de nodod que forma ese ciclo es siempre el mismo. Además no pude haber visto uno de esos nodos antes porque si vi uno antes, tuve que haber visto todos.
+
+\end{proof}
+
+\begin{theorem}[La Magia]
+	La respuesta al problema es 0 $\iff$ G(P) tiene un ciclo de longitud par (suponemos que $N > 1$, ya que si no ni si quiera hay batalla posible).
+\end{theorem}
+
+\begin{proof}
+	Sean u y v dos nodos de G(P) tal que u $\neq$ v. Supongamos que u le gana a v, es decir, R(u, v) = u (caso contrario es análogo). Para que el renombre sea válido, R(F(u), F(v)) = F(u). A su vez, R(F(F(u)), F(F(v))) = F(F(u)) y así sucesivamente. \newline
+
+	Supongamos que u y v pertenecen al mismo ciclo (de largo $\geq$ 2). Llamemos d(u, v) a la distancia entre u y v, es decir, si la distancia es 3, F(F(F(u))) = v. Como F(u) era el siguiente nodo a u en el ciclo y F(v) el siguiente a v, la distancia entre F(u) y F(v) también es d(u, v), ya que ``moví ambos hacia adelante''. \newline
+
+	Notar que el largo del ciclo es d(u, v) + d(v, u) = L.
+
+	Definamos el siguiente procedimiento : \newline
+
+	\begin{enumerate}
+		\item{Marcar el conjunto \{u, v\} como visitado}
+		\item{u = F(u), v = F(v)}
+		\item{Si \{u, v\} ya fue visitado, terminar}
+	\end{enumerate}
+
+	Analizemos cuándo se repite un par. Si visito un par (u, v) para que se repita debo visitar o bien (v, u) o bien (u, v) de nuevo. Visitar de nuevo a (u, v) sólo ocurre luego de L pasos, ya que para que u vuelva a ser u debe pasar por todo el ciclo y los nodos del ciclo son todos distintos. Lo mismo sucede con v. Con lo cual lo que resta ver es cuándo visito a (v, u) si partí desde (u, v). \newline
+
+	Si moviera sólo el nodo u, luego de d(u, v) pasos llega al nodo v, y luego de d(v, u) pasos vuelve al u, cerrando el ciclo luego de L pasos. Es decir, sólo paso 1 vez por v antes de cerrar el ciclo. Lo cual me dice que la única manera de que el procedimiento termine antes de L pasos, es que cuando u llega a v, v tiene que haber llegado a u. \newline
+
+	Como la distancia entre los nodos que estoy mirando siempre es d(u, v), para que sucedan ambos a la vez d(u, v) debe ser igual a d(v, u). Como tenía que d(u, v) + d(v, u) = L, d(u, v) = d(v, u) = L / 2. \newline
+
+	Como las distancias son enteras, para que esta cuenta tenga sentido L debe ser par. Si no fuera par, no hay manera de que ocurran ambos a la vez con lo cual el procedimiento termina luego de L pasos al volver al par inicial \newline
+
+	Esto es ya que si hubiera otro par de nodos que se repite antes de L pasos, hubiera empezado con esos como u y v pero me da que no pueden repetirse antes de L pasos. Como empezé por nodos anteriores a ellos, los que primero se repiten son los u y v con los que comenzé. En L + 1 pasos se repetiría el par F(u), F(v), en L + 2 pasos se repetiría el par F(F(u)), F(F(v)) y así sucesivamente. \newline
+	
+	Y qué significa que el par que se repite sea (u, v) con (v, u) en nuestro problema (o sea que L sea par)? \newline
+
+	Significa que u le ganó a v, pero que también v le ganó a u. Esto es absurdo, ya que sólo puede haber un resultado entre cada par de equipos y éstos son contradictorios. \newline
+
+	Como u y v sí o sí tenían que pelear en algún momento, en todo torneo debí tomar la decisión de dejar ganar a uno o a otro, lo cual termina obligando los siguientes resultados hasta llegar a esta contradicción. Por ende, si el largo del ciclo es par, la solución es 0, ya que no hay forma de armar un torneo válido que a su vez sea renombre válido. \newline
+
+	En cambio si L es impar, no hay contradicciones, es decir, el par que se repite es el mismo con el que empezé lo cual me dice que todos los pares que visité en el medio son posibles de formar. \newline
+
+	Además termino con el que empezé, es decir, las dependencias de que si u le gana a v, F(u) le gana a F(v) y así sucesivamente ya fueron cubiertas y ahora ya soy libre de elegir otro par no visitado para realizar el mismo procedimiento (que también pueden ser del mismo ciclo, ya que sólo visité los pares a distancia d(u, v) del ciclo). \newline
+
+	Notar que la única decisión que tomé en ese ciclo de dependencias fue si u le ganaba a v o si v le ganaba a u, todos los demás pares del ciclo están condicionados a seguir el mismo tipo de resultado para que sea renombre válido. \newline
+
+	Es decir, o bien el ciclo es (u, v) $\Rightarrow$ (F(u), F(v)) $\Rightarrow$ (F(F(u)), F(F(v))) $\Rightarrow \ldots$ o bien (v, u) $\Rightarrow$ (F(v), F(u)) $\Rightarrow$ (F(F(v)), F(F(u))) $\Rightarrow \ldots$ suponiendo que el primer nodo de cada par le gana al segundo. \newline
+
+	Con lo cual este ciclo de dependencias es independiente a los resultados de toda batalla entre pares de nodos que no pertenezcan al ciclo. \newline 
+
+	Si u y v no pertenecieran al mismo ciclo, quiere decir que u pertenece a un ciclo de largo L1 y v a uno de largo L2. Como ahora voy a ir moviendo u en su propio ciclo y v en su propio ciclo, no hay forma de que u pase a v ni de que v pase a u. Con lo cual u se repite cada L1 veces y v cada L2 veces. Es decir, el par (u, v) se repite luego de mcm (múltiplo común menor) entre L1 y L2. \newline
+
+	Notar que no hay otro par que se repita antes porque si lo hubiera, hubiera tomado ese par como inicio y me daría que no se pueden repetir antes de mcm(L1 y L2), con lo cual el primero que se repite es el par con el que empezé. \newline
+
+	En este caso entonces siempre se me generan estos ciclos de dependencias válidos. Notar que en cualquiera de los métodos, si hubiera empezado por otro par de nodos (que estén a distancia d(u, v) en el primer caso) el orden en que armo el ciclo es diferente, pero el conjunto de pares es el mismo.
+
+\end{proof}
+
+\begin{corollary}
+	Si todos los ciclos son de longitud impar, aplicando estas dos ideas reiteradas veces entre pares de nodos cuyo resultado aún no esté definido, puedo en definitiva obtener un conjunto de ciclos de dependencias independientes entre sí que al decidir la dirección de cada ciclo (es decir, para qué lado van las flechas, si u le ganaba a v o si v le ganaba a u) me termina dando un torneo válido cuyo renombre es válido. \newline
+
+	Como por cada ciclo de dependencias tuve que elegir entre 2 opciones, la cantidad de soluciones al problema es entonces $2^{cantidad\ de\ ciclos\ de\ dependencias}$.
+\end{corollary}
+
+
+\subsection{Resolviendo el problema}
+	Ahora que finalmente aprendimos a contar la cantidad de soluciones, hay que aprender a contar la cantidad de ciclos de dependencias. Diego nos dijo que podíamos contarlos en $\bigo(n^{2})$ ya que es la cantidad de pares de nodos posibles y habría que hacer una especie de bfs sobre eso hasta que no nos quede ningún par sin visitar. \newline
+
+	Pero nosotros estamos convencidos de que se nos puede ocurrir algo mejor, ya que si simplemente contamos ciclos de dependencias de la forma que nos dijo Diego podríamos haber hecho eso desde un principio con un grafo con los pares de nodos como vértices por ejemplo. \newline
+
+	A partir de aquí supondremos que todos los ciclos tienen largo impar, ya que caso contrario la respuesta es 0 y no hay que hacer más nada. \newline
+
+	Veamos cuántos ciclos de dependencias hay en un ciclo de G(P) : La cantidad de pares de nodos que hay (si no tengo en cuenta el orden) es L $\times$ (L - 1) / 2. Como dijimos antes que cada ciclo de dependencia se cierra luego de L pasos, quiere decir que pasamos por L pares de nodos, es decir, el ciclo de dependencia también tiene largo L. \newline  
+
+	Con lo cual si cada ciclo de dependencia tiene largo L (y recordar que son independientes y que los pares de nodos del mismo no se repiten en otro) y había L $\times$ (L - 1) / 2 pares en total, hay (L - 1) / 2 ciclos de dependencia (que da bien porque L es impar).
+
+	Veamos cuántos ciclos de dependencias hay entre dos ciclos : Como vimos antes, el ciclo se logra luego de mcm(L1, L2) pasos con lo cual los ciclos de dependencia tienen largo mcm(L1, L2). En total, la cantidad de pares que hay es de L1 $\times$ L2. Si recordamos un poco lo aprendido en el secundario, (L1 $\times$ L2) / mcm(L1, L2) = mcd(L1, L2) (múltiplo común menor). \newline
+
+
+\subsection{Preudocódigo}
+	Ya sabemos contar. Resta plantear un algoritmo que nos de la solución.
+
+	\begin{algorithmic}
+		\State N $\gets$ leerInput()
+		\State F[N + 1]
+		\State visitado[N + 1]
+		\State cantidad[N + 1]
+		\State dependencias $\gets$ 0
+
+		\For{i = 0 to N}
+			\State F[i] $\gets$ leerInput()
+			\State visitado[i + 1] $\gets$ false
+			\State visitado[i + 1] $\gets$ 0
+		\EndFor
+
+		\For{i = 0 to N}
+			\State current $\gets$ i
+			\State count $\gets$ 0
+			\While{visitado[current] == false}
+				\State visitado[current] $\gets$ true
+				\State count $\gets$ count + 1
+			\EndWhile
+			\State cantidad[count] $\gets$ cantidad[count] + 1
+		\EndFor
+
+		\For{i = 1 to N + 1}
+			\If{cantidad[i] > 0 and i \% 2 == 0}
+				\State return 0;
+			\EndIf
+			\If{cantidad[i] > 0 and i \% 2 == 1}
+				\State dependencias.push(i);
+			\EndIf
+		\EndFor
+
+		\For{i = 0 to dependencias.size()}
+			\State dependencias $\gets$ dependencias + (dependencias[i] - 1) * 2 * cantidad[dependencias[i]]
+			\State dependencias $\gets$ dependencias + dependencias[i] * cantidad[dependencias[i]] * (cantidad[dependencias[i]] - 1) / 2
+			\For{j = i + 1 to dependencias.size()}
+				\State dependencias $\gets$ dependencias + mcd(i, j) * cantidad[dependencias[i]] * cantidad[dependencias[j]]
+			\EndFor
+		\EndFor
+
+		\State return modPow(2, dependencias, $10^9 + 7$)
+
+	\end{algorithmic}
+
+
+\subsection{Complejidad del Algoritmo}	
