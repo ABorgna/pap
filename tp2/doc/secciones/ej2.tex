@@ -70,19 +70,18 @@ Además estas son \bigo($A^2$) y \bigo($A$) respectivamente, por lo cual el algo
 \Function{calcular$\_$camino$\_$aumento}{capacidad_red_residual, G, source, sink}
 	\State cola c, visited[tamaño(G)] = [false .. false], padre[tamaño(G)] = [-1 .. -1]
 	\State c.encolar(source)
-	
+	\State visited[source] $\leftarrow$ true
 	\Comment{BFS}
 
 	\While{not cola.vacia}
 		\State actual $\leftarrow$ cola.tope()
 		\State cola.desencolar
 		
-		\State visited[actual] $\leftarrow$ true
-	
 		\For{v : adj[actual]} \Comment{Para cada vecino del nodo actual en G}
 				\If {not visited[v] and capacidad_red_residual[actual][v] == 1}
 					\State p[v] $\leftarrow$ actual
 					\State cola.encolar(v)
+					\State visited[v] $\leftarrow$ true
 				\EndIf
 		\EndFor 
 	\EndWhile

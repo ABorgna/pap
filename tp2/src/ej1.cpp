@@ -18,19 +18,19 @@ int bfs(std::vector<std::vector<int> >& capacidad_red_residual, adj_list& adj, i
 	std::vector<bool> visited(adj.size(), false);
 
 	std::vector<int> p (adj.size(), -1);
-
+	
+	visited[source] = true;
 	//BFS
 
 	while(!cola.empty()){
 		int actual = cola.front();
 		cola.pop();
 		
-		visited[actual] = true;
-		
 		for(auto& v : adj[actual]){
 				if(not visited[v] and capacidad_red_residual[actual][v] == 1){
 					p[v] = actual;
 					cola.push(v);
+					visited[v] = true;
 				}
 		}
 	} 

@@ -95,19 +95,18 @@ Por lo cual nuestra solución es \bigo$(M^2 \times N )$, que fue lo pedido para 
 \Function{calcular$\_$camino$\_$aumento}{capacidad_red_residual, G, source, sink}
 	\State cola c, visited[tamaño(G)] = [false .. false], padre[tamaño(G)] = [-1 .. -1]
 	\State c.encolar(source)
-	
+	\State visited[source] $\leftarrow$ true
 	\Comment{BFS}
 
 	\While{not cola.vacía}
 		\State actual $\leftarrow$ cola.tope()
 		\State cola.desencolar
 		
-		\State visited[actual] $\leftarrow$ true
-	
 		\For{v : adj[actual]} \Comment{Para cada vecino del nodo actual en G}
 				\If {not visited[v] and capacidad_red_residual[actual][v] == 1}
 					\State p[v] $\leftarrow$ actual
 					\State cola.encolar(v)
+					\State visited[v] $\leftarrow$ true
 				\EndIf
 		\EndFor 
 	\EndWhile
