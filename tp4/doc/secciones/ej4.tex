@@ -106,7 +106,7 @@
 
 	Con lo cual este ciclo de dependencias es independiente a los resultados de toda batalla entre pares de nodos que no pertenezcan al ciclo. \newline 
 
-	Si u y v no pertenecieran al mismo ciclo, quiere decir que u pertenece a un ciclo de largo L1 y v a uno de largo L2. Como ahora voy a ir moviendo u en su propio ciclo y v en su propio ciclo, no hay forma de que u pase a v ni de que v pase a u. Con lo cual u se repite cada L1 veces y v cada L2 veces. Es decir, el par (u, v) se repite luego de mcm (múltiplo común menor) entre L1 y L2. \newline
+	Si u y v no pertenecieran al mismo ciclo, quiere decir que u pertenece a un ciclo de largo L1 y v a uno de largo L2. Como ahora voy a ir moviendo u en su propio ciclo y v en su propio ciclo, no hay forma de que u pase a v ni de que v pase a u. Con lo cual u se repite cada L1 veces y v cada L2 veces. Es decir, el par (u, v) se repite luego de mcm (mínimo comúm múltiplo) entre L1 y L2. \newline
 
 	Notar que no hay otro par que se repita antes porque si lo hubiera, hubiera tomado ese par como inicio y me daría que no se pueden repetir antes de mcm(L1 y L2), con lo cual el primero que se repite es el par con el que empezé. \newline
 
@@ -132,10 +132,10 @@
 
 	Con lo cual si cada ciclo de dependencia tiene largo L (y recordar que son independientes y que los pares de nodos del mismo no se repiten en otro) y había L $\times$ (L - 1) / 2 pares en total, hay (L - 1) / 2 ciclos de dependencia (que da bien porque L es impar).
 
-	Veamos cuántos ciclos de dependencias hay entre dos ciclos : Como vimos antes, el ciclo se logra luego de mcm(L1, L2) pasos con lo cual los ciclos de dependencia tienen largo mcm(L1, L2). En total, la cantidad de pares que hay es de L1 $\times$ L2. Si recordamos un poco lo aprendido en el secundario, (L1 $\times$ L2) / mcm(L1, L2) = mcd(L1, L2) (múltiplo común menor). \newline
+	Veamos cuántos ciclos de dependencias hay entre dos ciclos : Como vimos antes, el ciclo se logra luego de mcm(L1, L2) pasos con lo cual los ciclos de dependencia tienen largo mcm(L1, L2). En total, la cantidad de pares que hay es de L1 $\times$ L2. Si recordamos un poco lo aprendido en el secundario, (L1 $\times$ L2) / mcm(L1, L2) = mcd(L1, L2) (máximo común divisor). \newline
 
 
-\subsection{Preudocódigo}
+\subsection{Pseudocódigo}
 	Ya sabemos contar. Resta plantear un algoritmo que nos de la solución.
 
 	\begin{algorithmic}
@@ -144,6 +144,7 @@
 		\State visitado[N + 1]
 		\State cantidad[N + 1]
 		\State dependencias $\gets$ 0
+		\State longitudes $\gets$ ()
 
 		\For{i = 0 to N}
 			\State F[i] $\gets$ leerInput()
@@ -151,30 +152,31 @@
 			\State visitado[i + 1] $\gets$ 0
 		\EndFor
 
-		\For{i = 0 to N}
+		\For{i = 1 to N + 1}
 			\State current $\gets$ i
 			\State count $\gets$ 0
 			\While{visitado[current] == false}
 				\State visitado[current] $\gets$ true
 				\State count $\gets$ count + 1
+				\State current = F[current];
 			\EndWhile
 			\State cantidad[count] $\gets$ cantidad[count] + 1
 		\EndFor
 
 		\For{i = 1 to N + 1}
-			\If{cantidad[i] > 0 and i \% 2 == 0}
+			\If{cantidad[i] $>$ 0 and i \% 2 == 0}
 				\State return 0;
 			\EndIf
-			\If{cantidad[i] > 0 and i \% 2 == 1}
-				\State dependencias.push(i);
+			\If{cantidad[i] $>$ 0 and i \% 2 == 1}
+				\State longitudes.push(i);
 			\EndIf
 		\EndFor
 
-		\For{i = 0 to dependencias.size()}
-			\State dependencias $\gets$ dependencias + (dependencias[i] - 1) * 2 * cantidad[dependencias[i]]
-			\State dependencias $\gets$ dependencias + dependencias[i] * cantidad[dependencias[i]] * (cantidad[dependencias[i]] - 1) / 2
-			\For{j = i + 1 to dependencias.size()}
-				\State dependencias $\gets$ dependencias + mcd(i, j) * cantidad[dependencias[i]] * cantidad[dependencias[j]]
+		\For{i = 0 to longitudes.size()}
+			\State dependencias $\gets$ dependencias + longitudes[i] $\times $ cantidad[longitudes[i]] $\times$ (cantidad[longitudes[i]] - 1) $\div$ 2 \Comment{cantidad de ciclos entre pares de esta longitud}
+			\State dependencias $\gets$ dependencias + (longitudes[i] - 1) $\div$ 2 $\times$ cantidad[longitudes[i]] \Comment{cantidad de ciclos internos de esta longitud}
+			\For{j = i + 1 to longitudes.size()}
+				\State dependencias $\gets$ dependencias + mcd(longitudes[i], longitudes[j]) $\times$ cantidad[longitudes[i]] $\times$ cantidad[longitudes[j]]
 			\EndFor
 		\EndFor
 
@@ -184,3 +186,33 @@
 
 
 \subsection{Complejidad del Algoritmo}	
+
+	Los arreglos que utilizamos tienen \bigo(N) elementos. Leer la entrada e inicializarlos ya nos da \bigo(N). Luego hay que visitar todos los nodos para obtener las longitudes de los ciclos, lo cual también es \bigo(N) ya que cada nodo es visitado una sola vez, el for recorre los N nodos y lo que está dentro del while corre 1 sóla vez por nodo. \newline
+
+	Luego se recorre el arreglo de longitudes para determinar por un lado si hubo ciclo par (en cuyo caso devolvemos 0) y en caso de que sea impar y haya más de uno, lo agregamos a una lista. Con lo cual nos queda en la lista todas las diferentes longitudes de ciclos impares que aparecen en G(P). Esto también es \bigo(N). \newline
+
+	Al tener en la lista las longitudes únicas, se recorre con un doble for para calcular la cantidad de ciclos de dependencias formados por pares de ciclos. Además también se calculan los ciclos de dependencias formados dentro de 1 mismos ciclo. \newline
+
+	El segundo for comienza en i + 1 para no contar los ciclos dos veces, pero aún así la complejidad entre los dos for es de \bigo($|longitudes|^2$). Acotemos la cantidad de longitudes impares únicas que puede haber. \newline
+
+	Sabemos que la suma de las longitudes de todos los ciclos es N (ya que cada nodo pertenece a un único ciclo). Además, como queremos maximizar la cantidad de longitudes diferentes, asumamos que hay la mayor cantidad posible de distintos. \newline
+
+	Como la suma está acotada por N y queremos que haya la mayor cantidad posible de distintas entre sí, en definitiva queremos que cada longitud diferente sea lo más chica posible (ya que si no sumo N más rápido y con menos números distintos). \newline
+
+	Esto nos lleva a que debe ser de la forma 1 + 3 + 5 + 7 + 9 + \ldots + K tal que $\sum_{i = 1}^{(K + 1) \div 2}{i * 2 - 1} \leq N $ pero $\sum_{i = 1}^{(K + 3) \div 2}{i * 2 - 1} > N $. Esto equivale a la suma de los primeros $(K + 1) \div 2$ números impares, y el resultado de esto es $((K + 1) \div 2)^2$ (teorema de los números impares). \newline
+
+	Este resultado nos dice que K debe ser menor o igual que $2 \times \sqrt{N} - 1$ (en ese caso la suma da exactamente N). Con lo cual a lo sumo podemos acotar que hay \bigo($\sqrt{N}$) longitudes diferentes, por más que en total puede llegar a haber N ciclos contanto repeticiones de longitudes. \newline
+
+	Esta es la clave para que el algoritmo sea \bigo(n log n) en vez de \bigo($n^2$ log n). La complejidad de recorrer ambos for nos queda entonces \bigo($\sqrt{N}^2$), es decir, \bigo(N). Dentro del doble for, hago operaciones de sumas y multiplicaciones \bigo(1) pero también hago el mcd entre las dos longitudes de ciclos que estoy mirando. \newline
+
+	Como vimos en clase, calcular el mcd(a, b) tiene complejidad \bigo(log max(a, b)). Como las longitudes están acotadas por N (no hay ciclos de longitud con más nodos que N), en definitiva nos queda \bigo(log n). \newline
+
+	También hago algunas cuentas de sumas y multiplicaciones sólo con el primero for (ya que debo considerar los ciclos de dependencias internos y entre pares de ciclos de misma longitud) pero la complejidad me queda acotada por el mcd que hago en el doble for, quedando entonces una complejidad de \bigo(n log n). \newline
+
+	En fin, logramos calcular la cantidad de ciclos de dependencias en \bigo(n log n), ahora sólo resta elevar y aplicar el módulo para obtener nuestra respuesta. Cuántos ciclos de dependencias puede haber como máximo? \newline
+
+	Como máximo hay un ciclo por par de nodos (por ejempo con 1 y 2 cuando F(1) = 1 y F(2) = 2), es decir, que la permutación no cambió. Como hay $n^2$ pares de nodos, esto nos daría que la cantidad de ciclos de dependencias es a lo sumo $n^2$. \newline
+
+	Sería lamentable que luego de todo este esfuerzo, por tener que realizar $n^2$ multiplicaciones en el último paso la complejidad nos quede \bigo($n^2$) en vez de \bigo(n log n). Afortunadamente para nosotros, esto puede hacerse con exponenciación logarítmica, que como fue visto en clase nos daría una complejidad de \bigo(log $n^2$) para realizar la exponenciación mientras aplicamos módulo. \newline
+
+	Como \bigo(log $n^2$) es \bigo(2 $\times$ log $n$), en conclusión tenemos una complejidad de \bigo(N) $\times$ 3 + \bigo(n log n) + \bigo(2 $\times$ log $n$). Esto nos termina quedando \bigo(n log n), con lo cual ahora podemos mostrarle a Diego nuestra demostración y finalmente lograr convencerlo.
