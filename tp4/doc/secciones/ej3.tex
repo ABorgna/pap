@@ -1,1 +1,20 @@
 \section{Ejercicio 3}
+
+\subsection{Enunciado}
+
+El rey de Nlogonia nos ha encomendado la siguiente tarea: Dado un conjunto de lugares históricos, y lugares enemigos, calcular la mejor muralla (un polígono convexo) que no contenga lugares enemigos, donde entendemos por mejor a aquella que contenga mas cantidad de lugares históricos en su interior (incluyendo el borde).
+
+La cantidad de lugares históricos se denomina H, la cantidad de enemigos se denomina E, y la suma de estos N.
+
+Debemos imprimir la cantidad de lugares históricos en la mejor muralla.
+
+\subsection{Algunas ideas}
+\par{Para demostrar la correctitud de nuestro complejo algoritmo \quotes{Vamos por partes}\footnote{Como diría Jack el Destripador, y cualquier ayudante de Análisis II.}. Daremos una modularización del mismo mediante funciones auxiliares y basaremos la correctitud de ciertas funciones en la correctitud de las que esta utiliza.} 
+\par{Como primer observación principal, vemos que un polígono (más aún, convexo) puede descomponerse en triángulos, como vimos en el ejercicio 1 de este mismo informe. Dada una descomposición en triángulos, podemos chequear cuantos enemigos están contenidos en cada triángulo de manera relativamente fácil. De esta manera vamos a buscar cumplir uno de los objetivos, que era no tener enemigos dentro de nuestro polígono resultado. Por otro lado, podemos contar la cantidad de lugares históricos en cada triángulo, y con cierto cuidado de no repetir los vértices de los triangulos, saber cuantos lugares históricos tiene en total un cierto polígono. De esta forma, tambien podríamos cubrir el objetivo de maximizar la cantidad de lugares históricos.}
+
+\subsection{Graham's scan: La inspiración divina}
+\par{En la presente sección, nos inspiramos y haremos malabares con el algoritmo de Graham\footnote{Ronald Graham es un reconocido malabarista: \url{http://www.math.ucsd.edu/~fan/ron/images/12balls.jpg}}.
+En el algoritmo de Graham, tomamos al punto mas abajo, y de estos el mas a la izquierda, como base. Luego construimos una capsula convexa utilizando a este punto para ordenar a los demás segun ángulo polar en relación al punto. Podemos pensar entonces en la descomposición en triángulos del polígono convexo resultante, tomando al punto base del algoritmo de Graham, es decir, que este punto esté en todos los triángulos del poligono.}
+
+\par{Dado un punto base, vamos a denominar \textbf{mejor-con-base} a la función que retorna el mejor polígono convexo que contiene solo puntos mas arriba a la izquierda de esta base, y que no contiene enemigos. Una vez más, llamamos mejor al que contiene más cantidad de puntos históricos. Diremos que este punto es base porque daremos una descomposición en triángulos con este punto como base(en eso consistirá nuestro algoritmo).}
+\par{Como adelantabamos antes, veremos que nuestra función principal (el resultado del problema), que denominamos \textbf{solucion}, es correcta. Y para esto vemos que, dado el resultado del problema, el polígono es uno de los considerados por la función mejor-con-base con alguna base, ya que, existe algún punto que es el más abajo a la izquierda de todos los que pertenecen al polígono. Por eso, la función solución solo debe probar todas las posibles bases y retornar el máximo resultado obtenido. En base a la correctitud de mejor-con-base, esta función es correcta.}
