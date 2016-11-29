@@ -187,7 +187,7 @@ int mejor_con_ultimo(const vector<Punto>& historicos, const vector<Punto>& enemi
     return res;
 }
 
-int mejor_capsula_incluyendo(const vector<Punto>& historicos, vector<Punto>& enemigos, int base) {
+int mejor_con_base(const vector<Punto>& historicos, const vector<Punto>& enemigos, int base) {
     Punto p_base = historicos[base];
     vector<Punto> historicos_arriba_der = filtro_arriba_der(historicos, base);
     Comparator comp = Comparator(p_base);
@@ -217,6 +217,18 @@ int mejor_capsula_incluyendo(const vector<Punto>& historicos, vector<Punto>& ene
     return res;
 }
 
+int solucion(const vector<Punto>& historicos, const vector<Punto>& enemigos) {
+    int res;
+    
+    res = -kInf; // no hay ptos alineados
+
+    m_historicos_contenidos = nueva_matriz3_menos_inf( (int) historicos.size());
+    for (int i = 0; i < (int) historicos.size(); i++){
+        res = max(res, mejor_con_base(historicos, enemigos, i));
+    }
+    
+    return res;
+}
 
 int main(){
     int h, e;
@@ -233,16 +245,7 @@ int main(){
         cin >> enemigos[i];
     }
     
-    int res;
-    
-    res = min(2, h); // no hay ptos alineados
-    
-    if (h > 2) {
-        m_historicos_contenidos = nueva_matriz3_menos_inf(h);
-        for (int i = 0; i < h; i++){
-            res = max(res, mejor_capsula_incluyendo(historicos, enemigos, i));
-        }
-    }
+    int res = solucion(historicos, enemigos);
     
     cout << res << endl; 
 }
