@@ -105,6 +105,11 @@ Matriz3 nueva_matriz3_menos_inf(int n){
     return m;
 }
 
+/*
+ * Si en el triangulo hay enemigos => -1
+ * Si no => cantidad de historicos estrictamente contenidos 
+ * NO en el borde (no hay), NO los tres vertices del triangulo
+ * */
 int historicos_contenidos(Punto p1, Punto p2, Punto p3, const vector<Punto>& historicos, const vector<Punto>& enemigos ) {
     if (m_historicos_contenidos[p1.original_idx][p2.original_idx][p3.original_idx] != -kInf){
         return m_historicos_contenidos[p1.original_idx][p2.original_idx][p3.original_idx];
