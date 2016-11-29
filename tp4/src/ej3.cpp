@@ -11,7 +11,6 @@ typedef vector<vector<vector<int> > > Matriz3;
 #define DEBUG(x) cout << x << endl;
 
 const int kInf = 999999999;
-int H, E;
 
 Matriz3 m_historicos_contenidos;
 
@@ -215,26 +214,27 @@ int mejor_capsula_incluyendo(const vector<Punto>& historicos, vector<Punto>& ene
 
 
 int main(){
-    cin >> H >> E;
+    int h, e;
+    cin >> h >> e;
     
-    vector<Punto> historicos(H);
-    vector<Punto> enemigos(E);
+    vector<Punto> historicos(h);
+    vector<Punto> enemigos(e);
     
-    for(int i=0; i < H; i++){
+    for(int i=0; i < h; i++){
         cin >> historicos[i];
         historicos[i].original_idx = i;
     }
-    for(int i=0; i < E; i++){
+    for(int i=0; i < e; i++){
         cin >> enemigos[i];
     }
     
     int res;
     
-    res = min(2, H); // no hay ptos alineados
+    res = min(2, h); // no hay ptos alineados
     
-    if (H > 2) {
-        m_historicos_contenidos = nueva_matriz3_menos_inf(H);
-        for (int i = 0; i < H; i++){
+    if (h > 2) {
+        m_historicos_contenidos = nueva_matriz3_menos_inf(h);
+        for (int i = 0; i < h; i++){
             res = max(res, mejor_capsula_incluyendo(historicos, enemigos, i));
         }
     }
