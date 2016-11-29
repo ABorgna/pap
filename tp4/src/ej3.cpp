@@ -141,7 +141,7 @@ int mejor_capsula_incluyendo(const vector<Punto>& historicos, vector<Punto>& ene
     
     for (int i = 0; i < h; i++){
         for (int j = 0; j < h; j++){
-            int res = max(res, mejor_con_ultimo(historicos, enemigos, memo, base, i, j));
+            int res = max(res, mejor_con_ultimo(historicos, enemigos, memo, base_filtrada, i, j));
         }
     }
     
