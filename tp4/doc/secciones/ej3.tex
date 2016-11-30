@@ -10,11 +10,50 @@ Debemos imprimir la cantidad de lugares históricos en la mejor muralla.
 
 \subsection{Algunas ideas}
 \par{Para demostrar la correctitud de nuestro complejo algoritmo \quotes{Vamos por partes}\footnote{Como diría Jack el Destripador, y cualquier ayudante de Análisis II.}. Daremos una modularización del mismo mediante funciones auxiliares y basaremos la correctitud de ciertas funciones en la correctitud de las que esta utiliza.} 
-\par{Como primer observación principal, vemos que un polígono (más aún, convexo) puede descomponerse en triángulos, como vimos en el ejercicio 1 de este mismo informe. Dada una descomposición en triángulos, podemos chequear cuantos enemigos están contenidos en cada triángulo de manera relativamente fácil. De esta manera vamos a buscar cumplir uno de los objetivos, que era no tener enemigos dentro de nuestro polígono resultado. Por otro lado, podemos contar la cantidad de lugares históricos en cada triángulo, y con cierto cuidado de no repetir los vértices de los triangulos, saber cuantos lugares históricos tiene en total un cierto polígono. De esta forma, tambien podríamos cubrir el objetivo de maximizar la cantidad de lugares históricos.}
+\par{Como primer observación principal, vemos que un polígono (más aún, convexo) puede descomponerse en triángulos, como vimos en el ejercicio 1 de este mismo informe. Dada una descomposición en triángulos, podemos chequear cuantos enemigos están contenidos en cada triángulo. De esta manera vamos a buscar cumplir uno de los objetivos, que era no tener enemigos dentro de nuestro polígono resultado. Por otro lado, podemos contar la cantidad de lugares históricos en cada triángulo, y con cierto cuidado de no repetir los vértices de los triangulos, saber cuantos lugares históricos tiene en total un cierto polígono. De esta forma, tambien podríamos cubrir el objetivo de maximizar la cantidad de lugares históricos.}
+\par{Otra observación muy importante es que, la respuesta de nuestro algoritmo será un polígono convexo cuyos vértices son puntos históricos. Podemos hacer esto ya que, de existir un polígono convexo respuesta que no le sucede esto, lo podemos \quotes{achicar} hasta encontrarnos con los puntos históricos, de manera de no perder puntos históricos(\textbf{REVISAR ESTOOOOOOO})}
 
 \subsection{Graham's scan: La inspiración divina}
 \par{En la presente sección, nos inspiramos y haremos malabares con el algoritmo de Graham\footnote{Ronald Graham es un reconocido malabarista: \url{http://www.math.ucsd.edu/~fan/ron/images/12balls.jpg}}.
 En el algoritmo de Graham, tomamos al punto mas abajo, y de estos el mas a la izquierda, como base. Luego construimos una capsula convexa utilizando a este punto para ordenar a los demás segun ángulo polar en relación al punto. Podemos pensar entonces en la descomposición en triángulos del polígono convexo resultante, tomando al punto base del algoritmo de Graham, es decir, que este punto esté en todos los triángulos del poligono.}
 
-\par{Dado un punto base, vamos a denominar \textbf{mejor-con-base} a la función que retorna el mejor polígono convexo que contiene solo puntos mas arriba a la izquierda de esta base, y que no contiene enemigos. Una vez más, llamamos mejor al que contiene más cantidad de puntos históricos. Diremos que este punto es base porque daremos una descomposición en triángulos con este punto como base(en eso consistirá nuestro algoritmo).}
+\par{Dado un punto base, vamos a denominar \textbf{mejor-con-base} a la función que retorna el mejor polígono convexo que contiene solo puntos mas arriba a la derecha de esta base, y que no contiene enemigos. Una vez más, llamamos mejor al que contiene más cantidad de puntos históricos. Diremos que este punto es base porque daremos una descomposición en triángulos con este punto como base(en eso consistirá nuestro algoritmo).}
 \par{Como adelantabamos antes, veremos que nuestra función principal (el resultado del problema), que denominamos \textbf{solucion}, es correcta. Y para esto vemos que, dado el resultado del problema, el polígono es uno de los considerados por la función mejor-con-base con alguna base, ya que, existe algún punto que es el más abajo a la izquierda de todos los que pertenecen al polígono. Por eso, la función solución solo debe probar todas las posibles bases y retornar el máximo resultado obtenido. En base a la correctitud de mejor-con-base, esta función es correcta.}
+
+\subsection{Función mejor-con-base}
+\par{
+En esta función vamos a restringirnos a los vértices que estan arriba a la derecha del punto base.
+Si estos puntos son menos que 3, entonces la respuesta es el tamaño de este mismo conjunto, pues no puede haber puntos colineales, y por ende no puede haber enemigos en su \quotes{interior o borde}.
+Veamos entonces el otro caso.}
+\par{
+Dada cualquier descomposición en triángulos que tomemos con su base, podemos tener un orden en el ángulo de los vértices de los triángulos. Esto mismo nos define un orden sobre los triángulos.
+De cierta forma, un polígono convexo respuesta al problema podría ser formado en un Graham's Scan si nos restringimos a los puntos que forman parte de la solución. Pensando en este Graham's scan y el orden anterior, alguno de los triángulos es el último.}
+\par{
+De una forma similar a la anterior, podemos definir una función \textbf{mejor-con-ultimo}, que nos da el mejor polígono convexo (que cumple las restricciones), y donde tenemos fijo el último triángulo dado un punto base. Como alguno de los puntos es el último, tomamos el máximo sobre todos los posibles triángulos tomandolos como últimos y llamando a la función mejor-con-ultimo con este como parametro. Así, la función es correcta suponiendo correcta a mejor-con-ultimo.}
+\par{
+Como estamos tomando los triángulos respecto a un punto base, los triángulos que debemos ver se corresponden con todos los pares de vértices posibles (excepto repetir vértices). Así quedan cubiertos todos los triángulos. }
+
+\subsection{Función mejor-con-ultimo}
+\par{Esta función la implementaremos de forma recursiva. Si bien esta recursión puede no ser clásica o no tan clara, es una recursión al fin, con todos sus elementos.
+Para empezar, distinguimos el caso de que el último triángulo parámetro contenga un enemigo. En este caso retornamos $-\infty$ (-inf). }
+\par{En caso de que no, vamos a tomar el máximo sobre algunas opciones. Sabemos que un posible polígono es únicamente el último triángulo, asi que inicializamos la variable res (la respuesta) como el primer posible máximo, que es la cantidad de puntos históricos dentro de este triángulo, incluyendo los vértices.
+En caso de no presentarse otras opciones (veremos ahora cuales son), retornamos este valor mencionado para res. Así que este sería nuestro caso base. Como no existe otro posible polígono (nuestras opciones se corresponden con todos los posibles polígonos), ese es efectivamente el resultado y la función es correcta.}
+\par{
+Así como tomamos el último triángulo en la descomposición, podemos fijar cual es el anteúltimo.
+Las posibles opciones van a ser exactamente esto, fijar cual es el anteúltimo triángulo, de forma tal que cumpla ciertas condiciones.
+Notemos primero que si fijamos que un triángulo es el anteúltimo, y queriamos saber el mejor polígono con un triángulo como último, la cantidad de puntos históricos del mejor polígono con último y anteúltimo fijos, es igual a la cantidad de puntos históricos con el anteúltimo fijo como último más los puntos históricos dentro del triángulo originalmente último\footnote{Perdon por tanto, pero repetir esta frase hasta que se entienda.}. Más especificamente, sumamos los puntos históricos estrictamente contenidos y un vértice más que no comparten.
+}
+\par{Veremos ahora que condiciones debe cumplir el próximo triángulo para considerarse. Los triángulos tienen que ser último y anteúltimo, asi que deben compartir un vértice. En particular llamamos a esta vértice ultimo-a (y en contraste los otros son base y ultimo-b). Ultimo-a viene antes en el orden definido por el vértice base. Por otro lado, la otra condición es que los segmentos que forman definan un ángulo menor a 180, y por ende se forme un polígono convexo. Esto lo vamos a chequear utilizando el producto cruz de vectores, al igual que en el algoritmo de Graham. 
+Por lo visto anteriormente, podemos buscar las posibles opciones de triángulos solo recorriendo los vértices anteriores a ultimo-a en el orden definido por base, y luego tomamos el máximo sobre los cálculos que hacemos, para retornar esto.}
+
+\subsection{Como chequear la cantidad de históricos y la validez}
+Que alguien lo explique, no se.
+
+\subsection{No nos repitamos}
+Bla bla bla
+
+\subsection{Pseudocódigo}
+bla
+
+\subsection{Complejidad}
+Bla bla bla
