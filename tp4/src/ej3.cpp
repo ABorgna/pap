@@ -172,19 +172,18 @@ int mejor_con_ultimo(const vector<Punto>& historicos, const vector<Punto>& enemi
     
     if (base_contenidos != -1) {
         res = base_contenidos + 3; // base + ultimo_a + ultimo_b forman un triangulo
-    }
     
-    
-    for(int i = 0; i < ultimo_a; i++) {
-    
-        if (i == base or i == ultimo_a) {
-            continue;
-        }
+        for(int i = 0; i < ultimo_a; i++) {
         
-        int contenidos = historicos_contenidos(historicos[base], historicos[ultimo_a], historicos[i], historicos, enemigos); 
-        
-        if (contenidos != -1 and sign(historicos[ultimo_b], historicos[ultimo_a], historicos[i]) > 0 ) { // BOLAS
-            res = max(res, mejor_con_ultimo(historicos, enemigos, memo, base, i, ultimo_a) + 1 + base_contenidos);
+            if (i == base or i == ultimo_a) {
+                continue;
+            }
+            
+            int contenidos = historicos_contenidos(historicos[base], historicos[ultimo_a], historicos[i], historicos, enemigos); 
+            
+            if (contenidos != -1 and sign(historicos[ultimo_b], historicos[ultimo_a], historicos[i]) > 0 ) { // BOLAS
+                res = max(res, mejor_con_ultimo(historicos, enemigos, memo, base, i, ultimo_a) + 1 + base_contenidos);
+            }
         }
     }
     
@@ -224,11 +223,10 @@ int mejor_con_base(const vector<Punto>& historicos, const vector<Punto>& enemigo
 }
 
 int solucion(const vector<Punto>& historicos, const vector<Punto>& enemigos) {
-    int res;
-    
-    res = -kInf; // no hay ptos alineados
-
     m_historicos_contenidos = nueva_matriz3_menos_inf( (int) historicos.size());
+
+    int res = -kInf; // no hay ptos alineados
+
     for (int i = 0; i < (int) historicos.size(); i++){
         res = max(res, mejor_con_base(historicos, enemigos, i));
     }
