@@ -43,12 +43,18 @@ struct Punto {
 		i >> p.x >> p.y;
 		return i;
 	}
+    
+    Punto operator - (const Punto& p2) const {
+        return Punto(x - p2.x, y - p2.y);
+    }
 };
 
 
 
 int sign (Punto p1, Punto p2, Punto p3) {
-    return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+    Punto vec1 = p1 - p3;
+    Punto vec2 = p2 - p3;
+    return vec1.producto_vectorial(vec2);
 }
 
 struct Comparator {
