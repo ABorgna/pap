@@ -11,7 +11,7 @@ Debemos imprimir la cantidad de lugares históricos en la mejor muralla.
 \subsection{Algunas ideas}
 \par{Para demostrar la correctitud de nuestro complejo algoritmo \quotes{Vamos por partes}\footnote{Como diría Jack el Destripador, y cualquier ayudante de Análisis II.}. Daremos una modularización del mismo mediante funciones auxiliares y basaremos la correctitud de ciertas funciones en la correctitud de las que esta utiliza.} 
 \par{Como primer observación principal, vemos que un polígono (más aún, convexo) puede descomponerse en triángulos, como vimos en el ejercicio 1 de este mismo informe. Dada una descomposición en triángulos, podemos chequear cuantos enemigos están contenidos en cada triángulo. De esta manera vamos a buscar cumplir uno de los objetivos, que era no tener enemigos dentro de nuestro polígono resultado. Por otro lado, podemos contar la cantidad de lugares históricos en cada triángulo, y con cierto cuidado de no repetir los vértices de los triángulos, saber cuantos lugares históricos tiene en total un cierto polígono. De esta forma, también podríamos cubrir el objetivo de maximizar la cantidad de lugares históricos.}
-\par{Otra observación muy importante es que, la respuesta de nuestro algoritmo será un polígono convexo cuyos vértices son puntos históricos. Podemos hacer esto ya que, de existir un polígono convexo respuesta que no le sucede esto, lo podemos \quotes{achicar} hasta encontrarnos con los puntos históricos, de manera de no perder puntos históricos(\textbf{REVISAR ESTOOOOOOO})}
+\par{Otra observación muy importante es que, si bien contaremos la cantidad de puntos históricos en el mejor polígono, nos restringimos a polígonos convexso cuyos vértices son puntos históricos. Podemos hacer esto ya que, de existir un polígono convexo cuya cantidad de puntos históricos es respuesta y que no le sucede esto, lo podemos \quotes{achicar} hasta encontrarnos con los puntos históricos, de manera de no perder puntos históricos.}
 
 \subsection{Graham's scan: La inspiración divina}
 \par{En la presente sección, nos inspiramos y haremos malabares con el algoritmo de Graham\footnote{Ronald Graham es un reconocido malabarista: \url{http://www.math.ucsd.edu/~fan/ron/images/12balls.jpg}}.
@@ -50,10 +50,76 @@ Por lo visto anteriormente, podemos buscar las posibles opciones de triángulos 
 Que alguien lo explique, no se.
 
 \subsection{No nos repitamos}
-Bla bla bla
+\par{Al momento de describir los algoritmos anteriores vimos que, repetimos consultas de dos tipos:
+Las de historicos-contenidos y las de mejor-con-ultimo. Esto es por la naturaleza recursiva de mejor-con-ultimo y las llamadas a historicos-contenidos que hace. Es decir, a priori, repetiríamos exactamente el mismo cálculo por repetirse los parámetros en distintos momentos de la ejecución.}
+\par{La raíz de todo mal en las Ciencias de la Computación es repetir cálculos(bueno, justo despúes de la \quotes{premature optimization}\footnote{\url{https://en.wikiquote.org/wiki/Donald_Knuth}}). Intentaremos no repetirnos mediante el uso de la técnica de memoization (junto a la recusión, podríamos decir que se corresponde con la técnica de programación dinámica). Para los parametros que calculemos el resultado de las dos funciones mencionadas, vamos a almacenar este resultado en un arreglo de tamaño correspondiente. Luego, al momento de ser llamada, la función chequea si el resultado ya fue almacenado, o si debe computarse por primera vez. Esto reduce considerablemente la complejidad de nuestra solución. }
+
 
 \subsection{Pseudocódigo}
-bla
+\begin{algorithmic}
+\Function{Solucion}{historicos[], enemigos[]}
+	\State m_historicos_contenidos $\gets$ Matriz_3_dimensional_menos_inf() \Comment{Memoization de históricos contenidos, es una global}
+
+	\State res $\gets$ $-\infty$
+
+	\For{i = 0 to historicos.size()}
+		\State res $\gets$ max(res, mejor_con_base(historicos, enemigos, i))
+	\EndFor
+
+\EndFunction
+
+\Function{mejor_con_base}{historicos[], enemigos[], base}
+	\State p_base $\gets$ historicos[base]
+	\State historicos_arriba_der $\gets$ filtrar históricos arriba a la derecha de p_base
+	\State ordenar historicos_arriba_der por ángulo polar desde p_base
+
+	\State base_filtrada $\gets$ nuevo índice de p_base en el arreglo historicos_arriba_der
+	\State h $\gets$ historicos_arriba_der.size()
+	\If{h $\leq$ 2}
+		\State \Return h
+	\EndIf
+
+	\State memo $\gets$ Matriz_2_dimensional_menos_inf() \Comment{Memoization de mejor_con_ultimo}
+	\State res $\gets$ $-\infty$
+
+	\For {i = 0 to h}
+		\For{j = 0 to h}
+			\If { i,j, base_filtrada son distintos entre si} \Comment{Forman un triangulo valido}
+				\State res = max(res, mejor_con_ultimo(historicos, enemigos, memo, base_filtrada, i, j))
+			\EndIf
+		\EndFor
+	\EndFor
+\EndFunction
+\Function{mejor_con_ultimo}{historicos[], enemigos[], memo, base, ultimo_a, ultimo_b}
+	\If{memo[ultimo_a][ultimo_b] != $-\infty$ }
+		\State \Return memo[ultimo_a][ultimo_b]
+	\EndIf
+
+	\State res $\gets$ $-\infty$
+	\State \Comment{Cuantos estrictamente contenidos hay en el triángulo pasado por parámetro} 
+	\State base_contenidos $\gets$ historicos_contenidos(historicos[base], historicos[ultimo_a], historicos[ultimo_b], historicos, enemigos) 
+
+	\If {base_contenidos != -1}
+		\For{i = 0 to ultimo_a}
+			\If{i == base or i == ultimo_a}
+				\State \textbf{continue}
+			\EndIf
+
+			\State contenidos $\gets$ historicos_contenidos(historicos[base], historicos[ultimo_a], historicos[i], historicos, enemigos)
+
+			\If{contenidos != -1 and blablabla } \Comment{chequeamos que el polígono no nos quede cóncavo}
+				res $\gets$ max(res, mejor_con_ultimo(historicos, enemigos, memo, base, i, ultimo_a) + 1 + base_contenidos);
+
+			\EndIf
+
+		\EndFor
+	\EndIf
+\EndFunction
+
+
+\end{algorithmic}
+
+
 
 \subsection{Complejidad}
 Bla bla bla
