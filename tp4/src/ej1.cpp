@@ -3,18 +3,14 @@
 #include <map>
 #include <vector>
 
-#define forn(i,n) for(int i = 0; i< (int) n; i++)
-#define forns(i,s,n) for(int i = s; i<= (int) n; i++)
-
 using namespace std;
 
 struct punto {
 	int x, y;
-	punto() {
-	}
+
+	punto() { }
 	
-	punto (int x, int y) : x(x), y(y) {
-	}
+	punto (int x, int y) : x(x), y(y) { }
 
 	int producto_vectorial(punto& b) {
 		return x * b.y - b.x * y;
@@ -37,11 +33,8 @@ struct punto {
 
 struct segmento {
 	punto a, b;
-	segmento() {
-		
-	}
-	segmento (punto a, punto b) : a(a), b(b) {
-	}
+	segmento() { }
+	segmento (punto a, punto b) : a(a), b(b) { }
 };
 
 bool operator == (const punto& a, const punto& b) {
@@ -109,8 +102,7 @@ int main() {
 	
 	if (izq.producto_vectorial(der) > 0) {
 		recorrer_y_mostrar(segmentos_incidentes[leftmost][1], leftmost, segmentos_incidentes, leftmost);
-	}
-	else {
+	} else {
 		recorrer_y_mostrar(segmentos_incidentes[leftmost][0], leftmost, segmentos_incidentes, leftmost);
 	}
 
