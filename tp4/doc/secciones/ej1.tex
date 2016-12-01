@@ -1,5 +1,7 @@
 \section{Ejercicio 1}
 
+\subsection{Enunciado}
+
 En este ejercicio nos dan la triangulación de un polígono y a partir de la misma recuperar el polígono original. En la entrada se nos da los extremos de cada uno de esos triángulos pero uno a partir de ello podría dibujar todos los triángulos y formar la figura original. La cantidad de lados del polígono es n, con lo cual la cantidad de triángulos en la entrada es n-2.\newline
 
 Un ejemplo podría ser el siguiente:\newline
@@ -13,9 +15,14 @@ Los números que hay sobre cada uno de los lados son la cantidad de veces que un
 
 No es casualidad que los lados del polígono hubo que dibujarlas una única vez y los lados de los triángulos que son internos en el polígono dos veces.\newline
 
-\textbf{AGREGAR JUSTIFICACION FORMAL; NO SE ME OCURRE UNA.}\newline
+\subsection{Intuición de la idea}
+\par{Primero notamos que si un lado es parte de dos triángulos, no puede ser parte del borde del polígono. Las dos figuras no comparten área. Si tomamos los dos triángulos, forman un cuadrilátero, donde el lado compartido es interior a la figura formada. Esa figura esta contenida en el polígono formado. Luego el lado no puede ser borde.}
+\par{Además un lado del borde debe estar al menos una vez como lado de los triángulos. Como pertence al polígono debe estar en algún triángulo. Entonces esta contenido en un triángulo (ya que no es exterior a ninguno). Pero entonces hay un área de este triángulo que queda afuera del polígono. Absurdo. Solo resta que un lado del polígono aparece exactamente una vez en la descomposición.}
+\par{Veamos que si un lado aparece exactamente una vez es borde (vale la vuelta). Si no lo fuera tendría que ser interior al polígono. Podemos ver que entonces, o hay varios triángulos que lo contienen como borde, o esta contenido interiormente en un triángulo. El primer caso es un absurdo y el segundo también ya que habría dos triángulos que comparten área. Luego si un lado aparece exactamente una vez es borde del polígono original.}
 
-Esta observación nos da un algoritmo para poder generar el polígono original.\newline
+\subsection{Pseudocodigo}
+
+Estas observaciones nos dan un algoritmo para poder generar el polígono original. Simplemente para cada lado de los pasados por parámetros, contamos cuantas veces aparece y nos quedamos con aquellos que están exactamente una vez. \newline
 
 \begin{algorithmic}
 
