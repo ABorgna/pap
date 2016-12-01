@@ -22,7 +22,7 @@ struct Punto {
 	
 	Punto (int x, int y) : x(x), y(y) {}
 
-	int producto_vectorial(Punto& b) {
+	int producto_vectorial(const Punto& b) const{
 		return x * b.y - b.x * y;
 	}
 
@@ -51,10 +51,10 @@ struct Punto {
 
 
 
-int sign (Punto p1, Punto p2, Punto p3) {
-    Punto vec1 = p1 - p3;
-    Punto vec2 = p2 - p3;
-    return vec1.producto_vectorial(vec2);
+int sign(Punto p1, Punto p2, Punto p3){
+    Punto u = p2 - p1;
+    Punto v = p3 - p2; 
+    return u.producto_vectorial(v);    
 }
 
 struct Comparator {
@@ -65,9 +65,9 @@ struct Comparator {
     }
     
     bool operator() (const Punto p1, const Punto p2) const { 
-        if (sign(p0, p1, p2) > 0) {
+        if (sign(p1, p0, p2) > 0) {
             return 1;
-        } else if (sign(p0, p1, p2) < 0){
+        } else if (sign(p1, p0, p2) < 0){
             return -1; 
         } else { // no hay colineales, no deberia pasar
             return 0;
@@ -75,18 +75,19 @@ struct Comparator {
     }
 };
 
-
-bool esta_contenido(Punto p1, Punto p2, Punto p3, Punto x){
-    // me robe esto, temporalmente
+bool esta_contenido(Punto a, Punto b, Punto c, Punto x){
+    // Para no tener problemas de precisión almacenamos el doble para cada uno
+    // No divido por 2
     
-    bool b1, b2, b3;
-
-    b1 = sign(x, p1, p2) < 0;
-    b2 = sign(x, p2, p3) < 0;
-    b3 = sign(x, p3, p1) < 0;
-
-    return ((b1 == b2) && (b2 == b3));
+    int abc_area = abs((b-a).producto_vectorial(b-c)); 
+    int axb_area = abs((x-a).producto_vectorial(x-b));
+    int axc_area = abs((x-a).producto_vectorial(x-c));
+    int bxc_area = abs((x-b).producto_vectorial(x-c));
+    
+    return abc_area == axb_area + axc_area + bxc_area;
 }
+
+
 
 Matriz2 nueva_matriz2_menos_inf(int n){
     Matriz2 m;
