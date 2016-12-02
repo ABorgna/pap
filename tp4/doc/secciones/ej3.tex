@@ -12,7 +12,7 @@ La cantidad de lugares históricos se denomina H, la cantidad de enemigos se den
 Debemos imprimir la cantidad de lugares históricos en la mejor muralla.
 
 \subsection{Algunas ideas}
-\par{Para demostrar la correctitud de nuestro complejo algoritmo \quotes{Vamos por partes}\footnote{Como diría Jack el Destripador, y cualquier ayudante de Análisis II.}. Daremos una modularización del mismo mediante funciones auxiliares y basaremos la correctitud de ciertas funciones en la correctitud de las que esta utiliza.} \newline
+\par{Para demostrar la correctitud de nuestro complejo algoritmo \quotes{Vamos por partes}\footnote{Como diría Jack el Destripador, y cualquier ayudante de Análisis II.}. Daremos una modularización del mismo mediante funciones auxiliares y basaremos la correctitud de ciertas funciones en la correctitud de las que ésta utiliza.} \newline
 \par{Como primer observación principal, vemos que un polígono (más aún, convexo) puede descomponerse en triángulos, como vimos en el ejercicio 1 de este mismo informe. Dada una descomposición en triángulos, podemos chequear cuántos enemigos están contenidos en cada triángulo. De esta manera vamos a buscar cumplir uno de los objetivos, que era no tener enemigos dentro de nuestro polígono resultado. Por otro lado, podemos contar la cantidad de lugares históricos en cada triángulo, y con cierto cuidado de no repetir los vértices de los triángulos, saber cuantos lugares históricos tiene en total un cierto polígono. De esta forma, también podríamos cubrir el objetivo de maximizar la cantidad de lugares históricos.} \newline
 \par{Otra observación muy importante es que, si bien contaremos la cantidad de puntos históricos en el mejor polígono, nos restringimos a polígonos convexos cuyos vértices son puntos históricos. Podemos hacer esto ya que, de existir un polígono convexo cuya cantidad de puntos históricos es respuesta y que no le sucede esto, lo podemos \quotes{achicar} hasta encontrarnos con los puntos históricos, de manera de no perder puntos históricos.} \newline
 
@@ -46,44 +46,44 @@ Así como tomamos el último triángulo en la descomposición, podemos fijar cua
 Las posibles opciones van a ser exactamente esto, fijar cual es el anteúltimo triángulo, de forma tal que cumpla ciertas condiciones.
 Notemos primero que si fijamos que un triángulo es el anteúltimo, y queríamos saber el mejor polígono con un triángulo como último, la cantidad de puntos históricos del mejor polígono con último y anteúltimo fijos, es igual a la cantidad de puntos históricos con el anteúltimo fijo como último más los puntos históricos dentro del triángulo originalmente último\footnote{Perdón por tanto, pero repetir esta frase hasta que se entienda.}. Más específicamente, sumamos los puntos históricos estrictamente contenidos y un vértice más que no comparten.
 } \newline
-\par{Veremos ahora que condiciones debe cumplir el próximo triángulo para considerarse. Los triángulos tienen que ser último y anteúltimo, así que deben compartir un vértice. En particular llamamos a esta vértice ultimo-a (y en contraste los otros son base y ultimo-b). Ultimo-a viene antes en el orden definido por el vértice base. Por otro lado, la otra condición es que los segmentos que forman definan un ángulo menor a 180, y por ende se forme un polígono convexo. Esto lo vamos a chequear utilizando el producto cruz de vectores, al igual que en el algoritmo de Graham. 
+\par{Veremos ahora que condiciones debe cumplir el próximo triángulo para considerarse. Los triángulos tienen que ser último y anteúltimo, así que deben compartir un vértice. En particular llamamos a este vértice ultimo-a (y en contraste los otros son base y ultimo-b). Ultimo-a viene antes en el orden definido por el vértice base. Por otro lado, la otra condición es que los segmentos que forman definan un ángulo menor a 180, y por ende se forme un polígono convexo. Esto lo vamos a chequear utilizando el producto cruz de vectores, al igual que en el algoritmo de Graham. 
 Por lo visto anteriormente, podemos buscar las posibles opciones de triángulos solo recorriendo los vértices anteriores a ultimo-a en el orden definido por base, y luego tomamos el máximo sobre los cálculos que hacemos, para retornar esto.} \newline
  
 \subsection{Como chequear la cantidad de históricos y la validez}
-\par{Implementamos una función \textbf{historicos_contenidos} que nos da la información que necesitamos de un triángulo. Esto es, cuántos puntos históricos estan estrictamente contenidos (distintos de los puntos vértices). Por otro lado necesitamos saber si contiene algún punto enemigo en su interior (no puede ser en el borde ya que no hay puntos colineales). } \newline
-\par{Por esto, implementamos la función \textbf{esta-contenido}, que dados tres puntos que delimitan un triángulo, y un punto adicional, determina si este último esta contenido en el triángulo. Para implementar esto, vemos que, dado un punto cualquiera podemos formar tres triángulos junto a los otros dos puntos. 
-Es decir, si el triángulo era ABC y el punto P, tenemos los triángulos APB, APC, BPC. Se puede probar (pero es bastante intuitivo) que el punto P esta contenido si y solo si
-la suma de las áreas de estos triángulos es igual al area del triángulo original. Aprovechando que nuestros puntos tienen coordenadas enteras, testeamos esto fácilmente sin problemas de precisión.} \newline
+\par{Implementamos una función \textbf{históricos_contenidos} que nos da la información que necesitamos de un triángulo. Esto es, cuántos puntos históricos están estrictamente contenidos (distintos de los puntos vértices). Por otro lado necesitamos saber si contiene algún punto enemigo en su interior (no puede ser en el borde ya que no hay puntos colineales). } \newline
+\par{Por esto, implementamos la función \textbf{está-contenido}, que dados tres puntos que delimitan un triángulo, y un punto adicional, determina si este último está contenido en el triángulo. Para implementar esto, vemos que, dado un punto cualquiera podemos formar tres triángulos junto a los otros dos puntos. 
+Es decir, si el triángulo era ABC y el punto P, tenemos los triángulos APB, APC, BPC. Se puede probar (pero es bastante intuitivo) que el punto P está contenido si y solo si
+la suma de las áreas de estos triángulos es igual al área del triángulo original. Aprovechando que nuestros puntos tienen coordenadas enteras, testeamos esto fácilmente sin problemas de precisión.} \newline
 
-\par{Volviendo a \quotes{historicos_contenidos}, para cada punto enemigo, chequeamos si está contenido. Si alguno está, retornamos -1. Luego para cada punto histórico distinto a los vértices, hacemos el mismo chequeo y sumamos cuántos están contenidos. Retornamos ese mismo valor.} \newline
+\par{Volviendo a \quotes{históricos_contenidos}, para cada punto enemigo, chequeamos si está contenido. Si alguno está, retornamos -1. Luego para cada punto histórico distinto a los vértices, hacemos el mismo chequeo y sumamos cuántos están contenidos. Retornamos ese mismo valor.} \newline
 
 \subsection{No nos repitamos}
 \par{Al momento de describir los algoritmos anteriores vimos que, repetimos consultas de dos tipos:
-Las de historicos-contenidos y las de mejor-con-ultimo. Esto es por la naturaleza recursiva de mejor-con-ultimo y las llamadas a historicos-contenidos que hace. Es decir, a priori, repetiríamos exactamente el mismo cálculo por repetirse los parámetros en distintos momentos de la ejecución.} \newline
-\par{La raíz de todo mal en las Ciencias de la Computación es repetir cálculos(bueno, justo despúes de la \quotes{premature optimization}\footnote{\url{https://en.wikiquote.org/wiki/Donald_Knuth}}). Intentaremos no repetirnos mediante el uso de la técnica de memoization (junto a la recusión, podríamos decir que se corresponde con la técnica de programación dinámica). Para los parametros que calculemos el resultado de las dos funciones mencionadas, vamos a almacenar este resultado en un arreglo de tamaño correspondiente. Luego, al momento de ser llamada, la función chequea si el resultado ya fue almacenado, o si debe computarse por primera vez. Esto reduce considerablemente la complejidad de nuestra solución. } \newline
+Las de históricos-contenidos y las de mejor-con-ultimo. Esto es por la naturaleza recursiva de mejor-con-ultimo y las llamadas a históricos-contenidos que hace. Es decir, a priori, repetiríamos exactamente el mismo cálculo por repetirse los parámetros en distintos momentos de la ejecución.} \newline
+\par{La raíz de todo mal en las Ciencias de la Computación es repetir cálculos(bueno, justo después de la \quotes{premature optimization}\footnote{\url{https://en.wikiquote.org/wiki/Donald_Knuth}}). Intentaremos no repetirnos mediante el uso de la técnica de memoization (junto a la recursión, podríamos decir que se corresponde con la técnica de programación dinámica). Para los parámetros que calculemos el resultado de las dos funciones mencionadas, vamos a almacenar este resultado en un arreglo de tamaño correspondiente. Luego, al momento de ser llamada, la función chequea si el resultado ya fue almacenado, o si debe computarse por primera vez. Esto reduce considerablemente la complejidad de nuestra solución. } \newline
  
 
 \subsection{Pseudocódigo}
 \begin{algorithmic}
-\Function{Solucion}{historicos[], enemigos[]}
-	\State m_historicos_contenidos $\gets$ Matriz_3_dimensional_menos_inf() \Comment{Memoization de históricos contenidos, es una global}
+\Function{Solución}{históricos[], enemigos[]}
+	\State m_históricos_contenidos $\gets$ Matriz_3_dimensional_menos_inf() \Comment{Memoization de históricos contenidos, es una global}
 
 	\State res $\gets$ $-\infty$
 
-	\For{i = 0 to historicos.size()}
-		\State res $\gets$ max(res, mejor_con_base(historicos, enemigos, i))
+	\For{i = 0 to históricos.size()}
+		\State res $\gets$ máx(res, mejor_con_base(históricos, enemigos, i))
 	\EndFor
 
 \EndFunction
 
 \vspace{2em}
-\Function{mejor_con_base}{historicos[], enemigos[], base}
-	\State p_base $\gets$ historicos[base]
-	\State historicos_arriba_der $\gets$ filtrar históricos arriba a la derecha de p_base
-	\State ordenar historicos_arriba_der por ángulo polar desde p_base
+\Function{mejor_con_base}{históricos[], enemigos[], base}
+	\State p_base $\gets$ históricos[base]
+	\State históricos_arriba_der $\gets$ filtrar históricos arriba a la derecha de p_base
+	\State ordenar históricos_arriba_der por ángulo polar desde p_base
 
-	\State base_filtrada $\gets$ nuevo índice de p_base en el arreglo historicos_arriba_der
-	\State h $\gets$ historicos_arriba_der.size()
+	\State base_filtrada $\gets$ nuevo índice de p_base en el arreglo históricos_arriba_der
+	\State h $\gets$ históricos_arriba_der.size()
 	\If{h $\leq$ 2}
 		\State \Return h
 	\EndIf
@@ -93,33 +93,33 @@ Las de historicos-contenidos y las de mejor-con-ultimo. Esto es por la naturalez
 
 	\For {i = 0 to h}
 		\For{j = 0 to h}
-			\If { i,j, base_filtrada son distintos entre si} \Comment{Forman un triangulo valido}
-				\State res = max(res, mejor_con_ultimo(historicos, enemigos, memo, base_filtrada, i, j))
+			\If { i,j, base_filtrada son distintos entre si} \Comment{Forman un triángulo valido}
+				\State res = máx(res, mejor_con_ultimo(históricos, enemigos, memo, base_filtrada, i, j))
 			\EndIf
 		\EndFor
 	\EndFor
 \EndFunction
 \vspace{2em}
 
-\Function{mejor_con_ultimo}{historicos[], enemigos[], memo[][], base, ultimo_a, ultimo_b}
-	\If{memo[ultimo_a][ultimo_b] != $-\infty$ }
+\Function{mejor_con_ultimo}{históricos[], enemigos[], memo[][], base, ultimo_a, ultimo_b}
+	\If{memo[ultimo_a][ultimo_b] $\neq$ $-\infty$ }
 		\State \Return memo[ultimo_a][ultimo_b]
 	\EndIf
 
 	\State res $\gets$ $-\infty$
 	\State \Comment{Cuantos estrictamente contenidos hay en el triángulo pasado por parámetro} 
-	\State base_contenidos $\gets$ historicos_contenidos(historicos[base], historicos[ultimo_a], historicos[ultimo_b], historicos, enemigos) 
+	\State base_contenidos $\gets$ históricos_contenidos(históricos[base], históricos[ultimo_a], históricos[ultimo_b], históricos, enemigos) 
 
-	\If {base_contenidos != -1}
+	\If {base_contenidos $\neq$ -1}
 		\For{i = 0 to ultimo_a}
 			\If{i == base or i == ultimo_a}
 				\State \textbf{continue}
 			\EndIf
 
-			\State contenidos $\gets$ historicos_contenidos(historicos[base], historicos[ultimo_a], historicos[i], historicos, enemigos)
+			\State contenidos $\gets$ históricos_contenidos(históricos[base], históricos[ultimo_a], históricos[i], históricos, enemigos)
 
-			\If{contenidos != -1 and blablabla } \Comment{chequeamos que el polígono no nos quede cóncavo}
-				res $\gets$ max(res, mejor_con_ultimo(historicos, enemigos, memo, base, i, ultimo_a) + 1 + base_contenidos);
+			\If{contenidos $\neq$ -1 and blablabla } \Comment{chequeamos que el polígono no nos quede cóncavo}
+				res $\gets$ máx(res, mejor_con_ultimo(históricos, enemigos, memo, base, i, ultimo_a) + 1 + base_contenidos);
 
 			\EndIf
 
@@ -133,46 +133,46 @@ Las de historicos-contenidos y las de mejor-con-ultimo. Esto es por la naturalez
 
 \vspace{2em}
 
-\Function{historicos-contenidos}{p1, p2, p3, historicos[], enemigos[]}
-	\State \Comment{usamos los indices en el arreglo input para memorizar}
-	\If{m_historicos_contenidos[p1.original_idx][p2.original_idx][p3.original_idx] != $-\infty$ }
-		\State \Return m_historicos_contenidos[p1.original_idx][p2.original_idx][p3.original_idx]
+\Function{históricos-contenidos}{p1, p2, p3, históricos[], enemigos[]}
+	\State \Comment{usamos los índices en el arreglo input para memorizar}
+	\If{m_históricos_contenidos[p1.original_idx][p2.original_idx][p3.original_idx] $\neq$ $-\infty$ }
+		\State \Return m_históricos_contenidos[p1.original_idx][p2.original_idx][p3.original_idx]
 	\EndIf
 
 	\State contiene_enemigos $\gets$ False
 	\For{x in enemigos}
-		\State contiene_enemigos $\gets$ contiene_enemigos or esta_contenido(p1, p2, p3, x)
+		\State contiene_enemigos $\gets$ contiene_enemigos or está_contenido(p1, p2, p3, x)
 	\EndFor
 
 	\If{contiene_enemigos}
-		\State m_historicos_contenidos[p1.original_idx][p2.original_idx][p3.original_idx] $\gets$ -1
+		\State m_históricos_contenidos[p1.original_idx][p2.original_idx][p3.original_idx] $\gets$ -1
         \State \Return -1;
 	\EndIf
 
 	\State res $\gets$ 0
 
-	\For{x in historicos}
+	\For{x in históricos}
 		\If{x == p1 or x == p2 or x == p3}
              \State \textbf{continue}
         \EndIf
 
-        \If{esta_contenido(p1, p2, p3, x)}
+        \If{está_contenido(p1, p2, p3, x)}
         	\State res $\gets$ res + 1
         \EndIf
 	\EndFor
 
-	\State m_historicos_contenidos[p1.original_idx][p2.original_idx][p3.original_idx] $\gets$ res
+	\State m_históricos_contenidos[p1.original_idx][p2.original_idx][p3.original_idx] $\gets$ res
 	\State \Return res
 
 \EndFunction
 
 \vspace{2em}
 
-\Function{esta_contenido}{a, b, c, x}
-	\State abc_area $\gets$ abs((b-a) $\times$ (b-c))
-	\State axb_area $\gets$ abs((x-a) $\times$ (x-b))
-	\State axc_area $\gets$ abs((x-a) $\times$ (x-c))
-	\State bxc_area $\gets$ abs((b-b) $\times$ (x-c))
+\Function{está_contenido}{a, b, c, x}
+	\State abc_area $\gets$ $|$(b-a) $\times$ (b-c)$|$
+	\State axb_area $\gets$ $|$(x-a) $\times$ (x-b)$|$
+	\State axc_area $\gets$ $|$(x-a) $\times$ (x-c)$|$
+	\State bxc_area $\gets$ $|$(b-b) $\times$ (x-c)$|$
 
 	\State \Return abc_area == axb_area + axc_area + bxc_area
 \EndFunction
@@ -182,10 +182,10 @@ Las de historicos-contenidos y las de mejor-con-ultimo. Esto es por la naturalez
 
 
 \subsection{Complejidad}
-\par{Para calcular la complejidad, primero veamos que la cantidad total de triángulos con vértices históricos es \bigo($H^3$), que a su vez esta contenido en \bigo($N^3$). Para el cómputo de historicos-contenidos de cada uno de ellos, tomamos tiempo \bigo($N$). Por otro lado, luego de computar un triángulo, almacenamos el resultado. } \newline
+\par{Para calcular la complejidad, primero veamos que la cantidad total de triángulos con vértices históricos es \bigo($H^3$), que a su vez está contenido en \bigo($N^3$). Para el cómputo de históricos-contenidos de cada uno de ellos, tomamos tiempo \bigo($N$). Por otro lado, luego de computar un triángulo, almacenamos el resultado. } \newline
 \par{
-Podemos considerar esto en nuestra complejidad como un costo aparte como un costo \quotes{amortizado} y cada operación de consulta posterior sería \bigo($1$). Es decir, para el cálculo de peor caso, consideramos todas estas operaciones y luego las consultas a historicos-contenidos las tomamos como \bigo($1$). Por este motivo sumamos un costo de \bigo($N^4$).} \newline
+Podemos considerar esto en nuestra complejidad como un costo aparte como un costo \quotes{amortizado} y cada operación de consulta posterior sería \bigo($1$). Es decir, para el cálculo de peor caso, consideramos todas estas operaciones y luego las consultas a históricos-contenidos las tomamos como \bigo($1$). Por este motivo sumamos un costo de \bigo($N^4$).} \newline
 \par{
 Luego, la función solución hace \bigo($H$) contenido en \bigo($N$) llamadas a mejor-con-base.
 Cada una de estas llama a \bigo($N^2$) mejor-con-ultimo. Tomamos las llamadas a mejor-con-ultimo como subproblemas en el contexto de programación dinámica. De esta forma podemos acotar la complejidad por la cantidad de subproblemas y la cantidad de operaciones para cada subproblema. La cantidad de operaciones es \bigo($N$) ya que a lo sumo se recorren otros puntos que vienen antes en el orden. Y la cantidad de subproblemas se corresponde con la cantidad de pares de puntos, por lo cual es \bigo($N^2$).} \newline
-\par{Por ende podemos acotar la complejidad de sumar todas las llamadas a mejor-con-ultimo como \bigo($N^3$). Volviendo, esto se hacia una vez por cada llamada mejor-con-base que eran \bigo($N$). Por lo cual el costo total de solucion sin contar el \quotes{precomputado} de los triángulos es \bigo($N^4$). Pero el propio precomputado era tambien \bigo($N^4$), así que la complejidad es \bigo($N^4$).} \newline
+\par{Por ende podemos acotar la complejidad de sumar todas las llamadas a mejor-con-ultimo como \bigo($N^3$). Volviendo, esto se hacia una vez por cada llamada mejor-con-base que eran \bigo($N$). Por lo cual el costo total de solución sin contar el \quotes{precomputado} de los triángulos es \bigo($N^4$). Pero el propio precomputado era también \bigo($N^4$), así que la complejidad es \bigo($N^4$).} \newline
