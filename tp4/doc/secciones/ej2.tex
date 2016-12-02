@@ -39,11 +39,15 @@ p_i =
 $$
 
 Como siempre al empezar el paso $i$ los elementos de $A[i..N)$ ya se encuentran distribuidos uniformemente,
-queremos contar la cantidad de permutaciones \textit{fallidas} (que no colocaron un elemento mínimo al principio). Por lo tanto $X_i$ tendrá una distribución geométrica que contará la cantidad de fallos,
-donde cada ensayo tiene probabilidad $p_i$.
+efectivamente ya tenemos corrida una permutación.
+Si esta \textit{fallaba} (no colocaba un elemento mínimo al principio), seguiremos corriendo permutaciones
+hasta que una nos de un resultado útil.
+Esto es lo que se conoce como una distribución geométrica donde cada ensayo tiene probabilidad $p_i$.
+Como no contamos el primer intento, la esperanza de $X_i$ será la esperanza de una serie geométrica menos 1.
 
-Por propiedad de la distribución geométrica, $E(X_i) = \frac{1}{p} - 1$.
-\\
+$$
+E(X_i) = \frac{1}{p_i} - 1
+$$
 
 Queremos calcular la esperanza del total de permutaciones del array, $E(X) = E(1 + \sum_{i=0}^{N-1} X_i)$.
 Por la linealidad de la esperanza, $E(X) = 1 + \sum_{i=0}^{N-1} E(X_i) = 1 + \sum_{i=0}^{N-1} (\frac{1}{p_i} - 1)$.
