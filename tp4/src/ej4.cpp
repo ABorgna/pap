@@ -54,7 +54,7 @@ int main () {
     	dependencias += (longitudes[i] - 1) / 2 * cantidades[longitudes[i]]; // cantidad de dependencias dentro de un ciclo de largo longitudes[i] * cantidad de ciclos de ese largo
     	
     	for (int j = i + 1; j < longitudes.size(); j++) {
-    		dependencias += cantidades[longitudes[i]] * cantidades[longitudes[j]] * mcd(longitudes[i], longitudes[j]);
+    		dependencias += cantidades[longitudes[i]] * cantidades[longitudes[j]] * mcd(longitudes[i], longitudes[j]); // cantidad de dependencias entre distintos conjuntos de ciclos (distintas longitudes)
     	}
     }
 

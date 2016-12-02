@@ -2,7 +2,7 @@
 
 \subsection{Enunciado}
 
-En este ejercicio nos dan la triangulación de un polígono y a partir de la misma recuperar el polígono original. En la entrada se nos da los extremos de cada uno de esos triángulos pero uno a partir de ello podría dibujar todos los triángulos y formar la figura original. La cantidad de lados del polígono es n, con lo cual la cantidad de triángulos en la entrada es n-2.\newline
+En este ejercicio nos dan la triangulación de un polígono y a partir de la misma recuperar el polígono original. En la entrada se nos da los extremos de cada uno de esos triángulos pero uno a partir de ello podría dibujar todos los triángulos y formar la figura original. La cantidad de lados del polígono es n, con lo cual la cantidad de triángulos en la entrada es $n-2$.\newline
 
 Un ejemplo podría ser el siguiente:\newline
 
@@ -35,7 +35,7 @@ Estas observaciones nos dan un algoritmo para poder generar el polígono origina
 	\EndFor 
 	\State lado lados_polígono [] $\gets$ []
 	\For {(lado,veces) tupla: veces_usado}
-		\If tupla.veces $=$ 1
+		\If{tupla.veces $=$ 1}
 			\State Agregar(tupla.lado, lados_poligono)
 		\EndIf
 	\EndFor
@@ -92,10 +92,10 @@ Esto lo logramos a partir de un recorrido de dfs en el grafo inducido que nos da
 \subsection{Cumpliendo la complejidad pedida}
 Para poder cumplir con la complejidad pedida utilizamos el map de la stl que tarda tiempo logarítmico al insertar o consultar un elemento tanto para los lados de los triángulos como para los lados incidentes a los vértices del polígono.\newline
 
-La cantidad de lados que insertamos y luego le consultamos la cantidad de usos son en total 3 * (n-2) con lo cual tenemos \bigo(n) lados. Si por cada uno aplicamos operaciones de tiempo logarítmico, encontrar cuales lados pertenecen al polígono nos cuesta \bigo(n $\times$ log n).\newline
+La cantidad de lados que insertamos y luego le consultamos la cantidad de usos son en total $3 \times (n-2)$ con lo cual tenemos \bigo(n) lados. Si por cada uno aplicamos operaciones de tiempo logarítmico, encontrar cuáles lados pertenecen al polígono nos cuesta \bigo(n $\times$ log n).\newline
 
-Luego por cada uno de los lados, marcamos en el mapa de puntos a qué dos puntos es incidente tardando nuevamente \bigo(n $\times$ log n) al ser n + 1 la cantidad de vértices de nuestro polígono.\newline
+Luego por cada uno de los lados, marcamos en el mapa de puntos a qué dos puntos es incidente tardando nuevamente \bigo(n $\times$ log n) al ser $n + 1$ la cantidad de vértices de nuestro polígono.\newline
 
-Finalmente hacer el producto cruz entre dos segmentos nos cuesta \bigo(1) pero recorrer los n lados del polígono nos cuesta en total \bigo(n $\times$ log n) al ser estos n+1 elementos y consultar cuáles son los dos vecinos a éste nos cuesta tiempo logarítmico al estar insertados en un mapa.\newline
+Finalmente hacer el producto cruz entre dos segmentos nos cuesta \bigo(1) pero recorrer los n lados del polígono nos cuesta en total \bigo(n $\times$ log n) al ser estos $n+1$ elementos y consultar cuáles son los dos vecinos a éste nos cuesta tiempo logarítmico al estar insertados en un mapa.\newline
 
 La complejidad total de nuestro algoritmo nos queda entonces \bigo(n $\times$ log n).\newline
