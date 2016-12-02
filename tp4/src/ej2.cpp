@@ -20,7 +20,7 @@ int main() {
         itEnd = find_if_not(itEnd, v.end(), [&it](int k) { return k == *it; });
         int iguales = distance(it, itEnd);
         int total = distance(it, v.end());
-        res += (double)iguales / total - 1;
+        res += (double)total / (double)iguales - 1;
     }
 
     cout << fixed << setprecision(6) << res << endl;
