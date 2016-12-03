@@ -26,6 +26,10 @@ struct Punto {
 		return x * b.y - b.x * y;
 	}
 
+    int operator^ (const Punto& b) const {
+        return producto_vectorial(b);
+    }
+
 	bool operator != (const Punto& b) const{
 		return x != b.x or y != b.y or original_idx != b.original_idx;
 	}
@@ -51,7 +55,7 @@ struct Punto {
 
 
 
-int sign(Punto p1, Punto p2, Punto p3){
+int producto(Punto p1, Punto p2, Punto p3){
     Punto u = p2 - p1;
     Punto v = p3 - p2; 
     return u.producto_vectorial(v);    
@@ -64,17 +68,15 @@ struct Comparator {
         this->p0 = p0;
     }
     
-    bool operator() (const Punto p1, const Punto p2) const { 
-        if (sign(p1, p0, p2) > 0) {
-            return 1;
-        } else if (sign(p1, p0, p2) < 0){
-            return -1; 
-        } else { // no hay colineales, no deberia pasar
-            return 0;
-        }
+    bool operator() (Punto p1, Punto p2) { 
+        p1=p1-p0; p2=p2-p0; 
+        if(p1.y == 0 and p1.x > 0) return true; //angle of p1 is 0, thus p2>p1
+        if(p2.y == 0 and p2.x > 0) return false; //angle of p2 is 0 , thus p1>p2
+        if(p1.y > 0 and p2.y < 0) return true; //p1 is between 0 and 180, p2 between 180 and 360
+        if(p1.y < 0 and p2.y > 0) return false;
+        return (p1.producto_vectorial(p2))>0; //return true if p1 is clockwise from p2
     }
 };
-
 bool esta_contenido(Punto a, Punto b, Punto c, Punto x){
     // Para no tener problemas de precisión almacenamos el doble para cada uno
     // No divido por 2
@@ -182,7 +184,7 @@ int mejor_con_ultimo(const vector<Punto>& historicos, const vector<Punto>& enemi
             
             int contenidos = historicos_contenidos(historicos[base], historicos[ultimo_a], historicos[i], historicos, enemigos); 
             
-            if (contenidos != -1 and sign(historicos[ultimo_b], historicos[ultimo_a], historicos[i]) > 0 ) { // BOLAS
+            if (contenidos != -1 and producto(historicos[ultimo_b], historicos[ultimo_a], historicos[i]) > 0 ) { // BOLAS
                 res = max(res, mejor_con_ultimo(historicos, enemigos, memo, base, i, ultimo_a) + 1 + base_contenidos);
             }
         }
