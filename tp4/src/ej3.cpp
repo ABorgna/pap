@@ -69,12 +69,7 @@ struct Comparator {
     }
     
     bool operator() (Punto p1, Punto p2) { 
-        p1=p1-p0; p2=p2-p0; 
-        if(p1.y == 0 and p1.x > 0) return true; //angle of p1 is 0, thus p2>p1
-        if(p2.y == 0 and p2.x > 0) return false; //angle of p2 is 0 , thus p1>p2
-        if(p1.y > 0 and p2.y < 0) return true; //p1 is between 0 and 180, p2 between 180 and 360
-        if(p1.y < 0 and p2.y > 0) return false;
-        return (p1.producto_vectorial(p2))>0; //return true if p1 is clockwise from p2
+        return (p1.producto_vectorial(p2))>0; 
     }
 };
 bool esta_contenido(Punto a, Punto b, Punto c, Punto x){
@@ -154,7 +149,12 @@ vector<Punto> filtro_arriba_der (const vector<Punto>& historicos, int base){
     vector<Punto> res;
     Punto p_base = historicos[base];
     
+    
     for(const auto& p : historicos){
+        if (p == p_base) {
+            continue;
+        }
+        
         if (p.y > p_base.y or (p.y == p_base.y and p.x >= p_base.x) ){
             res.push_back(p);
         }
@@ -165,27 +165,23 @@ vector<Punto> filtro_arriba_der (const vector<Punto>& historicos, int base){
 
 
 
-int mejor_con_ultimo(const vector<Punto>& historicos, const vector<Punto>& enemigos, Matriz2& memo, int base, int ultimo_a, int ultimo_b){
+int mejor_con_ultimo(const vector<Punto>& historicos, const vector<Punto>& enemigos, Matriz2& memo, Punto p_base, int ultimo_a, int ultimo_b){
     if (memo[ultimo_a][ultimo_b] != -kInf){
         return memo[ultimo_a][ultimo_b];
     }
     
     int res = -kInf; 
-    int base_contenidos = historicos_contenidos(historicos[base], historicos[ultimo_a], historicos[ultimo_b], historicos, enemigos);
+    int base_contenidos = historicos_contenidos(p_base, historicos[ultimo_a], historicos[ultimo_b], historicos, enemigos);
     
     if (base_contenidos != -1) {
         res = base_contenidos + 3; // base + ultimo_a + ultimo_b forman un triangulo
     
         for(int i = 0; i < ultimo_a; i++) {
         
-            if (i == base) {
-                continue;
-            }
+            int contenidos = historicos_contenidos(p_base, historicos[ultimo_a], historicos[i], historicos, enemigos); 
             
-            int contenidos = historicos_contenidos(historicos[base], historicos[ultimo_a], historicos[i], historicos, enemigos); 
-            
-            if (contenidos != -1 and producto(historicos[ultimo_b], historicos[ultimo_a], historicos[i]) > 0 ) { // BOLAS
-                res = max(res, mejor_con_ultimo(historicos, enemigos, memo, base, i, ultimo_a) + 1 + base_contenidos);
+            if (contenidos != -1 and producto(historicos[ultimo_b], historicos[ultimo_a], historicos[i]) > 0 ) {
+                res = max(res, mejor_con_ultimo(historicos, enemigos, memo, p_base, i, ultimo_a) + 1 + base_contenidos);
             }
         }
     }
@@ -197,36 +193,23 @@ int mejor_con_ultimo(const vector<Punto>& historicos, const vector<Punto>& enemi
 
 int mejor_con_base(const vector<Punto>& historicos, const vector<Punto>& enemigos, int base) {
     Punto p_base = historicos[base];
+   
     vector<Punto> historicos_arriba_der = filtro_arriba_der(historicos, base);
     Comparator comp = Comparator(p_base);
     sort(historicos_arriba_der.begin(), historicos_arriba_der.end(), comp); 
     reverse(historicos_arriba_der.begin(), historicos_arriba_der.end());
     
-    int base_filtrada = 0;
-    while(p_base != historicos_arriba_der[base_filtrada]){
-        base_filtrada++;
-    }
-    
     int h = historicos_arriba_der.size();
-    if (h <= 2){
-        return h;
+    if (h <= 1){
+        return h + 1;
     }
-    /*
-    cout << "----------------------\n";
-    cout << "base = "<< base << endl;
-    cout << "p base = "<< p_base << endl;
-    for(auto p : historicos_arriba_der) {
-        cout << p << endl;
-    }*/
 
     int res = -kInf;
     Matriz2 memo = nueva_matriz2_menos_inf(h);    
     
     for (int i = 0; i < h; i++){
         for (int j = i+1; j < h; j++){
-            if (i != base_filtrada and j != base_filtrada){
-                res = max(res, mejor_con_ultimo(historicos_arriba_der, enemigos, memo, base_filtrada, i, j));
-            }
+            res = max(res, mejor_con_ultimo(historicos_arriba_der, enemigos, memo, p_base, i, j));
         }
     }
     
@@ -261,6 +244,10 @@ int main(){
     }
     
     int res = solucion(historicos, enemigos);
-    
-    cout << res << endl; 
+    if (res > (int) historicos.size()) {
+        cout << "Perdon Leo/Melanie por tanto, la proxima te damos algo que ande\n";
+        cout << res << endl;
+    } else {
+        cout << res << endl; 
+    }
 }
