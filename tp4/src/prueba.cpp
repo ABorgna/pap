@@ -13,7 +13,7 @@ struct Punto {
     Punto (int x, int y) : x(x), y(y) {}
 
     int producto_vectorial(const Punto& b) const{
-        return x * b.y - b.x * y;
+        return x * b.y - y * b.x;
     }
 
     int operator^ (const Punto& b) const {
@@ -58,12 +58,19 @@ struct Comparator {
     }
     
     bool operator() (Punto p1, Punto p2) { 
-        p1=p1-p0; p2=p2-p0; 
-        if(p1.y == 0 and p1.x > 0) return true; //angle of p1 is 0, thus p2>p1
-        if(p2.y == 0 and p2.x > 0) return false; //angle of p2 is 0 , thus p1>p2
-        if(p1.y > 0 and p2.y < 0) return true; //p1 is between 0 and 180, p2 between 180 and 360
-        if(p1.y < 0 and p2.y > 0) return false;
-        return (p1^p2)>0; //return true if p1 is clockwise from p2
+        if(p1.y == 0 && p1.x > 0) 
+        return true; //angle of p1 is 0, thus p2 > p1
+
+    if(p2.y == 0 && p2.x > 0) 
+        return false; //angle of p2 is 0 , thus p1 > p2
+
+    if(p1.y > 0 && p2.y < 0) 
+        return true; //p1 is between 0 and 180, p2 between 180 and 360
+
+    if(p1.y <0 && p2.y > 0) 
+         return false;
+
+    return (p1 ^ p2) > 0; //return true if p1 is clockwise from p2
     }
 };
 
@@ -71,7 +78,7 @@ using namespace std;
 
 int main(){
     vector<Punto> ps;
-    Punto p0 = Punto(0,0);
+    /*Punto p0 = Punto(0,0);
     int y = 5;
     ps.push_back(Punto(3,y));
 
@@ -90,7 +97,22 @@ int main(){
     ps.push_back(Punto(2,y));
 
     ps.push_back(Punto(13,y));
+    Comparator comp = Comparator(p0);*/
+    
+    Punto p0 = Punto(0,0);
+    
+    ps.push_back(Punto(10,0));
+
+    ps.push_back(Punto(0,0));
+
+    ps.push_back(Punto(10, 10));
+
+    ps.push_back(Punto(3, 4));
+
+    ps.push_back(Punto(0, 10));
+
     Comparator comp = Comparator(p0);
+    
     sort(ps.begin(), ps.end(), comp);
     
     for(auto p: ps) {
