@@ -23,7 +23,7 @@ struct Punto {
 	Punto (int x, int y) : x(x), y(y) {}
 
 	int producto_vectorial(const Punto& b) const{
-		return x * b.y - b.x * y;
+		return x * b.y - y * b.x;
 	}
 
     int operator^ (const Punto& b) const {
@@ -178,7 +178,7 @@ int mejor_con_ultimo(const vector<Punto>& historicos, const vector<Punto>& enemi
     
         for(int i = 0; i < ultimo_a; i++) {
         
-            if (i == base or i == ultimo_a) {
+            if (i == base) {
                 continue;
             }
             
@@ -200,6 +200,7 @@ int mejor_con_base(const vector<Punto>& historicos, const vector<Punto>& enemigo
     vector<Punto> historicos_arriba_der = filtro_arriba_der(historicos, base);
     Comparator comp = Comparator(p_base);
     sort(historicos_arriba_der.begin(), historicos_arriba_der.end(), comp); 
+    reverse(historicos_arriba_der.begin(), historicos_arriba_der.end());
     
     int base_filtrada = 0;
     while(p_base != historicos_arriba_der[base_filtrada]){
@@ -210,14 +211,21 @@ int mejor_con_base(const vector<Punto>& historicos, const vector<Punto>& enemigo
     if (h <= 2){
         return h;
     }
+    /*
+    cout << "----------------------\n";
+    cout << "base = "<< base << endl;
+    cout << "p base = "<< p_base << endl;
+    for(auto p : historicos_arriba_der) {
+        cout << p << endl;
+    }*/
 
     int res = -kInf;
     Matriz2 memo = nueva_matriz2_menos_inf(h);    
     
     for (int i = 0; i < h; i++){
-        for (int j = 0; j < h; j++){
-            if (i != j and i != base_filtrada and j != base_filtrada){
-                res = max(res, mejor_con_ultimo(historicos, enemigos, memo, base_filtrada, i, j));
+        for (int j = i+1; j < h; j++){
+            if (i != base_filtrada and j != base_filtrada){
+                res = max(res, mejor_con_ultimo(historicos_arriba_der, enemigos, memo, base_filtrada, i, j));
             }
         }
     }
