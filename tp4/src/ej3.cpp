@@ -15,18 +15,18 @@ const int kInf = 999999999;
 Matriz3 m_historicos_contenidos;
 
 struct Punto {
-	int x, y;
+	double x, y;
     int original_idx;
     
 	Punto() {}
 	
-	Punto (int x, int y) : x(x), y(y) {}
+	Punto (double x, double y) : x(x), y(y) {}
 
-	int producto_vectorial(const Punto& b) const{
+	double producto_vectorial(const Punto& b) const{
 		return x * b.y - y * b.x;
 	}
 
-    int operator^ (const Punto& b) const {
+    double operator^ (const Punto& b) const {
         return producto_vectorial(b);
     }
 
@@ -53,9 +53,7 @@ struct Punto {
     }
 };
 
-
-
-int producto(Punto p1, Punto p2, Punto p3){
+double producto(Punto p1, Punto p2, Punto p3){
     Punto u = p2 - p1;
     Punto v = p3 - p2; 
     return u.producto_vectorial(v);    
@@ -63,23 +61,25 @@ int producto(Punto p1, Punto p2, Punto p3){
 
 struct Comparator {
     Punto p0;
-    
+
     Comparator(Punto p0) {
         this->p0 = p0;
     }
-    
-    bool operator() (Punto p1, Punto p2) { 
-        return (p1.producto_vectorial(p2))>0; 
+
+    bool operator() (Punto p1, Punto p2) {
+        p1=p1-p0; p2=p2-p0;
+        return atan2(p1.y, p1.x) > atan2(p2.y, p2.x);
     }
 };
+
 bool esta_contenido(Punto a, Punto b, Punto c, Punto x){
     // Para no tener problemas de precisión almacenamos el doble para cada uno
     // No divido por 2
     
-    int abc_area = abs((b-a).producto_vectorial(b-c)); 
-    int axb_area = abs((x-a).producto_vectorial(x-b));
-    int axc_area = abs((x-a).producto_vectorial(x-c));
-    int bxc_area = abs((x-b).producto_vectorial(x-c));
+    double abc_area = abs((b-a).producto_vectorial(b-c)); 
+    double axb_area = abs((x-a).producto_vectorial(x-b));
+    double axc_area = abs((x-a).producto_vectorial(x-c));
+    double bxc_area = abs((x-b).producto_vectorial(x-c));
     
     return abc_area == axb_area + axc_area + bxc_area;
 }
@@ -114,7 +114,7 @@ Matriz3 nueva_matriz3_menos_inf(int n){
  * Si no => cantidad de historicos estrictamente contenidos 
  * NO en el borde (no hay), NO los tres vertices del triangulo
  * */
-int historicos_contenidos(Punto p1, Punto p2, Punto p3, const vector<Punto>& historicos, const vector<Punto>& enemigos ) {
+double historicos_contenidos(Punto p1, Punto p2, Punto p3, const vector<Punto>& historicos, const vector<Punto>& enemigos ) {
     if (m_historicos_contenidos[p1.original_idx][p2.original_idx][p3.original_idx] != -kInf){
         return m_historicos_contenidos[p1.original_idx][p2.original_idx][p3.original_idx];
     }
@@ -129,7 +129,7 @@ int historicos_contenidos(Punto p1, Punto p2, Punto p3, const vector<Punto>& his
         return -1;
     }
     
-    int res = 0;
+    double res = 0;
     for (const auto& x : historicos) {
          if (x == p1 or x == p2 or x == p3){
              continue;
@@ -163,48 +163,44 @@ vector<Punto> filtro_arriba_der (const vector<Punto>& historicos, int base){
     return res;
 }
 
-
-
-int mejor_con_ultimo(const vector<Punto>& historicos, const vector<Punto>& enemigos, Matriz2& memo, Punto p_base, int ultimo_a, int ultimo_b){
+double mejor_con_ultimo( vector<Punto>& historicos, const vector<Punto>& enemigos, Matriz2& memo, Punto p_base, int ultimo_a, int ultimo_b){
     if (memo[ultimo_a][ultimo_b] != -kInf){
         return memo[ultimo_a][ultimo_b];
     }
     
-    int res = -kInf; 
-    int base_contenidos = historicos_contenidos(p_base, historicos[ultimo_a], historicos[ultimo_b], historicos, enemigos);
+    double res = -kInf; 
+    double base_contenidos = historicos_contenidos(p_base, historicos[ultimo_a], historicos[ultimo_b], historicos, enemigos);
     
     if (base_contenidos != -1) {
         res = base_contenidos + 3; // base + ultimo_a + ultimo_b forman un triangulo
-    
+		
         for(int i = 0; i < ultimo_a; i++) {
         
-            int contenidos = historicos_contenidos(p_base, historicos[ultimo_a], historicos[i], historicos, enemigos); 
-            
-            if (contenidos != -1 and producto(historicos[ultimo_b], historicos[ultimo_a], historicos[i]) > 0 ) {
+            double contenidos = historicos_contenidos(p_base, historicos[ultimo_a], historicos[i], historicos, enemigos); 
+			if (contenidos != -1 and producto(historicos[ultimo_b], historicos[ultimo_a], historicos[i]) > 0 ) {
                 res = max(res, mejor_con_ultimo(historicos, enemigos, memo, p_base, i, ultimo_a) + 1 + base_contenidos);
             }
         }
     }
     
     memo[ultimo_a][ultimo_b] = res;
-    
+
     return res;
 }
 
-int mejor_con_base(const vector<Punto>& historicos, const vector<Punto>& enemigos, int base) {
+double mejor_con_base(const vector<Punto>& historicos, const vector<Punto>& enemigos, int base) {
     Punto p_base = historicos[base];
    
     vector<Punto> historicos_arriba_der = filtro_arriba_der(historicos, base);
     Comparator comp = Comparator(p_base);
     sort(historicos_arriba_der.begin(), historicos_arriba_der.end(), comp); 
-    reverse(historicos_arriba_der.begin(), historicos_arriba_der.end());
     
     int h = historicos_arriba_der.size();
     if (h <= 1){
         return h + 1;
     }
 
-    int res = -kInf;
+    double res = -kInf;
     Matriz2 memo = nueva_matriz2_menos_inf(h);    
     
     for (int i = 0; i < h; i++){
@@ -216,10 +212,10 @@ int mejor_con_base(const vector<Punto>& historicos, const vector<Punto>& enemigo
     return res;
 }
 
-int solucion(const vector<Punto>& historicos, const vector<Punto>& enemigos) {
+double solucion(const vector<Punto>& historicos, const vector<Punto>& enemigos) {
     m_historicos_contenidos = nueva_matriz3_menos_inf( (int) historicos.size());
 
-    int res = -kInf; // no hay ptos alineados
+    double res = -kInf; // no hay ptos alineados
 
     for (int i = 0; i < (int) historicos.size(); i++){
         res = max(res, mejor_con_base(historicos, enemigos, i));
@@ -242,8 +238,8 @@ int main(){
     for(int i=0; i < e; i++){
         cin >> enemigos[i];
     }
-    
-    int res = solucion(historicos, enemigos);
+
+    double res = solucion(historicos, enemigos);
     if (res > (int) historicos.size()) {
         cout << "Perdon Leo/Melanie por tanto, la proxima te damos algo que ande\n";
         cout << res << endl;
