@@ -79,7 +79,7 @@ Las de históricos-contenidos y las de mejor-con-ultimo. Esto es por la naturale
 \vspace{2em}
 \Function{mejor_con_base}{históricos[], enemigos[], base}
 	\State p_base $\gets$ históricos[base]
-	\State históricos_arriba_der $\gets$ filtrar históricos arriba a la derecha de p_base
+	\State históricos_arriba_der $\gets$ filtrar históricos arriba o a la misma altura y a la derecha de p_base
 	\State ordenar históricos_arriba_der por ángulo polar desde p_base
 
 	\State base_filtrada $\gets$ nuevo índice de p_base en el arreglo históricos_arriba_der
@@ -92,9 +92,9 @@ Las de históricos-contenidos y las de mejor-con-ultimo. Esto es por la naturale
 	\State res $\gets$ $-\infty$
 
 	\For {i = 0 to h}
-		\For{j = 0 to h}
+		\For{j = i + 1 to h}
 			\If { i,j, base_filtrada son distintos entre si} \Comment{Forman un triángulo valido}
-				\State res = máx(res, mejor_con_ultimo(históricos, enemigos, memo, base_filtrada, i, j))
+				\State res = máx(res, mejor_con_ultimo(históricos_arriba_der, enemigos, memo, base_filtrada, i, j))
 			\EndIf
 		\EndFor
 	\EndFor
@@ -118,8 +118,8 @@ Las de históricos-contenidos y las de mejor-con-ultimo. Esto es por la naturale
 
 			\State contenidos $\gets$ históricos_contenidos(históricos[base], históricos[ultimo_a], históricos[i], históricos, enemigos)
 
-			\If{contenidos $\neq$ -1 and blablabla } \Comment{chequeamos que el polígono no nos quede cóncavo}
-				res $\gets$ máx(res, mejor_con_ultimo(históricos, enemigos, memo, base, i, ultimo_a) + 1 + base_contenidos);
+			\If{contenidos $\neq$ -1 and producto cruz entre los dos segmentos que forman los últimos tres puntos con el segundo como intermedio $>$ 0} \Comment{chequeamos que el polígono no nos quede cóncavo}
+				\State res $\gets$ máx(res, mejor_con_ultimo(históricos, enemigos, memo, base, i, ultimo_a) + 1 + base_contenidos);
 
 			\EndIf
 
